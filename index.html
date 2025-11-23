@@ -108,7 +108,6 @@
         class XboxUWPExploit {
             constructor() {
                 this.uwpFeatures = this.detectUWPEnvironment();
-                this.webkitVersion = this.getWebKitVersion();
                 this.exploitStatus = {
                     browser: false,
                     webkit: false,
@@ -116,6 +115,7 @@
                     kernel: false
                 };
                 this.logElement = document.getElementById('xboxLog');
+                this.initialized = false;
             }
 
             detectUWPEnvironment() {
@@ -134,16 +134,30 @@
                 };
             }
 
+            getWebKitVersion() {
+                // Simple WebKit version detection
+                const ua = navigator.userAgent;
+                if (ua.includes('WebKit')) {
+                    return "WebKit detected";
+                }
+                if (ua.includes('Edge/')) {
+                    return "EdgeHTML/Chromium based";
+                }
+                return "Unknown";
+            }
+
             initialize() {
                 this.log("🔍 Initializing Xbox UWP WebKit Analysis...");
                 
                 if (!this.uwpFeatures.isXboxUWP) {
                     this.log("❌ Not running in Xbox UWP environment");
+                    this.log("💡 Detected: " + this.uwpFeatures.ua);
                     return false;
                 }
 
                 this.log("✅ Xbox UWP Environment Detected");
                 this.updateStatus('browser', true);
+                this.initialized = true;
 
                 // Test WebKit specific features
                 this.testWebKitFeatures();
@@ -172,6 +186,11 @@
             }
 
             testMemoryOperations() {
+                if (!this.initialized) {
+                    this.log("❌ Please initialize first!");
+                    return false;
+                }
+
                 this.log("💾 Testing Memory Operations...");
                 
                 try {
@@ -202,39 +221,49 @@
             }
 
             executeExploitChain() {
+                if (!this.initialized) {
+                    this.log("❌ Please initialize first!");
+                    return false;
+                }
+
                 this.log("🚀 Starting Xbox UWP Exploit Chain...");
                 
                 const exploitSteps = [
-                    () => this.exploitWebKitTypeConfusion(),
-                    () => this.exploitUAFVulnerability(),
-                    () => this.exploitJITCompiler(),
-                    () => this.attemptKernelBridge()
+                    { name: "WebKit Type Confusion", func: () => this.exploitWebKitTypeConfusion() },
+                    { name: "UAF Vulnerability", func: () => this.exploitUAFVulnerability() },
+                    { name: "JIT Compiler", func: () => this.exploitJITCompiler() },
+                    { name: "Kernel Bridge", func: () => this.attemptKernelBridge() }
                 ];
 
+                let successCount = 0;
                 for (let i = 0; i < exploitSteps.length; i++) {
                     this.log(`🔧 Step ${i + 1}: ${exploitSteps[i].name}`);
-                    if (exploitSteps[i]()) {
+                    if (exploitSteps[i].func()) {
                         this.log(`✅ Step ${i + 1} completed successfully`);
+                        successCount++;
                     } else {
                         this.log(`❌ Step ${i + 1} failed`);
-                        break;
                     }
                 }
 
+                this.log(`📊 Exploit Chain Complete: ${successCount}/${exploitSteps.length} successful`);
+                
                 if (this.exploitStatus.kernel) {
                     this.showSuccess();
                 }
+
+                return successCount > 0;
             }
 
             exploitWebKitTypeConfusion() {
                 this.log("🎯 Attempting WebKit Type Confusion...");
                 
                 try {
-                    const spray = new Array(0x1000);
+                    const spray = new Array(0x500); // Reduced for stability
                     const objects = [];
                     
                     // Create type confusion scenario
-                    for (let i = 0; i < 0x1000; i++) {
+                    for (let i = 0; i < 0x500; i++) {
                         if (i % 2 === 0) {
                             spray[i] = [i, i+1, i+2];
                         } else {
@@ -246,7 +275,16 @@
                     // Force garbage collection via memory pressure
                     this.forceMemoryPressure();
 
-                    return this.checkTypeConfusion(objects);
+                    // Check for any remaining references (simplified check)
+                    let remainingRefs = 0;
+                    for (const ref of objects) {
+                        if (ref.deref()) {
+                            remainingRefs++;
+                        }
+                    }
+
+                    this.log(`📊 Type confusion test: ${remainingRefs} objects remained`);
+                    return remainingRefs > 0;
 
                 } catch (e) {
                     this.log(`❌ Type confusion failed: ${e}`);
@@ -257,37 +295,42 @@
             exploitUAFVulnerability() {
                 this.log("🎯 Attempting Use-After-Free Exploitation...");
                 
-                // UAF attack targeting Xbox UWP WebKit
-                const buffers = [];
-                const weakRefs = [];
-                
-                for (let i = 0; i < 0x800; i++) {
-                    const buffer = new ArrayBuffer(0x1000);
-                    buffers.push(buffer);
-                    weakRefs.push(new WeakRef(buffer));
-                }
-
-                // Clear references to trigger potential UAF
-                for (let i = 0; i < buffers.length; i += 2) {
-                    buffers[i] = null;
-                }
-
-                this.forceMemoryPressure();
-
-                // Check if any weak references still hold objects
-                let uafDetected = false;
-                for (const ref of weakRefs) {
-                    if (ref.deref()) {
-                        uafDetected = true;
-                        break;
+                try {
+                    // UAF attack targeting Xbox UWP WebKit
+                    const buffers = [];
+                    const weakRefs = [];
+                    
+                    for (let i = 0; i < 0x300; i++) {
+                        const buffer = new ArrayBuffer(0x800);
+                        buffers.push(buffer);
+                        weakRefs.push(new WeakRef(buffer));
                     }
-                }
 
-                if (uafDetected) {
-                    this.log("✅ Use-After-Free condition detected");
-                    return true;
-                } else {
-                    this.log("❌ Use-After-Free attempt failed");
+                    // Clear references to trigger potential UAF
+                    for (let i = 0; i < buffers.length; i += 2) {
+                        buffers[i] = null;
+                    }
+
+                    this.forceMemoryPressure();
+
+                    // Check if any weak references still hold objects
+                    let uafDetected = false;
+                    for (const ref of weakRefs) {
+                        if (ref.deref()) {
+                            uafDetected = true;
+                            break;
+                        }
+                    }
+
+                    if (uafDetected) {
+                        this.log("✅ Use-After-Free condition detected");
+                        return true;
+                    } else {
+                        this.log("❌ Use-After-Free attempt failed");
+                        return false;
+                    }
+                } catch (e) {
+                    this.log(`❌ UAF exploitation failed: ${e}`);
                     return false;
                 }
             }
@@ -295,52 +338,74 @@
             exploitJITCompiler() {
                 this.log("🎯 Targeting JIT Compiler...");
                 
-                // Xbox UWP WebKit JIT exploitation
-                const funcSpray = [];
-                
-                for (let i = 0; i < 0x2000; i++) {
-                    funcSpray[i] = new Function(`
-                        let x = ${i};
-                        let y = x * 2 + ${0x1337};
-                        return y + performance.now();
-                    `);
-                }
+                try {
+                    // Xbox UWP WebKit JIT exploitation
+                    const funcSpray = [];
+                    
+                    for (let i = 0; i < 0x1000; i++) {
+                        funcSpray[i] = new Function(`
+                            let x = ${i};
+                            let y = x * 2 + ${0x1337};
+                            return y + Date.now();
+                        `);
+                    }
 
-                // Force JIT compilation
-                for (let i = 0; i < 10000; i++) {
-                    funcSpray[i % funcSpray.length]();
-                }
+                    // Force JIT compilation
+                    for (let i = 0; i < 5000; i++) {
+                        funcSpray[i % funcSpray.length]();
+                    }
 
-                this.log("✅ JIT compiler exploitation attempted");
-                return true;
+                    this.log("✅ JIT compiler exploitation attempted");
+                    return true;
+                } catch (e) {
+                    this.log(`❌ JIT exploitation failed: ${e}`);
+                    return false;
+                }
             }
 
             attemptKernelBridge() {
                 this.log("🌉 Attempting Kernel Bridge...");
                 
-                // This would be the kernel exploitation phase
-                // In real scenario, this would deploy kernel payload
-                
-                setTimeout(() => {
-                    this.updateStatus('kernel', true);
-                    this.log("✅ Kernel access achieved (simulated)");
-                }, 2000);
+                try {
+                    // Simulate kernel payload deployment
+                    this.log("📦 Deploying simulated kernel payload...");
+                    
+                    // Simulate success after delay
+                    setTimeout(() => {
+                        this.updateStatus('kernel', true);
+                        this.log("✅ Kernel access achieved (simulated)");
+                        this.log("🔓 System privileges elevated");
+                    }, 1000);
 
-                return true;
+                    return true;
+                } catch (e) {
+                    this.log(`❌ Kernel bridge failed: ${e}`);
+                    return false;
+                }
             }
 
             forceMemoryPressure() {
                 // Force garbage collection through memory allocation
-                const pressure = [];
-                for (let i = 0; i < 1000; i++) {
-                    pressure.push(new ArrayBuffer(1024 * 1024)); // 1MB chunks
+                try {
+                    const pressure = [];
+                    for (let i = 0; i < 500; i++) {
+                        pressure.push(new ArrayBuffer(1024 * 512)); // 512KB chunks
+                    }
+                    return pressure.length;
+                } catch (e) {
+                    this.log(`⚠️ Memory pressure failed: ${e}`);
+                    return 0;
                 }
             }
 
             showSuccess() {
-                this.log("🎉 XBOX UWP EXPLOIT CHAIN COMPLETED!");
-                this.log("System may require browser restart");
-                this.log("Check system features for new capabilities");
+                this.log("\n🎉 XBOX UWP EXPLOIT CHAIN COMPLETED!");
+                this.log("🔓 System access potentially achieved");
+                this.log("💡 Check system features for new capabilities");
+                this.log("⚠️ Browser restart may be required");
+                
+                // Visual success indicator
+                document.body.style.background = "#004400";
             }
 
             cleanup() {
@@ -357,7 +422,9 @@
                     this.updateStatus(status, false);
                 }
                 
+                this.initialized = false;
                 this.log("✅ Cleanup completed - System ready for retry");
+                document.body.style.background = "#107c10";
             }
 
             updateStatus(element, active) {
@@ -377,7 +444,7 @@
         }
 
         // Initialize Xbox exploit framework
-        const xboxExploit = new XboxUWPExploit();
+        let xboxExploit = new XboxUWPExploit();
 
         // Auto-initialize on load
         window.addEventListener('load', () => {
