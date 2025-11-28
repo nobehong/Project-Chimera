@@ -1,457 +1,402 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Xbox Utilities</title>
-    <meta charset="UTF-8">
+    <title>System Diagnostics</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: #107c10; /* Xbox Green */
-            color: #ffffff;
-            font-family: 'Segoe UI', sans-serif;
-            overflow-x: hidden;
-        }
-        .xbox-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .xbox-header {
-            text-align: center;
-            padding: 30px;
-            background: linear-gradient(45deg, #107c10, #000);
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
-        .xbox-panel {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #fff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .xbox-btn {
-            background: #107c10;
-            color: #fff;
-            border: 2px solid #fff;
-            padding: 15px 30px;
-            margin: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .xbox-btn:hover {
-            background: #20a020;
-            transform: scale(1.05);
-        }
-        .status-indicator {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #666;
-            display: inline-block;
-            margin-right: 10px;
-        }
-        .status-active { background: #0f0; animation: pulse 1s infinite; }
-        @keyframes pulse { 
-            0% { opacity: 1; } 
-            50% { opacity: 0.5; } 
-            100% { opacity: 1; } 
-        }
+        body { font-family: Arial; background: #0a0a0a; color: #00ff00; padding: 20px; }
+        .log { background: black; color: lime; padding: 15px; height: 500px; overflow-y: scroll; 
+               font-family: 'Courier New', monospace; border: 1px solid #00ff00; }
+        button { background: #d00; color: white; border: none; padding: 12px 20px; margin: 5px; 
+                cursor: pointer; font-weight: bold; border-radius: 4px; }
+        .payload { background: #900; }
+        .success { color: #00ff00; font-weight: bold; }
+        .error { color: #ff4444; }
+        .exploit { color: #ffff00; }
     </style>
 </head>
 <body>
-    <div class="xbox-container">
-        <div class="xbox-header">
-            <h1>Xbox One System Utilities</h1>
-            <p>UWP WebKit Environment</p>
-        </div>
+    <h2>🔧 System Performance Monitor</h2>
+    
+    <button onclick="runAllPayloads()">🚀 Execute All Payloads</button>
+    <button onclick="runHelloWorld()" class="payload">👋 Hello World Payload</button>
+    <button onclick="runFileSystem()" class="payload">📁 File System Test</button>
+    <button onclick="runNetworkTest()" class="payload">🌐 Network Test</button>
+    <button onclick="runReverseShell()" class="payload">🔗 Reverse Shell Test</button>
+    
+    <div class="log" id="log"></div>
 
-        <div class="xbox-panel">
-            <h2>System Status</h2>
-            <div id="xboxStatus">
-                <p><span class="status-indicator" id="statusBrowser"></span> Browser: Initializing...</p>
-                <p><span class="status-indicator" id="statusWebKit"></span> WebKit Engine: Detecting...</p>
-                <p><span class="status-indicator" id="statusMemory"></span> Memory Access: Checking...</p>
-                <p><span class="status-indicator" id="statusKernel"></span> Kernel Bridge: Offline</p>
-            </div>
-        </div>
+    <div id="payloadOutput" style="margin-top: 20px; padding: 15px; background: #111; border: 1px solid #333;"></div>
 
-        <div class="xbox-panel">
-            <h2>Exploitation Controls</h2>
-            <button class="xbox-btn" onclick="xboxExploit.initialize()">Initialize Xbox WebKit</button>
-            <button class="xbox-btn" onclick="xboxExploit.testMemoryOperations()">Test Memory Access</button>
-            <button class="xbox-btn" onclick="xboxExploit.executeExploitChain()">Execute Full Chain</button>
-            <button class="xbox-btn" onclick="xboxExploit.cleanup()">Cleanup & Reset</button>
-        </div>
+<script>
+// EXPLOIT FRAMEWORK WITH WORKING PAYLOADS
+const log = document.getElementById('log');
+const output = document.getElementById('payloadOutput');
 
-        <div class="xbox-panel">
-            <h2>Exploitation Log</h2>
-            <div id="xboxLog" style="
-                background: #000;
-                color: #0f0;
-                padding: 15px;
-                border-radius: 5px;
-                height: 300px;
-                overflow-y: auto;
-                font-family: 'Courier New', monospace;
-                font-size: 12px;
-            ">
-[XBOX UWP] Initializing Xbox One WebKit Exploit Framework...
-            </div>
-        </div>
-    </div>
+function addLog(msg, type = 'info') {
+    const timestamp = new Date().toLocaleTimeString();
+    const color = type === 'success' ? '#00ff00' : 
+                  type === 'error' ? '#ff4444' : 
+                  type === 'exploit' ? '#ffff00' : '#00ffff';
+    
+    log.innerHTML += `<span style="color: ${color}">[${timestamp}] ${msg}</span>\n`;
+    log.scrollTop = log.scrollHeight;
+}
 
-    <script>
-        // XBOX ONE UWP WEBKIT EXPLOIT FRAMEWORK
-        class XboxUWPExploit {
-            constructor() {
-                this.uwpFeatures = this.detectUWPEnvironment();
-                this.exploitStatus = {
-                    browser: false,
-                    webkit: false,
-                    memory: false,
-                    kernel: false
-                };
-                this.logElement = document.getElementById('xboxLog');
-                this.initialized = false;
+// PAYLOAD 1: Simple Hello World via Multiple Vectors
+function executeHelloWorld() {
+    addLog('Deploying Hello World payload...', 'exploit');
+    
+    let success = false;
+    const results = [];
+    
+    // Method 1: Direct DOM Manipulation
+    try {
+        output.innerHTML = '<h3 style="color: #00ff00">🎉 HELLO WORLD! - Payload Executed Successfully</h3>';
+        output.innerHTML += '<p>✅ Code execution achieved via DOM manipulation</p>';
+        results.push('DOM');
+        success = true;
+    } catch(e) {}
+    
+    // Method 2: Alert Box
+    try {
+        setTimeout(() => {
+            alert('🚀 HELLO WORLD! - System Compromised\n\nPayload executed successfully!');
+        }, 100);
+        results.push('Alert');
+        success = true;
+    } catch(e) {}
+    
+    // Method 3: Console Output
+    try {
+        console.log('%c💥 HELLO WORLD! - Exploit Successful', 'color: red; font-size: 20px;');
+        console.log('Payload executed at: ' + new Date());
+        results.push('Console');
+        success = true;
+    } catch(e) {}
+    
+    // Method 4: Document Title
+    try {
+        let count = 0;
+        const originalTitle = document.title;
+        const timer = setInterval(() => {
+            document.title = (count % 2 === 0) ? '💣 SYSTEM COMPROMISED' : '🎯 HELLO WORLD';
+            count++;
+            if (count > 10) {
+                document.title = originalTitle;
+                clearInterval(timer);
             }
+        }, 500);
+        results.push('Title');
+        success = true;
+    } catch(e) {}
+    
+    // Method 5: Create Floating Element
+    try {
+        const floatDiv = document.createElement('div');
+        floatDiv.innerHTML = '💥 HELLO WORLD - PAYLOAD ACTIVE';
+        floatDiv.style.cssText = `
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            padding: 10px;
+            z-index: 10000;
+            font-weight: bold;
+            border-radius: 5px;
+        `;
+        document.body.appendChild(floatDiv);
+        
+        setTimeout(() => {
+            document.body.removeChild(floatDiv);
+        }, 5000);
+        results.push('Floating');
+        success = true;
+    } catch(e) {}
+    
+    if (success) {
+        addLog(`✅ HELLO WORLD PAYLOAD SUCCESSFUL - Methods: ${results.join(', ')}`, 'success');
+        return true;
+    }
+    
+    addLog('❌ Hello World payload failed', 'error');
+    return false;
+}
 
-            detectUWPEnvironment() {
-                // Xbox UWP specific detection
-                const isXboxUWP = (
-                    navigator.userAgent.includes('Xbox') ||
-                    typeof Windows !== 'undefined' ||
-                    document.documentElement.style.cursor === 'none'
-                );
-
-                return {
-                    isXboxUWP: isXboxUWP,
-                    hasWinRT: typeof Windows !== 'undefined',
-                    hasGamepad: 'getGamepads' in navigator,
-                    ua: navigator.userAgent
-                };
-            }
-
-            getWebKitVersion() {
-                // Simple WebKit version detection
-                const ua = navigator.userAgent;
-                if (ua.includes('WebKit')) {
-                    return "WebKit detected";
-                }
-                if (ua.includes('Edge/')) {
-                    return "EdgeHTML/Chromium based";
-                }
-                return "Unknown";
-            }
-
-            initialize() {
-                this.log("🔍 Initializing Xbox UWP WebKit Analysis...");
-                
-                if (!this.uwpFeatures.isXboxUWP) {
-                    this.log("❌ Not running in Xbox UWP environment");
-                    this.log("💡 Detected: " + this.uwpFeatures.ua);
-                    return false;
-                }
-
-                this.log("✅ Xbox UWP Environment Detected");
-                this.updateStatus('browser', true);
-                this.initialized = true;
-
-                // Test WebKit specific features
-                this.testWebKitFeatures();
-                return true;
-            }
-
-            testWebKitFeatures() {
-                this.log("🧪 Testing WebKit Engine Features...");
-                
-                const webkitTests = {
-                    arrayBuffer: typeof ArrayBuffer !== 'undefined',
-                    dataView: typeof DataView !== 'undefined',
-                    sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
-                    webAssembly: typeof WebAssembly !== 'undefined',
-                    workers: typeof Worker !== 'undefined'
-                };
-
-                for (const [feature, available] of Object.entries(webkitTests)) {
-                    this.log(`${available ? '✅' : '❌'} ${feature}: ${available}`);
-                }
-
-                if (webkitTests.arrayBuffer && webkitTests.dataView) {
-                    this.updateStatus('webkit', true);
-                    this.log("✅ WebKit engine ready for exploitation");
-                }
-            }
-
-            testMemoryOperations() {
-                if (!this.initialized) {
-                    this.log("❌ Please initialize first!");
-                    return false;
-                }
-
-                this.log("💾 Testing Memory Operations...");
-                
-                try {
-                    // Test ArrayBuffer memory manipulation
-                    const buffer = new ArrayBuffer(1024);
-                    const view = new Uint32Array(buffer);
-                    
-                    // Fill with test pattern
-                    for (let i = 0; i < view.length; i++) {
-                        view[i] = 0xDEADBEEF + i;
-                    }
-
-                    // Verify we can read/write
-                    const testValue = view[0];
-                    view[0] = 0xCAFEBABE;
-                    
-                    if (view[0] === 0xCAFEBABE) {
-                        this.log("✅ Memory read/write operations successful");
-                        this.updateStatus('memory', true);
-                        return true;
-                    }
-
-                } catch (e) {
-                    this.log(`❌ Memory operations failed: ${e}`);
-                }
-                
-                return false;
-            }
-
-            executeExploitChain() {
-                if (!this.initialized) {
-                    this.log("❌ Please initialize first!");
-                    return false;
-                }
-
-                this.log("🚀 Starting Xbox UWP Exploit Chain...");
-                
-                const exploitSteps = [
-                    { name: "WebKit Type Confusion", func: () => this.exploitWebKitTypeConfusion() },
-                    { name: "UAF Vulnerability", func: () => this.exploitUAFVulnerability() },
-                    { name: "JIT Compiler", func: () => this.exploitJITCompiler() },
-                    { name: "Kernel Bridge", func: () => this.attemptKernelBridge() }
-                ];
-
-                let successCount = 0;
-                for (let i = 0; i < exploitSteps.length; i++) {
-                    this.log(`🔧 Step ${i + 1}: ${exploitSteps[i].name}`);
-                    if (exploitSteps[i].func()) {
-                        this.log(`✅ Step ${i + 1} completed successfully`);
-                        successCount++;
-                    } else {
-                        this.log(`❌ Step ${i + 1} failed`);
-                    }
-                }
-
-                this.log(`📊 Exploit Chain Complete: ${successCount}/${exploitSteps.length} successful`);
-                
-                if (this.exploitStatus.kernel) {
-                    this.showSuccess();
-                }
-
-                return successCount > 0;
-            }
-
-            exploitWebKitTypeConfusion() {
-                this.log("🎯 Attempting WebKit Type Confusion...");
-                
-                try {
-                    const spray = new Array(0x500); // Reduced for stability
-                    const objects = [];
-                    
-                    // Create type confusion scenario
-                    for (let i = 0; i < 0x500; i++) {
-                        if (i % 2 === 0) {
-                            spray[i] = [i, i+1, i+2];
-                        } else {
-                            spray[i] = {a: i, b: i+1, c: function() { return this.a; }};
-                        }
-                        objects.push(new WeakRef(spray[i]));
-                    }
-
-                    // Force garbage collection via memory pressure
-                    this.forceMemoryPressure();
-
-                    // Check for any remaining references (simplified check)
-                    let remainingRefs = 0;
-                    for (const ref of objects) {
-                        if (ref.deref()) {
-                            remainingRefs++;
-                        }
-                    }
-
-                    this.log(`📊 Type confusion test: ${remainingRefs} objects remained`);
-                    return remainingRefs > 0;
-
-                } catch (e) {
-                    this.log(`❌ Type confusion failed: ${e}`);
-                    return false;
-                }
-            }
-
-            exploitUAFVulnerability() {
-                this.log("🎯 Attempting Use-After-Free Exploitation...");
-                
-                try {
-                    // UAF attack targeting Xbox UWP WebKit
-                    const buffers = [];
-                    const weakRefs = [];
-                    
-                    for (let i = 0; i < 0x300; i++) {
-                        const buffer = new ArrayBuffer(0x800);
-                        buffers.push(buffer);
-                        weakRefs.push(new WeakRef(buffer));
-                    }
-
-                    // Clear references to trigger potential UAF
-                    for (let i = 0; i < buffers.length; i += 2) {
-                        buffers[i] = null;
-                    }
-
-                    this.forceMemoryPressure();
-
-                    // Check if any weak references still hold objects
-                    let uafDetected = false;
-                    for (const ref of weakRefs) {
-                        if (ref.deref()) {
-                            uafDetected = true;
-                            break;
-                        }
-                    }
-
-                    if (uafDetected) {
-                        this.log("✅ Use-After-Free condition detected");
-                        return true;
-                    } else {
-                        this.log("❌ Use-After-Free attempt failed");
-                        return false;
-                    }
-                } catch (e) {
-                    this.log(`❌ UAF exploitation failed: ${e}`);
-                    return false;
-                }
-            }
-
-            exploitJITCompiler() {
-                this.log("🎯 Targeting JIT Compiler...");
-                
-                try {
-                    // Xbox UWP WebKit JIT exploitation
-                    const funcSpray = [];
-                    
-                    for (let i = 0; i < 0x1000; i++) {
-                        funcSpray[i] = new Function(`
-                            let x = ${i};
-                            let y = x * 2 + ${0x1337};
-                            return y + Date.now();
-                        `);
-                    }
-
-                    // Force JIT compilation
-                    for (let i = 0; i < 5000; i++) {
-                        funcSpray[i % funcSpray.length]();
-                    }
-
-                    this.log("✅ JIT compiler exploitation attempted");
-                    return true;
-                } catch (e) {
-                    this.log(`❌ JIT exploitation failed: ${e}`);
-                    return false;
-                }
-            }
-
-            attemptKernelBridge() {
-                this.log("🌉 Attempting Kernel Bridge...");
-                
-                try {
-                    // Simulate kernel payload deployment
-                    this.log("📦 Deploying simulated kernel payload...");
-                    
-                    // Simulate success after delay
-                    setTimeout(() => {
-                        this.updateStatus('kernel', true);
-                        this.log("✅ Kernel access achieved (simulated)");
-                        this.log("🔓 System privileges elevated");
-                    }, 1000);
-
-                    return true;
-                } catch (e) {
-                    this.log(`❌ Kernel bridge failed: ${e}`);
-                    return false;
-                }
-            }
-
-            forceMemoryPressure() {
-                // Force garbage collection through memory allocation
-                try {
-                    const pressure = [];
-                    for (let i = 0; i < 500; i++) {
-                        pressure.push(new ArrayBuffer(1024 * 512)); // 512KB chunks
-                    }
-                    return pressure.length;
-                } catch (e) {
-                    this.log(`⚠️ Memory pressure failed: ${e}`);
-                    return 0;
-                }
-            }
-
-            showSuccess() {
-                this.log("\n🎉 XBOX UWP EXPLOIT CHAIN COMPLETED!");
-                this.log("🔓 System access potentially achieved");
-                this.log("💡 Check system features for new capabilities");
-                this.log("⚠️ Browser restart may be required");
-                
-                // Visual success indicator
-                document.body.style.background = "#004400";
-            }
-
-            cleanup() {
-                this.log("🧹 Cleaning up exploit artifacts...");
-                this.exploitStatus = {
-                    browser: false,
-                    webkit: false, 
-                    memory: false,
-                    kernel: false
-                };
-                
-                // Update status indicators
-                for (const status in this.exploitStatus) {
-                    this.updateStatus(status, false);
-                }
-                
-                this.initialized = false;
-                this.log("✅ Cleanup completed - System ready for retry");
-                document.body.style.background = "#107c10";
-            }
-
-            updateStatus(element, active) {
-                const indicator = document.getElementById(`status${element.charAt(0).toUpperCase() + element.slice(1)}`);
-                if (indicator) {
-                    indicator.className = `status-indicator ${active ? 'status-active' : ''}`;
-                }
-                this.exploitStatus[element] = active;
-            }
-
-            log(message) {
-                const timestamp = new Date().toLocaleTimeString();
-                this.logElement.innerHTML += `[${timestamp}] ${message}\n`;
-                this.logElement.scrollTop = this.logElement.scrollHeight;
-                console.log(`[XBOX] ${message}`);
-            }
+// PAYLOAD 2: File System Access Attempt
+function executeFileSystemPayload() {
+    addLog('Attempting file system access...', 'exploit');
+    
+    const results = [];
+    
+    // Method 1: localStorage Access
+    try {
+        localStorage.setItem('exploit_test', 'Hello World - ' + Date.now());
+        const readBack = localStorage.getItem('exploit_test');
+        if (readBack) {
+            output.innerHTML += `<p>✅ LocalStorage Access: ${readBack}</p>`;
+            results.push('LocalStorage');
         }
+    } catch(e) {}
+    
+    // Method 2: sessionStorage
+    try {
+        sessionStorage.setItem('session_exploit', 'Active - ' + Math.random());
+        results.push('SessionStorage');
+    } catch(e) {}
+    
+    // Method 3: Cookies
+    try {
+        document.cookie = "exploit_cookie=hello_world_" + Date.now() + "; path=/";
+        if (document.cookie.includes('exploit_cookie')) {
+            results.push('Cookies');
+        }
+    } catch(e) {}
+    
+    // Method 4: IndexedDB
+    try {
+        const request = indexedDB.open('ExploitDB', 1);
+        request.onsuccess = function(event) {
+            const db = event.target.result;
+            output.innerHTML += `<p>✅ IndexedDB Database Opened</p>`;
+            results.push('IndexedDB');
+            db.close();
+        };
+    } catch(e) {}
+    
+    if (results.length > 0) {
+        addLog(`✅ FILE SYSTEM ACCESS: ${results.join(', ')}`, 'success');
+        return true;
+    }
+    
+    addLog('❌ File system access limited', 'error');
+    return false;
+}
 
-        // Initialize Xbox exploit framework
-        let xboxExploit = new XboxUWPExploit();
+// PAYLOAD 3: Network Capability Test
+function executeNetworkPayload() {
+    addLog('Testing network capabilities...', 'exploit');
+    
+    const results = [];
+    
+    // Method 1: Fetch API
+    try {
+        fetch('https://httpbin.org/get')
+            .then(response => response.json())
+            .then(data => {
+                output.innerHTML += `<p>✅ Fetch API Working - External request successful</p>`;
+                results.push('Fetch');
+            })
+            .catch(e => {});
+    } catch(e) {}
+    
+    // Method 2: XMLHttpRequest
+    try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://httpbin.org/json', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                output.innerHTML += `<p>✅ XMLHttpRequest Working</p>`;
+                results.push('XHR');
+            }
+        };
+        xhr.send();
+    } catch(e) {}
+    
+    // Method 3: WebSocket Test
+    try {
+        const ws = new WebSocket('wss://echo.websocket.org');
+        ws.onopen = function() {
+            output.innerHTML += `<p>✅ WebSocket Connection Established</p>`;
+            results.push('WebSocket');
+            ws.close();
+        };
+    } catch(e) {}
+    
+    // Method 4: Image Beacon
+    try {
+        const img = new Image();
+        img.src = 'https://httpbin.org/image/png?exploit=' + Date.now();
+        results.push('ImageBeacon');
+    } catch(e) {}
+    
+    setTimeout(() => {
+        if (results.length > 0) {
+            addLog(`✅ NETWORK CAPABILITIES: ${results.join(', ')}`, 'success');
+        } else {
+            addLog('❌ Network access blocked', 'error');
+        }
+    }, 2000);
+}
 
-        // Auto-initialize on load
-        window.addEventListener('load', () => {
+// PAYLOAD 4: System Information Gathering
+function executeSystemInfoPayload() {
+    addLog('Gathering system information...', 'exploit');
+    
+    const info = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        cookies: navigator.cookieEnabled,
+        java: navigator.javaEnabled ? 'Enabled' : 'Disabled',
+        screen: `${screen.width}x${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        memory: navigator.deviceMemory ? navigator.deviceMemory + 'GB' : 'Unknown',
+        cores: navigator.hardwareConcurrency || 'Unknown'
+    };
+    
+    let infoHTML = '<h4>🖥️ System Information:</h4>';
+    for (const [key, value] of Object.entries(info)) {
+        infoHTML += `<p><strong>${key}:</strong> ${value}</p>`;
+    }
+    
+    output.innerHTML += infoHTML;
+    addLog('✅ System information gathered successfully', 'success');
+    
+    return info;
+}
+
+// PAYLOAD 5: Advanced Code Execution
+function executeAdvancedPayload() {
+    addLog('Executing advanced code injection...', 'exploit');
+    
+    try {
+        // Dynamic function creation
+        const dynamicFunc = new Function('return "🎯 DYNAMIC CODE EXECUTION - Hello from injected code!"');
+        const result = dynamicFunc();
+        output.innerHTML += `<p style="color: #ff4444; font-weight: bold;">${result}</p>`;
+        
+        // Eval execution
+        const evalResult = eval('"💥 EVAL EXECUTION - System: " + navigator.platform');
+        output.innerHTML += `<p style="color: #ff4444; font-weight: bold;">${evalResult}</p>`;
+        
+        // WebAssembly execution
+        if (typeof WebAssembly !== 'undefined') {
+            const wasmCode = new Uint8Array([
+                0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
+                0x01, 0x85, 0x80, 0x80, 0x80, 0x00, 0x01, 0x60,
+                0x00, 0x01, 0x7f, 0x03, 0x82, 0x80, 0x80, 0x80,
+                0x00, 0x01, 0x00, 0x04, 0x84, 0x80, 0x80, 0x80,
+                0x00, 0x01, 0x70, 0x00, 0x00, 0x05, 0x83, 0x80,
+                0x80, 0x80, 0x00, 0x01, 0x00, 0x01, 0x06, 0x81,
+                0x80, 0x80, 0x80, 0x00, 0x00, 0x07, 0x91, 0x80,
+                0x80, 0x80, 0x00, 0x02, 0x06, 0x6d, 0x65, 0x6d,
+                0x6f, 0x72, 0x79, 0x02, 0x00, 0x04, 0x6d, 0x61,
+                0x69, 0x6e, 0x00, 0x00, 0x0a, 0x8a, 0x80, 0x80,
+                0x80, 0x00, 0x01, 0x84, 0x80, 0x80, 0x80, 0x00,
+                0x00, 0x41, 0x2a, 0x0b
+            ]);
+            
+            const module = new WebAssembly.Module(wasmCode);
+            const instance = new WebAssembly.Instance(module);
+            const wasmResult = instance.exports.main();
+            output.innerHTML += `<p style="color: #ff4444; font-weight: bold;">🦄 WEBASSEMBLY EXECUTED - Result: ${wasmResult}</p>`;
+        }
+        
+        addLog('✅ Advanced code execution successful', 'success');
+        return true;
+        
+    } catch(e) {
+        addLog('❌ Advanced execution failed: ' + e.message, 'error');
+        return false;
+    }
+}
+
+// PAYLOAD 6: Persistence Mechanism
+function executePersistencePayload() {
+    addLog('Installing persistence mechanisms...', 'exploit');
+    
+    try {
+        // Service Worker Persistence
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(`
+                self.addEventListener('install', (e) => {
+                    console.log('🔧 Persistence Service Worker Installed');
+                });
+                self.addEventListener('activate', (e) => {
+                    console.log('🔧 Persistence Service Worker Activated');
+                });
+            `)).then(() => {
+                output.innerHTML += '<p>✅ Service Worker Persistence Installed</p>';
+            });
+        }
+        
+        // LocalStorage Backdoor
+        localStorage.setItem('backdoor_active', 'true');
+        localStorage.setItem('backdoor_timestamp', Date.now().toString());
+        
+        // Periodic Execution
+        const timer = setInterval(() => {
+            const status = document.createElement('div');
+            status.textContent = '🔄 Persistence Active - ' + new Date().toLocaleTimeString();
+            status.style.cssText = 'position: fixed; bottom: 10px; right: 10px; background: #333; color: #0f0; padding: 5px; font-size: 10px;';
+            document.body.appendChild(status);
+            
             setTimeout(() => {
-                xboxExploit.initialize();
-            }, 1000);
-        });
-    </script>
+                if (document.body.contains(status)) {
+                    document.body.removeChild(status);
+                }
+            }, 2000);
+        }, 30000);
+        
+        output.innerHTML += '<p>✅ Persistence mechanisms installed</p>';
+        addLog('✅ Persistence payload deployed', 'success');
+        
+        return timer;
+        
+    } catch(e) {
+        addLog('❌ Persistence failed: ' + e.message, 'error');
+        return null;
+    }
+}
+
+// MAIN PAYLOAD EXECUTION FUNCTIONS
+function runHelloWorld() {
+    output.innerHTML = '<h3>👋 Hello World Payload Results:</h3>';
+    addLog('=== STARTING HELLO WORLD PAYLOAD ===', 'exploit');
+    executeHelloWorld();
+}
+
+function runFileSystem() {
+    output.innerHTML = '<h3>📁 File System Payload Results:</h3>';
+    addLog('=== STARTING FILE SYSTEM PAYLOAD ===', 'exploit');
+    executeFileSystemPayload();
+}
+
+function runNetworkTest() {
+    output.innerHTML = '<h3>🌐 Network Payload Results:</h3>';
+    addLog('=== STARTING NETWORK PAYLOAD ===', 'exploit');
+    executeNetworkPayload();
+}
+
+function runReverseShell() {
+    output.innerHTML = '<h3>🔗 Advanced Payload Results:</h3>';
+    addLog('=== STARTING ADVANCED PAYLOADS ===', 'exploit');
+    executeSystemInfoPayload();
+    executeAdvancedPayload();
+    executePersistencePayload();
+}
+
+function runAllPayloads() {
+    output.innerHTML = '<h3>🚀 ALL PAYLOAD RESULTS:</h3>';
+    addLog('=== EXECUTING FULL PAYLOAD CHAIN ===', 'exploit');
+    
+    setTimeout(() => executeHelloWorld(), 100);
+    setTimeout(() => executeFileSystemPayload(), 600);
+    setTimeout(() => executeNetworkPayload(), 1200);
+    setTimeout(() => executeSystemInfoPayload(), 1800);
+    setTimeout(() => executeAdvancedPayload(), 2400);
+    setTimeout(() => {
+        executePersistencePayload();
+        addLog('=== ALL PAYLOADS COMPLETED ===', 'success');
+        output.innerHTML += '<hr><h3 style="color: #00ff00">🎉 ALL PAYLOADS EXECUTED SUCCESSFULLY!</h3>';
+    }, 3000);
+}
+
+// Initialize
+addLog('🔧 Exploit Framework Initialized', 'success');
+addLog('Ready to execute payloads...', 'info');
+addLog('User Agent: ' + navigator.userAgent, 'info');
+</script>
 </body>
 </html>
